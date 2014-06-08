@@ -1,31 +1,66 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.utils.UBJsonReader;
 import com.engine.GameAdapter;
+import com.engine.GameTime;
+import com.badlogic.gdx.graphics.g3d.Environment;
 
-public class Game extends GameAdapter
+public final class Game extends GameAdapter
 {
-    SpriteBatch batch;
-    Texture img;
+    private Texture img;
+    private Model model;
+    private ModelInstance modelInstance;
+    private Environment environment;
+    private CameraInputController controller;
 
-    @Override
-    public void create()
+    public Game()
     {
-        batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
+        super(800, 480);
     }
 
     @Override
-    public void render()
+    public void initialize()
     {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(img, 0, 0);
-        batch.end();
+        img = new Texture("textures/badlogic.jpg");
+
+        UBJsonReader reader = new UBJsonReader();
+        ModelLoader loader = new G3dModelLoader(reader);
+
+        model = loader.loadModel(Gdx.files.getFileHandle("models/cube.g3db",
+                Files.FileType.Internal));
+        modelInstance = new ModelInstance(model);
+
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight,
+                242f / 255f, 36f / 255f, 95f / 255f, 1f));
+
+        controller = new CameraInputController(perspectiveCamera);
+        Gdx.input.setInputProcessor(controller);
+    }
+
+    @Override
+    protected void update(GameTime gameTime)
+    {
+    }
+
+    @Override
+    protected void draw(GameTime gameTime)
+    {
+        spriteBatch.begin();
+        spriteBatch.draw(img, 0, 0);
+        spriteBatch.end();
+
+        modelBatch.begin(perspectiveCamera);
+        modelBatch.render(modelInstance, environment);
+        modelBatch.end();
     }
 }
