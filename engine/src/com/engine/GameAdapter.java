@@ -62,9 +62,8 @@ public abstract class GameAdapter extends ApplicationAdapter
         orthographicCamera.setToOrtho(true, virtualWidth, virtualHeight);
 
         // Por default se utiliza el StretchViewport
-        viewport2D = new StretchViewport(virtualWidth, virtualHeight, orthographicCamera);
-        //viewport2D = new FitViewport(virtualWidth, virtualHeight, orthographicCamera);
-        //viewport2D = new ExtendViewport(virtualWidth, virtualHeight, 1000, 600, orthographicCamera);
+        viewport2D = new StretchViewport(virtualWidth, virtualHeight,
+                orthographicCamera);
     }
 
     private void initialize3DCamera()
@@ -77,9 +76,8 @@ public abstract class GameAdapter extends ApplicationAdapter
         perspectiveCamera.lookAt(0f, 0f, 0f);
 
         // Por default se utiliza el StretchViewport
-        viewport3D = new StretchViewport(virtualWidth, virtualHeight, perspectiveCamera);
-        //viewport3D = new FitViewport(virtualWidth, virtualHeight, perspectiveCamera);
-        //viewport3D = new ExtendViewport(virtualWidth, virtualHeight, 1000, 600, perspectiveCamera);
+        viewport3D = new StretchViewport(virtualWidth, virtualHeight,
+                perspectiveCamera);
     }
 
     private void createBlackBarTexture()
