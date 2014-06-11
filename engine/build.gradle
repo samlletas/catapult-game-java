@@ -2,3 +2,26 @@ apply plugin: "java"
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
+
+def shaderSrcDir = "src/com/engine/shaders";
+def shaderOutputDir = "build/classes/main/com/engine/shaders";
+
+// Se copian los shaders al .jar
+jar
+{
+    from(shaderSrcDir)
+    {
+        into shaderOutputDir
+        include "*.*.glsl"
+    }
+}
+
+// Se copian los shaders al classPath
+task copyShaders(type: Copy) {
+    from shaderSrcDir
+    into shaderOutputDir
+    include "*.*.glsl"
+}
+
+// Se asegura que se ejecute el task
+compileJava.dependsOn copyShaders
