@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.engine.shaders.Base3DShader;
 
 public final class Game extends GameAdapter
 {
@@ -21,6 +22,8 @@ public final class Game extends GameAdapter
     private ModelInstance modelInstance;
     private Environment environment;
     private CameraInputController controller;
+
+    private Base3DShader shader;
 
     public Game()
     {
@@ -45,6 +48,9 @@ public final class Game extends GameAdapter
 
         controller = new CameraInputController(perspectiveCamera);
         Gdx.input.setInputProcessor(controller);
+
+        shader = new Base3DShader();
+        shader.init();
     }
 
     @Override
