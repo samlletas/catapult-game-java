@@ -2,18 +2,21 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.engine.shaders.Base3DShader;
+import com.mygdx.game.shaders.TestShader;
 
 public final class Game extends GameAdapter
 {
@@ -22,8 +25,8 @@ public final class Game extends GameAdapter
     private ModelInstance modelInstance;
     private Environment environment;
     private CameraInputController controller;
-
-    private Base3DShader shader;
+    private TestShader shader;
+    private AssetManager assetManager;
 
     public Game()
     {
@@ -35,21 +38,34 @@ public final class Game extends GameAdapter
     {
         img = new Texture("textures/badlogic.jpg");
 
-        UBJsonReader reader = new UBJsonReader();
-        ModelLoader loader = new G3dModelLoader(reader);
+        assetManager = new AssetManager();
+        assetManager.load("models/cube.g3db", Model.class);
+        assetManager.load("models/envelope.g3db", Model.class);
+        assetManager.load("models/ship.obj", Model.class);
+        assetManager.finishLoading();
 
-        model = loader.loadModel(Gdx.files.getFileHandle("models/cube.g3db",
-                Files.FileType.Internal));
+//        model = assetManager.get("models/cube.g3db");
+        model = assetManager.get("models/envelope.g3db");
+//        model = assetManager.get("models/ship.obj");
         modelInstance = new ModelInstance(model);
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight,
-                242f / 255f, 36f / 255f, 95f / 255f, 1f));
+                1f, 1f, 1f, 1f));
 
         controller = new CameraInputController(perspectiveCamera);
         Gdx.input.setInputProcessor(controller);
 
-        shader = new Base3DShader();
+        test();
+    }
+
+    private void test()
+    {
+//        shader = new TestShader(VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
+//                | VertexAttributes.Usage.TextureCoordinates);
+
+        shader = new TestShader(VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+
         shader.init();
     }
 
@@ -66,7 +82,8 @@ public final class Game extends GameAdapter
         spriteBatch.end();
 
         modelBatch.begin(perspectiveCamera);
-        modelBatch.render(modelInstance, environment);
+//        modelBatch.render(modelInstance, environment);
+        modelBatch.render(modelInstance, shader);
         modelBatch.end();
     }
 }
