@@ -13,9 +13,7 @@ varying vec3 v_position;
     uniform sampler2D u_texture;
 #endif
 
-// <extra-fields>
-
-// <extra-functions>
+// <custom-header>
 
 void main()
 {
@@ -26,6 +24,8 @@ void main()
         vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
     #endif
 
-    // <extra-logic>
+    // <custom-logic>
+
+    gl_FragColor = color;
 }
 

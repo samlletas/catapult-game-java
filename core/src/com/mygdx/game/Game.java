@@ -6,27 +6,32 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.mygdx.game.shaders.TestShader;
+import com.mygdx.game.shaders.TestShaderProvider;
 
 public final class Game extends GameAdapter
 {
+    private ModelBatch customModelBatch;
+
     private Texture img;
     private Model model;
     private ModelInstance modelInstance;
     private Environment environment;
     private CameraInputController controller;
-    private TestShader shader;
     private AssetManager assetManager;
+    private AnimationController animationController;
 
     public Game()
     {
@@ -61,17 +66,15 @@ public final class Game extends GameAdapter
 
     private void test()
     {
-//        shader = new TestShader(VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
-//                | VertexAttributes.Usage.TextureCoordinates);
-
-        shader = new TestShader(VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-
-        shader.init();
+        customModelBatch = new ModelBatch(new TestShaderProvider());
+        animationController = new AnimationController(modelInstance);
+        animationController.setAnimation("Open", 5);
     }
 
     @Override
     protected void update(GameTime gameTime)
     {
+        animationController.update((float)gameTime.getDelta());
     }
 
     @Override
@@ -81,9 +84,12 @@ public final class Game extends GameAdapter
         spriteBatch.draw(img, 0, 0);
         spriteBatch.end();
 
-        modelBatch.begin(perspectiveCamera);
+//        modelBatch.begin(perspectiveCamera);
 //        modelBatch.render(modelInstance, environment);
-        modelBatch.render(modelInstance, shader);
-        modelBatch.end();
+//        modelBatch.end();
+
+        customModelBatch.begin(perspectiveCamera);
+        customModelBatch.render(modelInstance);
+        customModelBatch.end();
     }
 }

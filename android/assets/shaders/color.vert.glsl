@@ -1,19 +1,16 @@
-// <extra-fields>
+// <custom-header>
 uniform vec4 u_color;
 varying vec4 v_color;
-// </extra-fields>
 
-// <extra-functions>
 float calculate()
 {
     return 0.0;
 }
-// </extra-functions>
+// </custom-header>
 
 void main()
 {
-    // <extra-logic>
-    gl_Position = position;
+    // <custom-logic>
     v_color = u_color;
-    // </extra-logic>
+    // </custom-logic>
 }

@@ -4,34 +4,28 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 public class CustomShaderMixer
 {
-    private static final String FIELDS_TAG       = "// <extra-fields>";
-    private static final String FIELDS_ENDTAG    = "// </extra-fields>";
-    private static final String FUNCTIONS_TAG    = "// <extra-functions>";
-    private static final String FUNCTIONS_ENDTAG = "// </extra-functions>";
-    private static final String LOGIC_TAG        = "// <extra-logic>";
-    private static final String LOGIC_ENDTAG     = "// </extra-logic>";
+    private static final String HEADER_TAG    = "// <custom-header>";
+    private static final String HEADER_ENDTAG = "// </custom-header>";
+    private static final String LOGIC_TAG     = "// <custom-logic>";
+    private static final String LOGIC_ENDTAG  = "// </custom-logic>";
 
-    private StringBuilder builder = new StringBuilder();
-
-    public String mix(String baseShader, String customShader, String flags)
+    public void mix(StringBuilder baseShader, String customShader)
     {
-        builder.replace(0, builder.length(), "");
-        builder.append(flags);
-        builder.append(baseShader);
-
-        insertCode(customShader, FIELDS_TAG, FIELDS_ENDTAG);
-        insertCode(customShader, FUNCTIONS_TAG, FUNCTIONS_ENDTAG);
-        insertCode(customShader, LOGIC_TAG, LOGIC_ENDTAG);
-
-        return builder.toString();
+        copyFromCustomShader(baseShader, customShader, HEADER_TAG, HEADER_ENDTAG);
+        copyFromCustomShader(baseShader, customShader, LOGIC_TAG, LOGIC_ENDTAG);
     }
 
-    private void insertCode(String customShader, String tag, String endTag)
+    private void copyFromCustomShader(StringBuilder baseShader, String customShader,
+                                      String tag, String endTag)
     {
-        builder.insert(
-                builder.indexOf(tag) + tag.length(),
+        insertInto(baseShader, tag,
                 customShader.substring(
-                        customShader.indexOf(tag) + tag.length(),
-                        customShader.indexOf(endTag) - 1)); // -1 para saltar \n
+                    customShader.indexOf(tag) + tag.length(),
+                    customShader.indexOf(endTag) - 1)); // -1 para saltar \n
+    }
+
+    private void insertInto(StringBuilder baseShader, String tag, String code)
+    {
+        baseShader.insert(baseShader.indexOf(tag) + tag.length(), code);
     }
 }

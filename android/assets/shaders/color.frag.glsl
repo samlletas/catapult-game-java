@@ -1,17 +1,15 @@
-// <extra-fields>
+// <custom-header>
 varying vec4 v_color;
-// </extra-fields>
 
-// <extra-functions>
 float someTest()
 {
     return 1.0;
 }
-// </extra-functions>
+// </custom-header>
 
 void main()
 {
-    // <extra-logic>
-    gl_FragColor = color;
-    // </extra-logic>
+    // <custom-logic>
+    color = v_color;
+    // </custom-logic>
 }

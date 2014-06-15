@@ -3,6 +3,7 @@ package com.engine.shaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -15,50 +16,72 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 public abstract class CustomShader implements Shader
 {
+    private static final String SKINNING_LOGIC_TAG = "// <skinning-logic>";
+    private static final Matrix4 IDENTITY_MATRIX = new Matrix4().idt();
+    private static StringBuilder vertexBuilder = new StringBuilder();
+    private static StringBuilder fragmentBuilder = new StringBuilder();
+    private static StringBuilder tempBuilder = new StringBuilder();
+    private static String baseVertexShader;
+    private static String baseFragmentShader;
+
+    private Renderable renderable;
+
     protected long attributesMask;
     protected Camera camera;
     protected RenderContext context;
-
-    protected String vertexShader;
-    protected String fragmentShader;
     protected ShaderProgram program;
 
     protected Matrix4 modelView;
     protected Matrix4 modelViewProjection;
     protected UniformCollection uniforms;
 
-    public CustomShader(long attributesMask)
+    protected int numBones;
+
+    public CustomShader(Renderable renderable)
     {
-        this.attributesMask = attributesMask;
+        this.renderable = renderable;
+        this.attributesMask = renderable.mesh.getVertexAttributes().getMask();
+
+        if (renderable.bones != null)
+        {
+            this.numBones = renderable.bones.length;
+        }
+        else
+        {
+            this.numBones = 0;
+        }
     }
 
     @Override
     public final void init()
     {
-        String baseVertexShader = Gdx.files.classpath(
-                "com/engine/shaders/custom.vert.glsl").readString();
-        String baseFragmentShader = Gdx.files.classpath(
-                "com/engine/shaders/custom.frag.glsl").readString();
-        String flags = generateFlags();
+        clearStringBuilders();
+        generateVertexShaderFlags();
+        generateFragmentShaderFlags();
+        generateSkinningVariables();
+        loadBaseShaderCode();
+        generateSkinningLogic();
 
         CustomShaderMixer mixer = new CustomShaderMixer();
-        vertexShader = mixer.mix(baseVertexShader, getCustomVertexShader(),
-                flags);
-        fragmentShader = mixer.mix(baseFragmentShader, getCustomFragmentShader(),
-                flags);
 
-        program = new ShaderProgram(vertexShader, fragmentShader);
+        mixer.mix(vertexBuilder, getCustomVertexShader());
+        mixer.mix(fragmentBuilder, getCustomFragmentShader());
+
+        System.out.print("---VERTEX SHADER---\n\n");
+        System.out.println(vertexBuilder);
+        System.out.print("---FRAGMENT SHADER---\n\n");
+        System.out.println(fragmentBuilder);
+
+        program = new ShaderProgram(vertexBuilder.toString(), fragmentBuilder.toString());
 
         if (program.isCompiled())
         {
             modelView = new Matrix4();
             modelViewProjection = new Matrix4();
+            uniforms = new UniformCollection();
 
-            addUniforms();
+            addBaseUniforms();
             addCustomUniforms();
-
-//            System.out.println(vertexShader);
-//            System.out.println(fragmentShader);
 
             for(String u : program.getUniforms())
             {
@@ -73,10 +96,153 @@ public abstract class CustomShader implements Shader
         }
     }
 
-    private void addUniforms()
+    private static void clearStringBuilders()
     {
-        uniforms = new UniformCollection();
+        vertexBuilder.replace(0, vertexBuilder.length(), "");
+        fragmentBuilder.replace(0, fragmentBuilder.length(), "");
+        tempBuilder.replace(0, tempBuilder.length(), "");
+    }
 
+    private boolean hasVertexAttribute(long usage)
+    {
+        return (attributesMask & usage) == usage;
+    }
+
+    private boolean hasSkinning()
+    {
+        return hasVertexAttribute(VertexAttributes.Usage.BoneWeight) &&
+                numBones > 0;
+    }
+
+    private void generateVertexShaderFlags()
+    {
+        if (hasVertexAttribute(VertexAttributes.Usage.Normal))
+        {
+            vertexBuilder.append("#define normalFlag\n");
+        }
+        if (hasVertexAttribute(VertexAttributes.Usage.TextureCoordinates))
+        {
+            vertexBuilder.append("#define textureFlag\n");
+        }
+        if (hasSkinning())
+        {
+            vertexBuilder.append("#define boneWeightsFlag\n");
+            vertexBuilder.append("#define numBones ");
+            vertexBuilder.append(numBones);
+            vertexBuilder.append("\n\n");
+        }
+    }
+
+    private void generateFragmentShaderFlags()
+    {
+        if (hasVertexAttribute(VertexAttributes.Usage.Normal))
+        {
+            fragmentBuilder.append("#define normalFlag\n");
+        }
+        if (hasVertexAttribute(VertexAttributes.Usage.TextureCoordinates))
+        {
+            fragmentBuilder.append("#define textureFlag\n");
+        }
+    }
+
+    private void loadBaseShaderCode()
+    {
+        if (baseVertexShader == null)
+        {
+            baseVertexShader = Gdx.files.classpath(
+                    "com/engine/shaders/custom.vert.glsl").readString();
+        }
+        if (baseFragmentShader == null)
+        {
+            baseFragmentShader = Gdx.files.classpath(
+                    "com/engine/shaders/custom.frag.glsl").readString();
+        }
+
+        vertexBuilder.append(baseVertexShader);
+        fragmentBuilder.append(baseFragmentShader);
+    }
+
+    private void generateSkinningVariables()
+    {
+        if (hasSkinning())
+        {
+            for(VertexAttribute attribute : renderable.mesh.getVertexAttributes())
+            {
+                if (attribute.usage == VertexAttributes.Usage.BoneWeight &&
+                        attribute.unit < numBones)
+                {
+                    // Atributo
+                    vertexBuilder.append("attribute vec2 a_boneWeight");
+                    vertexBuilder.append(attribute.unit);
+                    vertexBuilder.append(";\n");
+
+                    // Uniforme
+                    vertexBuilder.append("uniform mat4 u_bone");
+                    vertexBuilder.append(attribute.unit);
+                    vertexBuilder.append(";\n");
+                }
+            }
+
+            vertexBuilder.append("\n");
+        }
+    }
+
+    private void generateSkinningLogic()
+    {
+        if (hasSkinning())
+        {
+            // función getBoneTransform
+            tempBuilder.append("\nmat4 getBoneTransform(in int index)\n{");
+
+            for (int i = 0; i < numBones; i++)
+            {
+                if (i == 0)
+                {
+                    tempBuilder.append("if (index == 0) ");
+                }
+                else if (i < numBones - 1)
+                {
+                    tempBuilder.append("else if (index == ");
+                    tempBuilder.append(i);
+                    tempBuilder.append(") ");
+                }
+                else
+                {
+                    tempBuilder.append("else ");
+                }
+
+                tempBuilder.append("{ return u_bone");
+                tempBuilder.append(i);
+                tempBuilder.append("; }\n");
+            }
+
+            tempBuilder.append("\n}");
+            // Fin función getBoneTransform
+
+            // Transformaciones de skinning
+            tempBuilder.append("mat4 processSkinning()\n{\nmat4 skinning = mat4(0.0);\n\n");
+
+            for (int i = 0; i < numBones; i++)
+            {
+                tempBuilder.append("skinning += (a_boneWeight");
+                tempBuilder.append(i);
+                tempBuilder.append(".y) * getBoneTransform(int(a_boneWeight");
+                tempBuilder.append(i);
+                tempBuilder.append(".x));\n");
+            }
+
+            tempBuilder.append("\nreturn skinning;\n}");
+            // Fin de transformaciones de skinning
+
+            vertexBuilder.insert(
+                    vertexBuilder.indexOf(SKINNING_LOGIC_TAG) + SKINNING_LOGIC_TAG.length(),
+                    tempBuilder);
+        }
+    }
+
+    private void addBaseUniforms()
+    {
+        // Matriz ModelView
         uniforms.add(new Uniform("u_modelView", new IUniformSetter()
         {
             @Override
@@ -87,6 +253,7 @@ public abstract class CustomShader implements Shader
             }
         }));
 
+        // Matriz ModelViewProjection
         uniforms.add(new Uniform("u_modelViewProjection", new IUniformSetter()
         {
             @Override
@@ -97,7 +264,8 @@ public abstract class CustomShader implements Shader
             }
         }));
 
-        if ((attributesMask & VertexAttributes.Usage.TextureCoordinates) != 0)
+        // Textura Difusa
+        if (hasVertexAttribute(VertexAttributes.Usage.TextureCoordinates))
         {
             uniforms.add(new Uniform("u_texture", new IUniformSetter()
             {
@@ -116,26 +284,15 @@ public abstract class CustomShader implements Shader
                 }
             }));
         }
-    }
 
-    private String generateFlags()
-    {
-        StringBuilder builder = new StringBuilder();
-
-        if ((attributesMask & VertexAttributes.Usage.Normal) != 0)
+        // Skinning
+        if (hasSkinning())
         {
-            builder.append("#define normalFlag\n");
+            for(int i = 0; i < numBones; i++)
+            {
+                uniforms.add(new Uniform("u_bone" + i, new BoneTransformSetter(i)));
+            }
         }
-        if ((attributesMask & VertexAttributes.Usage.TextureCoordinates) != 0)
-        {
-            builder.append("#define textureFlag\n");
-        }
-        if ((attributesMask & VertexAttributes.Usage.BoneWeight) != 0)
-        {
-            builder.append("#define skinningFlag\n");
-        }
-
-        return builder.toString();
     }
 
     @Override
@@ -147,7 +304,8 @@ public abstract class CustomShader implements Shader
     @Override
     public boolean canRender(Renderable instance)
     {
-        return true;
+        return attributesMask == instance.mesh.getVertexAttributes().getMask() &&
+                !((numBones > 0 && (instance.bones == null || instance.bones.length != numBones)));
     }
 
     @Override
@@ -198,4 +356,27 @@ public abstract class CustomShader implements Shader
     protected abstract String getCustomVertexShader();
     protected abstract String getCustomFragmentShader();
     protected abstract void addCustomUniforms();
+
+    class BoneTransformSetter implements IUniformSetter
+    {
+        private int boneTransformIndex;
+
+        public BoneTransformSetter(int boneTransformIndex)
+        {
+            this.boneTransformIndex = boneTransformIndex;
+        }
+
+        @Override
+        public void set(Uniform uniform, ShaderProgram program, Renderable renderable)
+        {
+            if (renderable.bones == null || renderable.bones[boneTransformIndex] == null)
+            {
+                program.setUniformMatrix(uniform.id, IDENTITY_MATRIX);
+            }
+            else
+            {
+                program.setUniformMatrix(uniform.id, renderable.bones[boneTransformIndex]);
+            }
+        }
+    }
 }

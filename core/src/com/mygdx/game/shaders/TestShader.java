@@ -12,9 +12,9 @@ public class TestShader extends CustomShader
 {
     private Color color = new Color(1f, 1f, 1f, 1f);
 
-    public TestShader(long attributesMask)
+    public TestShader(Renderable renderable)
     {
-        super(attributesMask);
+        super(renderable);
     }
 
     @Override
