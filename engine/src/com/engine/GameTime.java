@@ -4,18 +4,8 @@ import com.badlogic.gdx.Gdx;
 
 public class GameTime
 {
-    private float delta;
-    private float elapsed;
-
-    public double getDelta()
-    {
-        return delta;
-    }
-
-    public double getElapsed()
-    {
-        return elapsed;
-    }
+    public float delta;
+    public float elapsed;
 
     public GameTime()
     {

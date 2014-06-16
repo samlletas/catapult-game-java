@@ -10,7 +10,7 @@ import com.engine.shaders.Uniform;
 
 public class TestShader extends CustomShader
 {
-    private Color color = new Color(1f, 1f, 1f, 1f);
+    private float glowFactor = 1.0f;
 
     public TestShader(Renderable renderable)
     {
@@ -32,13 +32,13 @@ public class TestShader extends CustomShader
     @Override
     protected void addCustomUniforms()
     {
-        uniforms.add(new Uniform("u_color", new IUniformSetter()
+        uniforms.add(new Uniform("u_glowFactor", new IUniformSetter()
         {
             @Override
             public void set(Uniform uniform, ShaderProgram program,
                             Renderable renderable)
             {
-                program.setUniformf(uniform.id, color);
+                program.setUniformf(uniform.id, glowFactor);
             }
         }));
     }

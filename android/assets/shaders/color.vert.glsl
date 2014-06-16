@@ -1,6 +1,9 @@
 // <custom-header>
-uniform vec4 u_color;
-varying vec4 v_color;
+uniform float u_glowFactor;
+varying float v_glowFactor;
+
+varying vec3 v_originalPosition;
+varying vec3 v_newPosition;
 
 float calculate()
 {
@@ -11,6 +14,12 @@ float calculate()
 void main()
 {
     // <custom-logic>
-    v_color = u_color;
+    v_originalPosition = (u_modelView * position).xyz;
+
+    position += u_glowFactor * normal;
+
+    v_newPosition = (u_modelView * position).xyz;
+
+    v_glowFactor = u_glowFactor;
     // </custom-logic>
 }

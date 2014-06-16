@@ -1,5 +1,7 @@
 // <custom-header>
-varying vec4 v_color;
+varying float v_glowFactor;
+varying vec3 v_originalPosition;
+varying vec3 v_newPosition;
 
 float someTest()
 {
@@ -10,6 +12,17 @@ float someTest()
 void main()
 {
     // <custom-logic>
-    color = v_color;
+    float d = distance(v_originalPosition.xy, v_newPosition.xy);
+
+    color.a = 0.5;
+    color = vec4(vec3(v_normal), 1.0);
+
+
+    vec3 camera = vec3(0.0, 0.0, 1.0);
+
+    float c = dot(v_normal, camera);
+    //c = pow(c, 3.0);
+    color = vec4(vec3(c), 1.0);
+
     // </custom-logic>
 }

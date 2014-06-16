@@ -191,7 +191,7 @@ public abstract class CustomShader implements Shader
     {
         if (hasSkinning())
         {
-            // función getBoneTransform
+            // Función getBoneTransform
             tempBuilder.append("\nmat4 getBoneTransform(in int index)\n{");
 
             for (int i = 0; i < numBones; i++)
