@@ -1,4 +1,4 @@
-package com.engine.shaders;
+package com.engine.graphics.shaders;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -60,25 +60,11 @@ public class UniformCollection implements Disposable
         }
     }
 
-    public void setGlobals(ShaderProgram program)
+    public void setUniforms(ShaderProgram program, Renderable renderable)
     {
         for (Uniform uniform : uniforms)
         {
-            if (uniform.isGlobal)
-            {
-                uniform.setValue(program, null);
-            }
-        }
-    }
-
-    public void setIndividuals(ShaderProgram program, Renderable renderable)
-    {
-        for (Uniform uniform : uniforms)
-        {
-            if (!uniform.isGlobal)
-            {
-                uniform.setValue(program, renderable);
-            }
+            uniform.setValue(program, renderable);
         }
     }
 

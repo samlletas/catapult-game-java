@@ -1,4 +1,4 @@
-package com.engine.shaders;
+package com.engine.graphics.shaders.shaders3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -13,8 +13,11 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.engine.graphics.shaders.IUniformSetter;
+import com.engine.graphics.shaders.Uniform;
+import com.engine.graphics.shaders.UniformCollection;
 
-public abstract class CustomShader implements Shader
+public abstract class Custom3DShader implements Shader
 {
     private static final String SKINNING_LOGIC_TAG = "// <skinning-logic>";
     private static final Matrix4 IDENTITY_MATRIX = new Matrix4().idt();
@@ -33,11 +36,12 @@ public abstract class CustomShader implements Shader
 
     protected Matrix4 modelView;
     protected Matrix4 modelViewProjection;
-    protected UniformCollection uniforms;
+    protected UniformCollection globalUniforms;
+    protected UniformCollection localUniforms;
 
     protected int numBones;
 
-    public CustomShader(Renderable renderable)
+    public Custom3DShader(Renderable renderable)
     {
         this.renderable = renderable;
         this.attributesMask = renderable.mesh.getVertexAttributes().getMask();
@@ -62,15 +66,15 @@ public abstract class CustomShader implements Shader
         loadBaseShaderCode();
         generateSkinningLogic();
 
-        CustomShaderMixer mixer = new CustomShaderMixer();
+        Custom3DShaderMixer mixer = new Custom3DShaderMixer();
 
         mixer.mix(vertexBuilder, getCustomVertexShader());
         mixer.mix(fragmentBuilder, getCustomFragmentShader());
 
-        System.out.print("---VERTEX SHADER---\n\n");
-        System.out.println(vertexBuilder);
-        System.out.print("---FRAGMENT SHADER---\n\n");
-        System.out.println(fragmentBuilder);
+//        System.out.print("---VERTEX SHADER---\n\n");
+//        System.out.println(vertexBuilder);
+//        System.out.print("---FRAGMENT SHADER---\n\n");
+//        System.out.println(fragmentBuilder);
 
         program = new ShaderProgram(vertexBuilder.toString(), fragmentBuilder.toString());
 
@@ -78,17 +82,21 @@ public abstract class CustomShader implements Shader
         {
             modelView = new Matrix4();
             modelViewProjection = new Matrix4();
-            uniforms = new UniformCollection();
+
+            globalUniforms = new UniformCollection();
+            localUniforms = new UniformCollection();
 
             addBaseUniforms();
-            addCustomUniforms();
+            addCustomGlobalUniforms();
+            addCustomLocalUniforms();
 
-            for(String u : program.getUniforms())
-            {
-                System.out.println(u);
-            }
+//            for(String u : program.getUniforms())
+//            {
+//                System.out.println(u);
+//            }
 
-            uniforms.initialize(program);
+            globalUniforms.initialize(program);
+            localUniforms.initialize(program);
         }
         else
         {
@@ -150,12 +158,12 @@ public abstract class CustomShader implements Shader
         if (baseVertexShader == null)
         {
             baseVertexShader = Gdx.files.classpath(
-                    "com/engine/shaders/custom.vert.glsl").readString();
+                    "com/engine/graphics/shaders/shaders3d/custom3d.vert.glsl").readString();
         }
         if (baseFragmentShader == null)
         {
             baseFragmentShader = Gdx.files.classpath(
-                    "com/engine/shaders/custom.frag.glsl").readString();
+                    "com/engine/graphics/shaders/shaders3d/custom3d.frag.glsl").readString();
         }
 
         vertexBuilder.append(baseVertexShader);
@@ -243,7 +251,7 @@ public abstract class CustomShader implements Shader
     private void addBaseUniforms()
     {
         // Matriz ModelView
-        uniforms.add(new Uniform("u_modelView", new IUniformSetter()
+        localUniforms.add(new Uniform("u_modelView", new IUniformSetter()
         {
             @Override
             public void set(Uniform uniform, ShaderProgram program,
@@ -254,7 +262,7 @@ public abstract class CustomShader implements Shader
         }));
 
         // Matriz ModelViewProjection
-        uniforms.add(new Uniform("u_modelViewProjection", new IUniformSetter()
+        localUniforms.add(new Uniform("u_modelViewProjection", new IUniformSetter()
         {
             @Override
             public void set(Uniform uniform, ShaderProgram program,
@@ -267,7 +275,7 @@ public abstract class CustomShader implements Shader
         // Textura Difusa
         if (hasVertexAttribute(VertexAttributes.Usage.TextureCoordinates))
         {
-            uniforms.add(new Uniform("u_texture", new IUniformSetter()
+            localUniforms.add(new Uniform("u_texture", new IUniformSetter()
             {
                 @Override
                 public void set(Uniform uniform, ShaderProgram program,
@@ -290,7 +298,7 @@ public abstract class CustomShader implements Shader
         {
             for(int i = 0; i < numBones; i++)
             {
-                uniforms.add(new Uniform("u_bone" + i, new BoneTransformSetter(i)));
+                localUniforms.add(new Uniform("u_bone" + i, new BoneTransformSetter(i)));
             }
         }
     }
@@ -319,7 +327,7 @@ public abstract class CustomShader implements Shader
         this.context = context;
 
         program.begin();
-        uniforms.setGlobals(program);
+        globalUniforms.setUniforms(program, null);
     }
 
     @Override
@@ -331,7 +339,7 @@ public abstract class CustomShader implements Shader
         modelViewProjection.set(camera.projection);
         modelViewProjection.mul(modelView);
 
-        uniforms.setIndividuals(program, renderable);
+        localUniforms.setUniforms(program, renderable);
 
         renderable.mesh.render(
                 program,
@@ -350,12 +358,14 @@ public abstract class CustomShader implements Shader
     public void dispose()
     {
         program.dispose();
-        uniforms.dispose();
+        globalUniforms.dispose();
+        localUniforms.dispose();
     }
 
     protected abstract String getCustomVertexShader();
     protected abstract String getCustomFragmentShader();
-    protected abstract void addCustomUniforms();
+    protected abstract void addCustomGlobalUniforms();
+    protected abstract void addCustomLocalUniforms();
 
     class BoneTransformSetter implements IUniformSetter
     {

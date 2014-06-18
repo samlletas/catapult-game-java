@@ -1,4 +1,4 @@
-package com.engine.shaders;
+package com.engine.graphics.shaders;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -8,19 +8,12 @@ public class Uniform
 {
     public int id;
     public String name;
-    public boolean isGlobal;
     private IUniformSetter setter;
 
     public Uniform(String name, IUniformSetter setter)
     {
-        this(name, false, setter);
-    }
-
-    public Uniform(String name, boolean isGlobal, IUniformSetter setter)
-    {
         this.id = -1;
         this.name = name;
-        this.isGlobal = isGlobal;
         this.setter = setter;
     }
 

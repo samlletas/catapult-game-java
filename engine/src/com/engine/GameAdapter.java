@@ -6,12 +6,14 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.viewport.*;
+import com.engine.graphics.shaders.shaders2d.Default2DShader;
 import com.engine.utilities.ColorUtilities;
 
 public abstract class GameAdapter extends ApplicationAdapter
 {
     protected SpriteBatch spriteBatch;
     protected ModelBatch modelBatch;
+    protected Default2DShader shader;
 
     // Cámara 2D
     protected Viewport viewport2D;
@@ -31,23 +33,37 @@ public abstract class GameAdapter extends ApplicationAdapter
 
     public GameAdapter(int virtualWidth, int virtualHeight)
     {
+        this(virtualWidth, virtualHeight, null);
+    }
+
+    public GameAdapter(int virtualWidth, int virtualHeight, Color clearColor)
+    {
         this.virtualWidth = virtualWidth;
         this.virtualHeight = virtualHeight;
+
+        if (clearColor == null)
+        {
+            // Color por default "CornFlowerBlue"
+            this.clearColor = new Color(
+                    ColorUtilities.ByteToFloat(100), // R
+                    ColorUtilities.ByteToFloat(149), // G
+                    ColorUtilities.ByteToFloat(237), // B
+                    1f);                             // A
+        }
+        else
+        {
+            this.clearColor = clearColor;
+        }
     }
 
     @Override
     public final void create()
     {
-        spriteBatch = new SpriteBatch();
+        shader = new Default2DShader();
+        shader.init();
+
+        spriteBatch = new SpriteBatch(1000, shader.program);
         modelBatch = new ModelBatch();
-
-        // Color por default "CornFlowerBlue"
-        clearColor = new Color(
-                ColorUtilities.ByteToFloat(100), // R
-                ColorUtilities.ByteToFloat(149), // G
-                ColorUtilities.ByteToFloat(237), // B
-                1f);                             // A
-
         gameTime = new GameTime();
 
         initialize2DCamera();
@@ -110,50 +126,63 @@ public abstract class GameAdapter extends ApplicationAdapter
 
     private void drawBlackBars()
     {
-        int screenWidth = Gdx.graphics.getWidth();
-        int screenHeight = Gdx.graphics.getHeight();
-
         int leftBarWidth = viewport2D.getLeftGutterWidth();
         int rightBarWidth = viewport2D.getRightGutterWidth();
         int topBarHeight = viewport2D.getTopGutterHeight();
         int bottomBarHeight = viewport2D.getBottomGutterHeight();
 
-        // Habilitación de dibujado en toda la pantalla
-        Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);
-        spriteBatch.getProjectionMatrix().idt().setToOrtho2D(0, 0,
-                screenWidth, screenHeight);
-        spriteBatch.getTransformMatrix().idt();
-
-        spriteBatch.begin();
-
-        // Barras horizontales
-        if (leftBarWidth > 0)
+        // Solo dibujar en caso de ser necesario
+        if (leftBarWidth > 0 || rightBarWidth > 0 || topBarHeight > 0 ||
+                bottomBarHeight > 0)
         {
-            spriteBatch.draw(blackBarTexture, 0, 0,
-                    leftBarWidth, screenHeight);
-        }
-        if (rightBarWidth > 0)
-        {
-            spriteBatch.draw(blackBarTexture, viewport2D.getRightGutterX(), 0,
-                    rightBarWidth, screenHeight);
-        }
+            int screenWidth = Gdx.graphics.getWidth();
+            int screenHeight = Gdx.graphics.getHeight();
 
-        // Barras verticales
-        if (bottomBarHeight > 0)
-        {
-            spriteBatch.draw(blackBarTexture, 0, 0,
-                    screenWidth, bottomBarHeight);
-        }
-        if (topBarHeight > 0)
-        {
-            spriteBatch.draw(blackBarTexture, 0, viewport2D.getTopGutterY(),
-                    screenWidth, topBarHeight);
-        }
+            // Habilitación de dibujado en toda la pantalla
+            Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);
 
-        spriteBatch.end();
+            // Reseteo de matrices del spritebatch
+            spriteBatch.getProjectionMatrix().idt().setToOrtho2D(0, 0,
+                    screenWidth, screenHeight);
+            spriteBatch.getTransformMatrix().idt();
 
-        // Reseteo del viewport
-        viewport2D.update(screenWidth, screenHeight, true);
+            spriteBatch.begin();
+
+            // Barras horizontales
+            if (leftBarWidth > 0)
+            {
+                spriteBatch.draw(blackBarTexture, 0, 0,
+                        leftBarWidth, screenHeight);
+            }
+            if (rightBarWidth > 0)
+            {
+                spriteBatch.draw(blackBarTexture, viewport2D.getRightGutterX(), 0,
+                        rightBarWidth, screenHeight);
+            }
+
+            // Barras verticales
+            if (bottomBarHeight > 0)
+            {
+                spriteBatch.draw(blackBarTexture, 0, 0,
+                        screenWidth, bottomBarHeight);
+            }
+            if (topBarHeight > 0)
+            {
+                spriteBatch.draw(blackBarTexture, 0, viewport2D.getTopGutterY(),
+                        screenWidth, topBarHeight);
+            }
+
+            spriteBatch.end();
+
+            // Reseteo del viewport
+            viewport2D.update(screenWidth, screenHeight, true);
+        }
+    }
+
+    @Override
+    public void resume()
+    {
+        createBlackBarTexture();
     }
 
     @Override
@@ -161,6 +190,15 @@ public abstract class GameAdapter extends ApplicationAdapter
     {
         viewport2D.update(width, height);
         viewport3D.update(width, height);
+    }
+
+    @Override
+    public void dispose()
+    {
+        spriteBatch.dispose();
+        modelBatch.dispose();
+        shader.dispose();
+        blackBarTexture.dispose();
     }
 
     protected abstract void initialize();

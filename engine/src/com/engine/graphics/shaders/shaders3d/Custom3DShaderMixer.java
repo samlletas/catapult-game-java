@@ -1,8 +1,8 @@
-package com.engine.shaders;
+package com.engine.graphics.shaders.shaders3d;
 
 import com.badlogic.gdx.utils.StringBuilder;
 
-public class CustomShaderMixer
+public class Custom3DShaderMixer
 {
     private static final String HEADER_TAG    = "// <custom-header>";
     private static final String HEADER_ENDTAG = "// </custom-header>";

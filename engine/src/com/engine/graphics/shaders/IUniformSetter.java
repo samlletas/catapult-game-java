@@ -1,4 +1,4 @@
-package com.engine.shaders;
+package com.engine.graphics.shaders;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;

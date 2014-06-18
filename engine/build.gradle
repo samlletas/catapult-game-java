@@ -3,25 +3,46 @@ apply plugin: "java"
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-def shaderSrcDir = "src/com/engine/shaders";
-def shaderOutputDir = "build/classes/main/com/engine/shaders";
+def shader2DSrcDir = "src/com/engine/graphics/shaders/shaders2d";
+def shader2DOutputDir = "build/classes/main/com/engine/graphics/shaders/shaders2d";
+
+def shader3DSrcDir = "src/com/engine/graphics/shaders/shaders3d";
+def shader3DOutputDir = "build/classes/main/com/engine/graphics/shaders/shaders3d";
 
 // Se copian los shaders al .jar
 jar
 {
-    from(shaderSrcDir)
+    // 2D Shaders
+    from(shader2DSrcDir)
     {
-        into shaderOutputDir
+        into shader2DOutputDir
+        include "*.*.glsl"
+    }
+
+    // 3D Shaders
+    from(shader3DSrcDir)
+    {
+        into shader3DOutputDir
         include "*.*.glsl"
     }
 }
 
-// Se copian los shaders al classPath
-task copyShaders(type: Copy) {
-    from shaderSrcDir
-    into shaderOutputDir
+// Se copian los shaders 2D al classPath
+task copy2DShaders(type: Copy) {
+    // 2D Shaders
+    from shader2DSrcDir
+    into shader2DOutputDir
     include "*.*.glsl"
 }
 
-// Se asegura que se ejecute el task
-compileJava.dependsOn copyShaders
+// Se copian los shaders 3D al classPath
+task copy3DShaders(type: Copy) {
+    // 3D Shaders
+    from shader3DSrcDir
+    into shader3DOutputDir
+    include "*.*.glsl"
+}
+
+// Se asegura que se ejecute el task de copiado de shaders
+compileJava.dependsOn copy2DShaders
+copy2DShaders.dependsOn copy3DShaders
