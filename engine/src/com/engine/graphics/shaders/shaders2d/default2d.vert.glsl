@@ -13,8 +13,5 @@ void main()
     v_color.a = v_color.a * (256.0/255.0);
     v_texCoords = a_texCoord0;
 
-    // Se invierten las coordenadas en Y
-    //v_texCoords.y = 1.0 - v_texCoords.y;
-
     gl_Position =  u_projTrans * a_position;
 }

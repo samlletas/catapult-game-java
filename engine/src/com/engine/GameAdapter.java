@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.viewport.*;
 import com.engine.graphics.shaders.shaders2d.Default2DShader;
 import com.engine.utilities.ColorUtilities;
@@ -68,21 +69,21 @@ public abstract class GameAdapter extends ApplicationAdapter
 
         initialize2DCamera();
         initialize3DCamera();
+
+        setup2DViewport();
+        setup3DViewport();
+
         createBlackBarTexture();
         initialize();
     }
 
-    private void initialize2DCamera()
+    private final void initialize2DCamera()
     {
         orthographicCamera = new OrthographicCamera();
         orthographicCamera.setToOrtho(true, virtualWidth, virtualHeight);
-
-        // Por default se utiliza el StretchViewport
-        viewport2D = new StretchViewport(virtualWidth, virtualHeight,
-                orthographicCamera);
     }
 
-    private void initialize3DCamera()
+    private final void initialize3DCamera()
     {
         perspectiveCamera = new PerspectiveCamera(75,
                 virtualWidth, virtualHeight);
@@ -90,13 +91,29 @@ public abstract class GameAdapter extends ApplicationAdapter
         perspectiveCamera.far = 300f;
         perspectiveCamera.position.set(0f, 0f, 5f);
         perspectiveCamera.lookAt(0f, 0f, 0f);
+    }
 
-        // Por default se utiliza el StretchViewport
+    /**
+     * Inicializa el viewport 2D (Por default StretchViewport), hacer override
+     * en clase derivada para implementar un viewport personalizado
+     */
+    protected void setup2DViewport()
+    {
+        viewport2D = new StretchViewport(virtualWidth, virtualHeight,
+                orthographicCamera);
+    }
+
+    /**
+     * Inicializa el viewport 3D (Por default StretchViewport), hacer override
+     * en clase derivada para implementar un viewport personalizado
+     */
+    protected void setup3DViewport()
+    {
         viewport3D = new StretchViewport(virtualWidth, virtualHeight,
                 perspectiveCamera);
     }
 
-    private void createBlackBarTexture()
+    private final void createBlackBarTexture()
     {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
@@ -124,7 +141,7 @@ public abstract class GameAdapter extends ApplicationAdapter
         drawBlackBars();
     }
 
-    private void drawBlackBars()
+    private final void drawBlackBars()
     {
         int leftBarWidth = viewport2D.getLeftGutterWidth();
         int rightBarWidth = viewport2D.getRightGutterWidth();
@@ -146,6 +163,8 @@ public abstract class GameAdapter extends ApplicationAdapter
                     screenWidth, screenHeight);
             spriteBatch.getTransformMatrix().idt();
 
+            // Reinicio al default shader
+            spriteBatch.setShader(null);
             spriteBatch.begin();
 
             // Barras horizontales
@@ -180,16 +199,16 @@ public abstract class GameAdapter extends ApplicationAdapter
     }
 
     @Override
-    public void resume()
-    {
-        createBlackBarTexture();
-    }
-
-    @Override
     public void resize(int width, int height)
     {
         viewport2D.update(width, height);
         viewport3D.update(width, height);
+    }
+
+    @Override
+    public void resume()
+    {
+        createBlackBarTexture();
     }
 
     @Override

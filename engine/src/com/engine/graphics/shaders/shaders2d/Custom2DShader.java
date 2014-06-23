@@ -30,6 +30,7 @@ public abstract class Custom2DShader implements Disposable
             if (hasCustomUniforms)
             {
                 addCustomUniforms();
+                customUniforms.initialize(program);
             }
         }
         else

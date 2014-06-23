@@ -1,23 +1,17 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
-import com.mygdx.game.shaders.TestShader;
 
 public final class Game extends GameAdapter
 {
     private AssetManager assetManager;
-    private TestShader shader;
     private float x = 0f;
     FPSLogger fpsLogger;
     TextureAtlas atlas;
@@ -27,7 +21,21 @@ public final class Game extends GameAdapter
 
     public Game()
     {
-        super(854, 480);
+        super(854, 480, new Color(44f / 255f, 90f / 255f, 160f / 255f, 1f));
+    }
+
+    @Override
+    protected void setup2DViewport()
+    {
+        viewport2D = new FitViewport(virtualWidth, virtualHeight,
+                orthographicCamera);
+    }
+
+    @Override
+    protected void setup3DViewport()
+    {
+        viewport3D = new FitViewport(virtualWidth, virtualHeight,
+                perspectiveCamera);
     }
 
     @Override
@@ -46,12 +54,6 @@ public final class Game extends GameAdapter
         region2 = atlas.findRegion("pow2");
         region3 = atlas.findRegion("face");
 
-        shader = new TestShader();
-        shader.init();
-
-        viewport2D = new FitViewport(virtualWidth, virtualHeight, orthographicCamera);
-        viewport3D = new FitViewport(virtualWidth, virtualHeight, perspectiveCamera);
-
         fpsLogger = new FPSLogger();
     }
 
@@ -65,14 +67,8 @@ public final class Game extends GameAdapter
     @Override
     protected void draw(GameTime gameTime)
     {
-//        spriteBatch.setShader(shader.program);
         spriteBatch.begin();
-
-        for(int i = 0; i < 700; i++)
-        {
-            spriteBatch.draw(region3, x, i);
-        }
-
+        spriteBatch.draw(region1, 0, 0);
         spriteBatch.end();
     }
 }
