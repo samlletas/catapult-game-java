@@ -1,23 +1,22 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
+import com.engine.graphics.animation.*;
+import com.engine.graphics.animation.events.IAnimationHandler;
+import com.mygdx.game.assets.Assets;
+import com.mygdx.game.assets.GameAssetMaster;
 
 public final class Game extends GameAdapter
 {
-    private AssetManager assetManager;
-    private float x = 0f;
-    FPSLogger fpsLogger;
-    TextureAtlas atlas;
-    TextureAtlas.AtlasRegion region1;
-    TextureAtlas.AtlasRegion region2;
-    TextureAtlas.AtlasRegion region3;
+    private GameAssetMaster assetMaster;
+    private FPSLogger fpsLogger;
+    private AnimationPlayer player;
+    private int updates = 1;
+    private int draws = 1;
 
     public Game()
     {
@@ -41,34 +40,80 @@ public final class Game extends GameAdapter
     @Override
     public void initialize()
     {
-        TextureAtlasLoader.TextureAtlasParameter parameter =
-                new TextureAtlasLoader.TextureAtlasParameter();
-        parameter.flip = true;
-
-        assetManager = new AssetManager();
-        assetManager.load("textures/pack.atlas", TextureAtlas.class, parameter);
-        assetManager.finishLoading();
-
-        atlas = assetManager.get("textures/pack.atlas");
-        region1 = atlas.findRegion("small");
-        region2 = atlas.findRegion("pow2");
-        region3 = atlas.findRegion("face");
-
+        assetMaster = new GameAssetMaster();
         fpsLogger = new FPSLogger();
+
+        assetMaster.loadSync();
+
+        player = new AnimationPlayer();
+        initializeAnimation();
+
+        player.getAnimation("default").onEnd.subscribe(new IAnimationHandler()
+        {
+            @Override
+            public void onEnd(Animation animation)
+            {
+                player.play("default");
+            }
+        });
+
+        player.play("default");
     }
 
     @Override
     protected void update(GameTime gameTime)
     {
-        x += gameTime.delta * 10f;
         fpsLogger.log();
+
+        for(int i = 0; i < updates; i++)
+        {
+            player.update(gameTime);
+        }
     }
 
     @Override
     protected void draw(GameTime gameTime)
     {
         spriteBatch.begin();
-        spriteBatch.draw(region1, 0, 0);
+
+        for(int i = 0; i < draws; i++)
+        {
+            player.draw(spriteBatch);
+        }
+
         spriteBatch.end();
+    }
+
+    void initializeAnimation()
+    {
+        // Bones
+        Bone b_body = new Bone(Assets.TextureAtlases.pack.value, "body", 0, 102f, 97f, 427f, 240f);
+        Bone b_spoon = new Bone(Assets.TextureAtlases.pack.value, "spoon", 1, 21f, 28f, 126f, 25f);
+        Bone b_spoon2 = new Bone(Assets.TextureAtlases.pack.value, "spoon", 2, 21f, 28f, 110f, 26f);
+
+        b_body.addChild(b_spoon);
+        b_spoon.addChild(b_spoon2);
+
+        player.addBone(b_body);
+        player.addBone(b_spoon);
+        player.addBone(b_spoon2);
+
+        // Frames
+        Frame frame1 = new Frame(2000);
+        frame1.addFrameData(new FrameData(0, 0f, 90f, 0f, 1f, 1f));
+        frame1.addFrameData(new FrameData(1, 0f, 0f, 0f, 1f, 1f));
+        frame1.addFrameData(new FrameData(2, 0f, 0f, 0f, 1f, 1f));
+
+        Frame frame2 = new Frame(2000);
+        frame2.addFrameData(new FrameData(0, 15f, 90f, 200f, 1f, 1f));
+        frame2.addFrameData(new FrameData(1, -190f, 0f, 0f, 2f, 2f));
+        frame2.addFrameData(new FrameData(2, 0f, 0f, 30f, 1f, 1f));
+
+        // Animations
+        Animation animation = new Animation("default", 1.0f, false);
+        animation.addFrame(frame1);
+        animation.addFrame(frame2);
+
+        player.addAnimation(animation);
     }
 }
