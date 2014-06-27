@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
+import com.engine.utilities.Interpolation;
 
 public class Bone
 {
@@ -51,43 +52,78 @@ public class Bone
         childs.add(child);
     }
 
+    // Variables auxiliares para la actualización de los bones
+    private static float factor;
+    private static float offsetDistance;
+    private static float offsetDirection;
+    private static float frameOffsetX;
+    private static float frameOffsetY;
+    private static float diffX;
+    private static float diffY;
+    private static float distance;
+    private static float angle;
+
     public void update(GameTime gameTime,
                        final Frame currentFrame, final Frame nextFrame,
-                       final float totalFrameTime, final float currentFrameTime)
+                       final float totalFrameTime, final float currentFrameTime,
+                       float globalRotation, float globalScale)
     {
         FrameData current = currentFrame.getFrameData(id);
         FrameData next = nextFrame.getFrameData(id);
 
-        finalRotation = current.rotation + (((next.rotation - current.rotation) / totalFrameTime) * (totalFrameTime - currentFrameTime));
-        finalScaleX = current.scaleX + (((next.scaleX - current.scaleX) / totalFrameTime) * (totalFrameTime - currentFrameTime));
-        finalScaleY = current.scaleY + (((next.scaleY - current.scaleY) / totalFrameTime) * (totalFrameTime - currentFrameTime));
+        factor = 1f - (currentFrameTime / totalFrameTime);
 
-        float offsetDirection = current.offsetDirection + (((next.offsetDirection - current.offsetDirection) / totalFrameTime) * (totalFrameTime - currentFrameTime));
-        float offsetDistance = current.offsetDistance + (((next.offsetDistance - current.offsetDistance) / totalFrameTime) * (totalFrameTime - currentFrameTime));
-        float frameOffsetX = offsetDistance * MathUtils.cosDeg(offsetDirection + finalRotation);
-        float frameOffsetY = offsetDistance * MathUtils.sinDeg(offsetDirection + finalRotation);
+        switch (currentFrame.interpolation)
+        {
+            case Linear:
+                finalRotation = Interpolation.linear(current.rotation, next.rotation, factor) + globalRotation;
+                finalScaleX = Interpolation.linear(current.scaleX, next.scaleX, factor) * globalScale;
+                finalScaleY = Interpolation.linear(current.scaleY, next.scaleY, factor) * globalScale;
+
+                offsetDistance = Interpolation.linear(current.offsetDistance, next.offsetDistance, factor);
+                offsetDirection = Interpolation.linear(current.offsetDirection, next.offsetDirection, factor);
+                break;
+
+            case Sine:
+                finalRotation = Interpolation.sine(current.rotation, next.rotation, factor) + globalRotation;
+                finalScaleX = Interpolation.sine(current.scaleX, next.scaleX, factor) * globalScale;
+                finalScaleY = Interpolation.sine(current.scaleY, next.scaleY, factor) * globalScale;
+
+                offsetDistance = Interpolation.sine(current.offsetDistance, next.offsetDistance, factor);
+                offsetDirection = Interpolation.sine(current.offsetDirection, next.offsetDirection, factor);
+                break;
+        }
 
         if (isRoot())
         {
-            finalX = offsetX + frameOffsetX - pivotX;
-            finalY = offsetY + frameOffsetY - pivotY;
+            frameOffsetX = offsetDistance * MathUtils.cosDeg(offsetDirection + globalRotation);
+            frameOffsetY = offsetDistance * MathUtils.sinDeg(offsetDirection + globalRotation);
+
+            finalX = offsetX + (frameOffsetX * globalScale) - pivotX;
+            finalY = offsetY + (frameOffsetY * globalScale) - pivotY;
         }
         else
         {
-            float diffX = offsetX + frameOffsetX - parent.pivotX;
-            float diffY = offsetY + frameOffsetY - parent.pivotY;
-            float distance = (float)Math.sqrt((diffX * diffX) + (diffY * diffY));
-            float angle = MathUtils.atan2(diffY, diffX) + (float)Math.toRadians(parent.finalRotation);
+            frameOffsetX = offsetDistance * MathUtils.cosDeg(offsetDirection);
+            frameOffsetY = offsetDistance * MathUtils.sinDeg(offsetDirection);
 
-            finalX = (parent.finalX + parent.pivotX - pivotX) + (parent.finalScaleX * distance * MathUtils.cos(angle));
-            finalY = (parent.finalY + parent.pivotY - pivotY) + (parent.finalScaleY * distance * MathUtils.sin(angle));
+            diffX = ((offsetX + frameOffsetX) - parent.pivotX) * parent.finalScaleX;
+            diffY = ((offsetY + frameOffsetY) - parent.pivotY) * parent.finalScaleY;
 
-            finalRotation += parent.finalRotation;
+            distance = (float)Math.sqrt((diffX * diffX) + (diffY * diffY));
+            angle = MathUtils.atan2(diffY, diffX) + (float)Math.toRadians(parent.finalRotation);
+
+            finalX = ((parent.finalX + parent.pivotX) - pivotX) + (distance * MathUtils.cos(angle));
+            finalY = ((parent.finalY + parent.pivotY) - pivotY) + (distance * MathUtils.sin(angle));
+
+            // Restamos globalRotation ya que finalRotation ya la incluye
+            finalRotation += parent.finalRotation - globalRotation;
         }
 
         for (Bone child : childs)
         {
-            child.update(gameTime, currentFrame, nextFrame, totalFrameTime, currentFrameTime);
+            child.update(gameTime, currentFrame, nextFrame, totalFrameTime,
+                    currentFrameTime, globalRotation, globalScale);
         }
     }
 

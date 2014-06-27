@@ -44,12 +44,12 @@ public class Animation
         isPlaying = true;
     }
 
-    public void update(GameTime gameTime, Bone root)
+    public void update(GameTime gameTime, Bone root, float rotation, float scale)
     {
         Frame currentFrame = frames.get(currentFramePosition);
         Frame nextFrame = frames.get(nextFramePosition);
 
-        root.update(gameTime, currentFrame, nextFrame, totalFrameTime, currentFrameTime);
+        root.update(gameTime, currentFrame, nextFrame, totalFrameTime, currentFrameTime, rotation, scale);
 
         if (isPlaying)
         {

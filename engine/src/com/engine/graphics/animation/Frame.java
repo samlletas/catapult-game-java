@@ -5,11 +5,14 @@ import com.badlogic.gdx.utils.Array;
 public class Frame
 {
     public float duration;
+    public FrameInterpolations interpolation;
     private Array<FrameData> framesData;
 
-    public Frame(float duration)
+    public Frame(float duration, FrameInterpolations interpolation)
     {
         this.duration = duration;
+        this.interpolation = interpolation;
+
         this.framesData = new Array<FrameData>();
     }
 

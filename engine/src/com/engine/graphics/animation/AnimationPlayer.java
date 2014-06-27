@@ -1,6 +1,7 @@
 package com.engine.graphics.animation;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.GameTime;
@@ -13,6 +14,10 @@ public class AnimationPlayer
     private Array<Animation> animations;
     private Animation currentAnimation;
 
+    public Vector2 position;
+    public float rotation;
+    public float scale;
+
     public AnimationPlayer()
     {
         bones = new Array<Bone>();
@@ -20,6 +25,10 @@ public class AnimationPlayer
 
         animations = new Array<Animation>();
         currentAnimation = null;
+
+        position = new Vector2(0f, 0f);
+        rotation = 0f;
+        scale = 1f;
     }
 
     public void play(String name)
@@ -46,7 +55,10 @@ public class AnimationPlayer
     {
         if (currentAnimation != null)
         {
-            currentAnimation.update(gameTime, root);
+            root.offsetX = position.x;
+            root.offsetY = position.y;
+
+            currentAnimation.update(gameTime, root, rotation, scale);
         }
     }
 
@@ -66,6 +78,9 @@ public class AnimationPlayer
         if (bone.isRoot())
         {
             root = bone;
+
+            position.x = root.offsetX;
+            position.y = root.offsetY;
         }
 
         bones.add(bone);
