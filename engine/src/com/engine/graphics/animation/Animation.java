@@ -16,6 +16,7 @@ public class Animation
     private float totalFrameTime;
     private float currentFrameTime;
     private boolean isPlaying;
+    private boolean isPaused;
 
     public OnEndEvent onEnd = new OnEndEvent();
 
@@ -31,7 +32,9 @@ public class Animation
         this.nextFramePosition = -1;
         this.totalFrameTime = 0.0f;
         this.currentFrameTime = 0.0f;
+
         this.isPlaying = false;
+        this.isPaused = false;
     }
 
     public void start()
@@ -41,7 +44,25 @@ public class Animation
 
         totalFrameTime = frames.get(currentFramePosition).duration;
         currentFrameTime = totalFrameTime;
+
         isPlaying = true;
+        isPaused = false;
+    }
+
+    public void pause()
+    {
+        if (isPlaying)
+        {
+            isPaused = true;
+        }
+    }
+
+    public void resume()
+    {
+        if (isPlaying)
+        {
+            isPaused = false;
+        }
     }
 
     public void update(GameTime gameTime, Bone root, float rotation, float scale)
@@ -53,24 +74,29 @@ public class Animation
 
         if (isPlaying)
         {
-            currentFrameTime -= (gameTime.delta * 1000f) * speed;
-        }
-
-        if (isPlaying && currentFrameTime <= 0.0f)
-        {
-            currentFramePosition = advanceFramePosition(currentFramePosition);
-            nextFramePosition = advanceFramePosition(nextFramePosition);
-
-            if (!loop && currentFramePosition == frames.size - 1)
+            if (!isPaused)
             {
-                isPlaying = false;
-                currentFrameTime = 0.0f;
-                onEnd.invoke(this);
-            }
-            else
-            {
-                totalFrameTime = frames.get(currentFramePosition).duration;
-                currentFrameTime = totalFrameTime;
+                currentFrameTime -= (gameTime.delta * 1000f) * speed;
+
+                if (currentFrameTime <= 0.0f)
+                {
+                    currentFramePosition = advanceFramePosition(currentFramePosition);
+                    nextFramePosition = advanceFramePosition(nextFramePosition);
+
+                    if (!loop && currentFramePosition == frames.size - 1)
+                    {
+                        isPlaying = false;
+                        isPaused = false;
+
+                        currentFrameTime = 0.0f;
+                        onEnd.invoke(this);
+                    }
+                    else
+                    {
+                        totalFrameTime = frames.get(currentFramePosition).duration;
+                        currentFrameTime = totalFrameTime;
+                    }
+                }
             }
         }
     }

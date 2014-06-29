@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
-import com.engine.utilities.Interpolation;
+import com.engine.Interpolation.IInterpolator;
 
 public class Bone
 {
@@ -73,34 +73,23 @@ public class Bone
 
         factor = 1f - (currentFrameTime / totalFrameTime);
 
-        switch (currentFrame.interpolation)
-        {
-            case Linear:
-                finalRotation = Interpolation.linear(current.rotation, next.rotation, factor) + globalRotation;
-                finalScaleX = Interpolation.linear(current.scaleX, next.scaleX, factor) * globalScale;
-                finalScaleY = Interpolation.linear(current.scaleY, next.scaleY, factor) * globalScale;
+        IInterpolator interpolator = currentFrame.interpolator;
 
-                offsetDistance = Interpolation.linear(current.offsetDistance, next.offsetDistance, factor);
-                offsetDirection = Interpolation.linear(current.offsetDirection, next.offsetDirection, factor);
-                break;
-
-            case Sine:
-                finalRotation = Interpolation.sine(current.rotation, next.rotation, factor) + globalRotation;
-                finalScaleX = Interpolation.sine(current.scaleX, next.scaleX, factor) * globalScale;
-                finalScaleY = Interpolation.sine(current.scaleY, next.scaleY, factor) * globalScale;
-
-                offsetDistance = Interpolation.sine(current.offsetDistance, next.offsetDistance, factor);
-                offsetDirection = Interpolation.sine(current.offsetDirection, next.offsetDirection, factor);
-                break;
-        }
+        finalRotation = getRotationInterpolation(current.rotation, next.rotation, interpolator, factor);
+        finalScaleX = interpolator.interpolate(current.scaleX, next.scaleX, factor) * globalScale;
+        finalScaleY = interpolator.interpolate(current.scaleY, next.scaleY, factor) * globalScale;
+        offsetDistance = interpolator.interpolate(current.offsetDistance, next.offsetDistance, factor);
+        offsetDirection = getRotationInterpolation(current.offsetDirection, next.offsetDirection, interpolator, factor);
 
         if (isRoot())
         {
-            frameOffsetX = offsetDistance * MathUtils.cosDeg(offsetDirection + globalRotation);
-            frameOffsetY = offsetDistance * MathUtils.sinDeg(offsetDirection + globalRotation);
+            frameOffsetX = offsetDistance * MathUtils.cosDeg(offsetDirection - globalRotation);
+            frameOffsetY = offsetDistance * MathUtils.sinDeg(offsetDirection - globalRotation);
 
             finalX = offsetX + (frameOffsetX * globalScale) - pivotX;
             finalY = offsetY + (frameOffsetY * globalScale) - pivotY;
+
+            finalRotation -= globalRotation;
         }
         else
         {
@@ -116,14 +105,38 @@ public class Bone
             finalX = ((parent.finalX + parent.pivotX) - pivotX) + (distance * MathUtils.cos(angle));
             finalY = ((parent.finalY + parent.pivotY) - pivotY) + (distance * MathUtils.sin(angle));
 
-            // Restamos globalRotation ya que finalRotation ya la incluye
-            finalRotation += parent.finalRotation - globalRotation;
+            finalRotation += parent.finalRotation;
         }
 
         for (Bone child : childs)
         {
             child.update(gameTime, currentFrame, nextFrame, totalFrameTime,
                     currentFrameTime, globalRotation, globalScale);
+        }
+    }
+
+    private float getRotationInterpolation(float currentRotation,
+                                           float nextRotation,
+                                           IInterpolator interpolator,
+                                           float factor)
+    {
+        // Interpolación de rotación directa
+        if (Math.abs(nextRotation - currentRotation) <= 180f)
+        {
+            return interpolator.interpolate(-currentRotation, -nextRotation, factor);
+        }
+        // Interpolación de rotación en la dirección que menos diferencia tiene
+        // respecto al siguiente frame
+        else
+        {
+            if (currentRotation > nextRotation)
+            {
+                return interpolator.interpolate(360f - currentRotation, -nextRotation, factor);
+            }
+            else
+            {
+                return interpolator.interpolate(-currentRotation, 360f - nextRotation, factor);
+            }
         }
     }
 

@@ -46,9 +46,26 @@ public class AnimationPlayer
         throw new GdxRuntimeException("The animation: \"" + name + "\" does not exists");
     }
 
+    /**
+     * Pone en pausa la animación actual
+     */
     public void pause()
     {
+        if (currentAnimation != null)
+        {
+            currentAnimation.pause();
+        }
+    }
 
+    /**
+     * Continua con la ejecución la animación actual
+     */
+    public void resume()
+    {
+        if (currentAnimation != null)
+        {
+            currentAnimation.resume();
+        }
     }
 
     public void update(GameTime gameTime)

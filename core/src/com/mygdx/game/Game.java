@@ -2,11 +2,10 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
+import com.engine.Interpolation.Interpolators;
 import com.engine.graphics.animation.*;
 import com.engine.graphics.animation.events.IAnimationHandler;
 import com.mygdx.game.assets.Assets;
@@ -101,15 +100,15 @@ public final class Game extends GameAdapter
         player.addBone(b_spoon2);
 
         // Frames
-        Frame frame1 = new Frame(2000, FrameInterpolations.Sine);
+        Frame frame1 = new Frame(2000, Interpolators.SineInterpolator);
         frame1.addFrameData(new FrameData(0, 0f, 0f, 0f, 1f, 1f));
-        frame1.addFrameData(new FrameData(1, 0f, -90f, 0f, 1f, 1f));
-        frame1.addFrameData(new FrameData(2, 0f, 0f, 0f, 1f, 1f));
+        frame1.addFrameData(new FrameData(1, 0f, 90f, 0f, 1f, 1f));
+        frame1.addFrameData(new FrameData(2, 270f, 270f, 0f, 1f, 1f));
 
-        Frame frame2 = new Frame(2000, FrameInterpolations.Sine);
-        frame2.addFrameData(new FrameData(0, 0f, 0f, 300f, 1f, 1f));
-        frame2.addFrameData(new FrameData(1, -180f, -90f, 50f, 1f, 1f));
-        frame2.addFrameData(new FrameData(2, -90f, 0f, 50f, 1f, 1f));
+        Frame frame2 = new Frame(2000, Interpolators.SineInterpolator);
+        frame2.addFrameData(new FrameData(0, 0f, 0f, 100f, 1f, 1f));
+        frame2.addFrameData(new FrameData(1, 45f, 90f, 50f, 1f, 1f));
+        frame2.addFrameData(new FrameData(2, 270f, 270f, 50f, 1f, 1f));
 
         // Animations
         Animation animation = new Animation("default", 1.0f, true);
@@ -117,8 +116,8 @@ public final class Game extends GameAdapter
         animation.addFrame(frame2);
 
         player.addAnimation(animation);
-        player.rotation = 90f;
-        player.scale = 0.25f;
+        player.rotation = 270f;
+        player.scale = 0.5f;
         player.position.x = 500f;
         player.position.y = 240f;
     }
