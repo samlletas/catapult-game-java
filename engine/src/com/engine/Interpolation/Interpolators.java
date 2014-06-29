@@ -24,7 +24,7 @@ public class Interpolators
 
             float half = (x2 - x1) / 2f;
 
-            return x1 + half + (half  * MathUtils.cos(MathUtils.PI * factor));
+            return x1 + half - (half  * MathUtils.cos(MathUtils.PI * factor));
         }
     };
 }
