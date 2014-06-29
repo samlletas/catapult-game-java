@@ -9,11 +9,13 @@ import com.engine.Interpolation.IInterpolator;
 
 public class Bone
 {
+    public int id;
+    public int parentID;
+    public String name;
     private Bone parent;
-    private int id;
 
-    private float pivotX;
-    private float pivotY;
+    public float pivotX;
+    public float pivotY;
 
     public float offsetX;
     public float offsetY;
@@ -33,13 +35,14 @@ public class Bone
         return parent == null;
     }
 
-    public Bone(TextureAtlas atlas, String regionName, int id,
+    public Bone(TextureAtlas atlas, int id, String name, int parentID,
                 float pivotX, float pivotY, float offsetX, float offsetY)
     {
-        this.region = atlas.findRegion(regionName);
-        this.childs = new Array<Bone>();
+        this.region = atlas.findRegion(name);
 
         this.id = id;
+        this.name = name;
+        this.parentID = parentID;
         this.pivotX = pivotX;
         this.pivotY = pivotY;
         this.offsetX = offsetX;
@@ -49,6 +52,12 @@ public class Bone
     public void addChild(Bone child)
     {
         child.parent = this;
+
+        if (childs == null)
+        {
+            childs = new Array<Bone>();
+        }
+
         childs.add(child);
     }
 
@@ -107,10 +116,13 @@ public class Bone
             finalRotation += parent.finalRotation;
         }
 
-        for (Bone child : childs)
+        if (childs != null)
         {
-            child.update(gameTime, currentFrame, nextFrame, totalFrameTime,
-                    currentFrameTime, globalRotation, globalScale);
+            for (Bone child : childs)
+            {
+                child.update(gameTime, currentFrame, nextFrame, totalFrameTime,
+                        currentFrameTime, globalRotation, globalScale);
+            }
         }
     }
 

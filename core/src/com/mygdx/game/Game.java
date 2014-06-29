@@ -2,10 +2,10 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
-import com.engine.Interpolation.Interpolators;
 import com.engine.graphics.animation.*;
 import com.engine.graphics.animation.events.IAnimationHandler;
 import com.mygdx.game.assets.Assets;
@@ -16,8 +16,10 @@ public final class Game extends GameAdapter
     private GameAssetMaster assetMaster;
     private FPSLogger fpsLogger;
     private AnimationPlayer player;
-    private int updates = 1;
+    private int updates = 50;
     private int draws = 1;
+
+    PerformanceCounter counter = new PerformanceCounter("counter");
 
     public Game()
     {
@@ -46,8 +48,12 @@ public final class Game extends GameAdapter
 
         assetMaster.loadSync();
 
-        player = new AnimationPlayer();
-        initializeAnimation();
+        player = Assets.Animations.catapult.value;
+
+//        player.rotation = 270f;
+//        player.scale = 0.5f;
+        player.position.x = 500f;
+        player.position.y = 240f;
 
         player.getAnimation("default").onEnd.subscribe(new IAnimationHandler()
         {
@@ -64,12 +70,17 @@ public final class Game extends GameAdapter
     @Override
     protected void update(GameTime gameTime)
     {
-        fpsLogger.log();
+//        fpsLogger.log();
 
+        counter.tick();
+        counter.start();
         for(int i = 0; i < updates; i++)
         {
             player.update(gameTime);
         }
+        counter.stop();
+
+        System.out.println(counter.time.value / 1000f);
     }
 
     @Override
@@ -83,42 +94,5 @@ public final class Game extends GameAdapter
         }
 
         spriteBatch.end();
-    }
-
-    void initializeAnimation()
-    {
-        // Bones
-        Bone b_body = new Bone(Assets.TextureAtlases.pack.value, "body", 0, 102f, 97f, 0f, 0f);
-        Bone b_spoon = new Bone(Assets.TextureAtlases.pack.value, "spoon", 1, 21f, 28f, 126f, 25f);
-        Bone b_spoon2 = new Bone(Assets.TextureAtlases.pack.value, "spoon", 2, 21f, 28f, 110f, 26f);
-
-        b_body.addChild(b_spoon);
-        b_spoon.addChild(b_spoon2);
-
-        player.addBone(b_body);
-        player.addBone(b_spoon);
-        player.addBone(b_spoon2);
-
-        // Frames
-        Frame frame1 = new Frame(2000);
-        frame1.addFrameData(new FrameData(0, 0f, 0f, 0f, 1f, 1f, Interpolators.CosineInterpolator));
-        frame1.addFrameData(new FrameData(1, 0f, 90f, 0f, 1f, 1f, Interpolators.LinearInterpolator));
-        frame1.addFrameData(new FrameData(2, 270f, 270f, 0f, 1f, 1f, Interpolators.LinearInterpolator));
-
-        Frame frame2 = new Frame(2000);
-        frame2.addFrameData(new FrameData(0, 0f, 0f, 100f, 1f, 1f, Interpolators.CosineInterpolator));
-        frame2.addFrameData(new FrameData(1, 45f, 90f, 50f, 1f, 1f, Interpolators.LinearInterpolator));
-        frame2.addFrameData(new FrameData(2, 270f, 270f, 50f, 1f, 1f, Interpolators.LinearInterpolator));
-
-        // Animations
-        Animation animation = new Animation("default", 1.0f, true);
-        animation.addFrame(frame1);
-        animation.addFrame(frame2);
-
-        player.addAnimation(animation);
-//        player.rotation = 270f;
-//        player.scale = 0.5f;
-        player.position.x = 500f;
-        player.position.y = 240f;
     }
 }

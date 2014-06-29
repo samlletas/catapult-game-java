@@ -14,9 +14,9 @@ public class FrameData
 
     public FrameData(int boneID,
                      float rotation,
-                     float offsetDirection, float offsetDistance,
                      float scaleX, float scaleY,
-                        IInterpolator interpolator)
+                     float offsetDirection, float offsetDistance,
+                     IInterpolator interpolator)
     {
         this.boneID = boneID;
         this.rotation = rotation;
