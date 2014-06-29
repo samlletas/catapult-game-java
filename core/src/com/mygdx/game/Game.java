@@ -100,12 +100,12 @@ public final class Game extends GameAdapter
         player.addBone(b_spoon2);
 
         // Frames
-        Frame frame1 = new Frame(2000, Interpolators.SineInterpolator);
+        Frame frame1 = new Frame(2000, Interpolators.CosineInterpolator);
         frame1.addFrameData(new FrameData(0, 0f, 0f, 0f, 1f, 1f));
         frame1.addFrameData(new FrameData(1, 0f, 90f, 0f, 1f, 1f));
         frame1.addFrameData(new FrameData(2, 270f, 270f, 0f, 1f, 1f));
 
-        Frame frame2 = new Frame(2000, Interpolators.SineInterpolator);
+        Frame frame2 = new Frame(2000, Interpolators.CosineInterpolator);
         frame2.addFrameData(new FrameData(0, 0f, 0f, 100f, 1f, 1f));
         frame2.addFrameData(new FrameData(1, 45f, 90f, 50f, 1f, 1f));
         frame2.addFrameData(new FrameData(2, 270f, 270f, 50f, 1f, 1f));
@@ -116,8 +116,8 @@ public final class Game extends GameAdapter
         animation.addFrame(frame2);
 
         player.addAnimation(animation);
-        player.rotation = 270f;
-        player.scale = 0.5f;
+//        player.rotation = 270f;
+//        player.scale = 0.5f;
         player.position.x = 500f;
         player.position.y = 240f;
     }

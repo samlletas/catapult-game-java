@@ -4,8 +4,6 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class Interpolators
 {
-    static final float PI_DIV_BY_2 = MathUtils.PI / 2f;
-
     public static IInterpolator LinearInterpolator = new IInterpolator()
     {
         @Override
@@ -17,15 +15,16 @@ public class Interpolators
         }
     };
 
-    public static IInterpolator SineInterpolator = new IInterpolator()
+    public static IInterpolator CosineInterpolator = new IInterpolator()
     {
         @Override
         public float interpolate(float x1, float x2, float factor)
         {
             factor = MathUtils.clamp(factor, 0f, 1f);
-            factor = MathUtils.sin(PI_DIV_BY_2 * factor);
 
-            return x1 + ((x2 - x1) * factor);
+            float half = (x2 - x1) / 2f;
+
+            return x1 + half + (half  * MathUtils.cos(MathUtils.PI * factor));
         }
     };
 }
