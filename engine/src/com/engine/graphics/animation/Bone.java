@@ -70,10 +70,9 @@ public class Bone
     {
         FrameData current = currentFrame.getFrameData(id);
         FrameData next = nextFrame.getFrameData(id);
+        IInterpolator interpolator = current.interpolator;
 
         factor = 1f - (currentFrameTime / totalFrameTime);
-
-        IInterpolator interpolator = currentFrame.interpolator;
 
         finalRotation = getRotationInterpolation(current.rotation, next.rotation, interpolator, factor);
         finalScaleX = interpolator.interpolate(current.scaleX, next.scaleX, factor) * globalScale;

@@ -1,5 +1,7 @@
 package com.engine.graphics.animation;
 
+import com.engine.Interpolation.IInterpolator;
+
 public class FrameData
 {
     public int boneID;
@@ -8,11 +10,13 @@ public class FrameData
     public float offsetDistance;
     public float scaleX;
     public float scaleY;
+    public IInterpolator interpolator;
 
     public FrameData(int boneID,
                      float rotation,
                      float offsetDirection, float offsetDistance,
-                     float scaleX, float scaleY)
+                     float scaleX, float scaleY,
+                        IInterpolator interpolator)
     {
         this.boneID = boneID;
         this.rotation = rotation;
@@ -20,5 +24,6 @@ public class FrameData
         this.offsetDistance = offsetDistance;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        this.interpolator = interpolator;
     }
 }

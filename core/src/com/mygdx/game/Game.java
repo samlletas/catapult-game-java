@@ -100,15 +100,15 @@ public final class Game extends GameAdapter
         player.addBone(b_spoon2);
 
         // Frames
-        Frame frame1 = new Frame(2000, Interpolators.CosineInterpolator);
-        frame1.addFrameData(new FrameData(0, 0f, 0f, 0f, 1f, 1f));
-        frame1.addFrameData(new FrameData(1, 0f, 90f, 0f, 1f, 1f));
-        frame1.addFrameData(new FrameData(2, 270f, 270f, 0f, 1f, 1f));
+        Frame frame1 = new Frame(2000);
+        frame1.addFrameData(new FrameData(0, 0f, 0f, 0f, 1f, 1f, Interpolators.CosineInterpolator));
+        frame1.addFrameData(new FrameData(1, 0f, 90f, 0f, 1f, 1f, Interpolators.LinearInterpolator));
+        frame1.addFrameData(new FrameData(2, 270f, 270f, 0f, 1f, 1f, Interpolators.LinearInterpolator));
 
-        Frame frame2 = new Frame(2000, Interpolators.CosineInterpolator);
-        frame2.addFrameData(new FrameData(0, 0f, 0f, 100f, 1f, 1f));
-        frame2.addFrameData(new FrameData(1, 45f, 90f, 50f, 1f, 1f));
-        frame2.addFrameData(new FrameData(2, 270f, 270f, 50f, 1f, 1f));
+        Frame frame2 = new Frame(2000);
+        frame2.addFrameData(new FrameData(0, 0f, 0f, 100f, 1f, 1f, Interpolators.CosineInterpolator));
+        frame2.addFrameData(new FrameData(1, 45f, 90f, 50f, 1f, 1f, Interpolators.LinearInterpolator));
+        frame2.addFrameData(new FrameData(2, 270f, 270f, 50f, 1f, 1f, Interpolators.LinearInterpolator));
 
         // Animations
         Animation animation = new Animation("default", 1.0f, true);

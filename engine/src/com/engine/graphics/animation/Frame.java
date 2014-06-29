@@ -6,14 +6,11 @@ import com.engine.Interpolation.IInterpolator;
 public class Frame
 {
     public float duration;
-    public IInterpolator interpolator;
     private Array<FrameData> framesData;
 
-    public Frame(float duration, IInterpolator interpolator)
+    public Frame(float duration)
     {
         this.duration = duration;
-        this.interpolator = interpolator;
-
         this.framesData = new Array<FrameData>();
     }
 
