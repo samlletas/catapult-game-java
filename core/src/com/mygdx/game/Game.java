@@ -16,10 +16,8 @@ public final class Game extends GameAdapter
     private GameAssetMaster assetMaster;
     private FPSLogger fpsLogger;
     private AnimationPlayer player;
-    private int updates = 50;
+    private int updates = 3000;
     private int draws = 1;
-
-    PerformanceCounter counter = new PerformanceCounter("counter");
 
     public Game()
     {
@@ -70,17 +68,12 @@ public final class Game extends GameAdapter
     @Override
     protected void update(GameTime gameTime)
     {
-//        fpsLogger.log();
+        fpsLogger.log();
 
-        counter.tick();
-        counter.start();
         for(int i = 0; i < updates; i++)
         {
             player.update(gameTime);
         }
-        counter.stop();
-
-        System.out.println(counter.time.value / 1000f);
     }
 
     @Override
