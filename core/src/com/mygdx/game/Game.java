@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.utils.PerformanceCounter;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
 import com.engine.GameTime;
@@ -16,7 +15,7 @@ public final class Game extends GameAdapter
     private GameAssetMaster assetMaster;
     private FPSLogger fpsLogger;
     private AnimationPlayer player;
-    private int updates = 3000;
+    private int updates = 1;
     private int draws = 1;
 
     public Game()

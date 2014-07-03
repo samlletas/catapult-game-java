@@ -9,10 +9,9 @@ import com.engine.Interpolation.IInterpolator;
 
 public class Bone
 {
-    public int id;
-    public int parentID;
-    public String name;
-    private Bone parent;
+    private TextureAtlas.AtlasRegion region;
+
+    public final int id;
 
     public float pivotX;
     public float pivotY;
@@ -20,7 +19,7 @@ public class Bone
     public float offsetX;
     public float offsetY;
 
-    private TextureAtlas.AtlasRegion region;
+    private Bone parent;
     private Array<Bone> childs;
 
     // Valores finales de dibujado
@@ -35,14 +34,12 @@ public class Bone
         return parent == null;
     }
 
-    public Bone(TextureAtlas atlas, int id, String name, int parentID,
+    public Bone(TextureAtlas.AtlasRegion region, int id,
                 float pivotX, float pivotY, float offsetX, float offsetY)
     {
-        this.region = atlas.findRegion(name);
+        this.region = region;
 
         this.id = id;
-        this.name = name;
-        this.parentID = parentID;
         this.pivotX = pivotX;
         this.pivotY = pivotY;
         this.offsetX = offsetX;

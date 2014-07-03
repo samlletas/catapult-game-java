@@ -1,8 +1,8 @@
 <root atlasFile="pack.atlas">
     <bones>
-        <bone id="0" name="body" parentID="-1" pivotX="102" pivotY="97" offsetX="0" offsetY="0" />
-        <bone id="1" name="spoon" parentID="0" pivotX="21" pivotY="28" offsetX="126" offsetY="25" />
-        <bone id="2" name="spoon" parentID="1" pivotX="21" pivotY="28" offsetX="110" offsetY="26" />
+        <bone id="0" region="body" parent="-1" pivotX="102" pivotY="97" offsetX="0" offsetY="0" />
+        <bone id="1" region="spoon" parent="0" pivotX="21" pivotY="28" offsetX="126" offsetY="25" />
+        <bone id="2" region="spoon" parent="1" pivotX="21" pivotY="28" offsetX="110" offsetY="26" />
     </bones>
     <animations>
         <animation name="default" speed="1.0" loop="true">

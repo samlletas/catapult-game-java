@@ -143,16 +143,14 @@ public class AnimationPlayer
             XmlReader.Element root = reader.parse(file);
 
             // Bones
-            Array<XmlReader.Element> bones = root.getChildByName("bones").getChildrenByName("bone");
+            Array<XmlReader.Element> boneElements = root.getChildByName("bones").getChildrenByName("bone");
             TextureAtlas atlas = manager.get(file.parent().name() + "/" + root.get("atlasFile"), TextureAtlas.class);
 
-            for (XmlReader.Element b : bones)
+            for (XmlReader.Element b : boneElements)
             {
                 Bone newBone = new Bone(
-                        atlas,
+                        atlas.findRegion(b.get("region")),
                         b.getInt("id"),
-                        b.get("name"),
-                        b.getInt("parentID"),
                         b.getFloat("pivotX"),
                         b.getFloat("pivotY"),
                         b.getFloat("offsetX"),
@@ -161,15 +159,15 @@ public class AnimationPlayer
                 addBone(newBone);
             }
 
-            initializeBones();
+            initializeBones(boneElements);
 
             // Animaciones
-            Array<XmlReader.Element> animations = root.getChildByName("animations").getChildrenByName("animation");
-            Array<XmlReader.Element> frames;
-            Array<XmlReader.Element> framesData;
+            Array<XmlReader.Element> animationElements = root.getChildByName("animations").getChildrenByName("animation");
+            Array<XmlReader.Element> frameElements;
+            Array<XmlReader.Element> frameDataElements;
             boolean loop;
 
-            for (XmlReader.Element a : animations)
+            for (XmlReader.Element a : animationElements)
             {
                 if (a.get("loop").equals("true"))
                 {
@@ -186,16 +184,16 @@ public class AnimationPlayer
                         loop);
 
                 // Frames
-                frames = a.getChildrenByName("frame");
+                frameElements = a.getChildrenByName("frame");
 
-                for (XmlReader.Element f : frames)
+                for (XmlReader.Element f : frameElements)
                 {
                     Frame newFrame = new Frame(f.getInt("duration"));
 
                     // FramesData
-                    framesData = f.getChildrenByName("framedata");
+                    frameDataElements = f.getChildrenByName("framedata");
 
-                    for (XmlReader.Element fd : framesData)
+                    for (XmlReader.Element fd : frameDataElements)
                     {
                         String interpolatorValue = fd.get("interpolator");
                         IInterpolator interpolator;
@@ -239,12 +237,13 @@ public class AnimationPlayer
         }
     }
 
-    private void initializeBones()
+    private void initializeBones(Array<XmlReader.Element> boneElements)
     {
-        for(int i = 0; i < bones.size; i++)
+        for (int i = 0; i < bones.size; i++)
         {
             Bone bone = bones.get(i);
-            Bone parent = getBone(bone.parentID);
+            int parentID = boneElements.get(i).getInt("parent");
+            Bone parent = getBone(parentID);
 
             if (parent != null)
             {
