@@ -49,19 +49,19 @@ public final class Game extends GameAdapter
 
 //        player.rotation = 270f;
 //        player.scale = 0.5f;
-        player.position.x = 500f;
-        player.position.y = 240f;
+        player.position.x = 160f;
+        player.position.y = 394f;
 
         player.getAnimation("default").onEnd.subscribe(new IAnimationHandler()
         {
             @Override
             public void onEnd(Animation animation)
             {
-                player.play("default");
+//                player.play("default");
             }
         });
 
-        player.play("default");
+        player.play("pull");
     }
 
     @Override
