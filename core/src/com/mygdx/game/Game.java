@@ -7,7 +7,7 @@ import com.engine.GameAdapter;
 import com.engine.GameTime;
 import com.engine.graphics.animation.*;
 import com.engine.graphics.animation.events.IAnimationHandler;
-import com.mygdx.game.assets.Assets;
+import com.mygdx.game.assets.GameAssets;
 import com.mygdx.game.assets.GameAssetMaster;
 
 public final class Game extends GameAdapter
@@ -45,23 +45,18 @@ public final class Game extends GameAdapter
 
         assetMaster.loadSync();
 
-        player = Assets.Animations.catapult.value;
-
-//        player.rotation = 270f;
-//        player.scale = 0.5f;
+        player = GameAssets.Animations.catapult.instance;
         player.position.x = 160f;
         player.position.y = 394f;
+        player.play("pull");
 
         player.getAnimation("default").onEnd.subscribe(new IAnimationHandler()
         {
             @Override
             public void onEnd(Animation animation)
             {
-//                player.play("default");
             }
         });
-
-        player.play("pull");
     }
 
     @Override
@@ -69,7 +64,7 @@ public final class Game extends GameAdapter
     {
         fpsLogger.log();
 
-        for(int i = 0; i < updates; i++)
+        for (int i = 0; i < updates; i++)
         {
             player.update(gameTime);
         }
@@ -80,7 +75,7 @@ public final class Game extends GameAdapter
     {
         spriteBatch.begin();
 
-        for(int i = 0; i < draws; i++)
+        for (int i = 0; i < draws; i++)
         {
             player.draw(spriteBatch);
         }

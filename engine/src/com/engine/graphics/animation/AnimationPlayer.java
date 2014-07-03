@@ -46,8 +46,12 @@ public class AnimationPlayer
         {
             if (animation.name.equals(name))
             {
-                currentAnimation = animation;
-                currentAnimation.start();
+                if (animation != currentAnimation)
+                {
+                    currentAnimation = animation;
+                    currentAnimation.start();
+                }
+
                 return;
             }
         }
@@ -74,6 +78,17 @@ public class AnimationPlayer
         if (currentAnimation != null)
         {
             currentAnimation.resume();
+        }
+    }
+
+    /**
+     * Reinicia la ejecución la animación actual desde el primer frame
+     */
+    public void reset()
+    {
+        if (currentAnimation != null)
+        {
+            currentAnimation.start();
         }
     }
 
@@ -135,11 +150,10 @@ public class AnimationPlayer
         return null;
     }
 
-    public void load(AssetManager manager, FileHandle file)
+    public void load(XmlReader reader, AssetManager manager, FileHandle file)
     {
         try
         {
-            XmlReader reader = new XmlReader();
             XmlReader.Element root = reader.parse(file);
 
             // Bones

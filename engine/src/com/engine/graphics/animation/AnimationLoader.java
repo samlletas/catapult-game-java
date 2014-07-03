@@ -18,26 +18,27 @@ import java.io.IOException;
 public class AnimationLoader extends AsynchronousAssetLoader<AnimationPlayer,
         AnimationLoader.AnimationLoaderParameter>
 {
+    private XmlReader reader;
+
     public AnimationLoader(FileHandleResolver resolver)
     {
         super(resolver);
-    }
 
-    private AnimationPlayer player;
+        reader = new XmlReader();
+    }
 
     @Override
     public void loadAsync(AssetManager manager, String fileName,
                           FileHandle file, AnimationLoaderParameter parameter)
     {
-
     }
 
     @Override
     public AnimationPlayer loadSync(AssetManager manager, String fileName,
                                     FileHandle file, AnimationLoaderParameter parameter)
     {
-        player = new AnimationPlayer();
-        player.load(manager, file);
+        AnimationPlayer player = new AnimationPlayer();
+        player.load(reader, manager, file);
 
         return player;
     }
@@ -50,7 +51,6 @@ public class AnimationLoader extends AsynchronousAssetLoader<AnimationPlayer,
 
         try
         {
-            XmlReader reader = new XmlReader();
             XmlReader.Element root = reader.parse(file);
             String atlasFile = file.parent().name() + "/" + root.get("atlasFile");
 

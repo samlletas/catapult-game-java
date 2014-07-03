@@ -1,21 +1,30 @@
 package com.engine.assets;
 
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 
 public final class Asset<T>
 {
-    public String path;
-    public Class<T> valueClass;
-    public T value;
+    public final String path;
+    public final AssetLoaderParameters parameters;
+    public final Class<T> instanceClass;
 
-    public Asset(String path, Class<T> valueClass)
+    public T instance;
+
+    public Asset(String path, Class<T> instanceClass)
     {
-        this.path = path;
-        this.valueClass = valueClass;
+        this(path, instanceClass, null);
     }
 
-    public void setValue(AssetManager manager)
+    public Asset(String path, Class<T> instanceClass, AssetLoaderParameters parameters)
     {
-        value = manager.get(path);
+        this.path = path;
+        this.instanceClass = instanceClass;
+        this.parameters = parameters;
+    }
+
+    public void getInstanceFromManager(AssetManager manager)
+    {
+        instance = manager.get(path);
     }
 }

@@ -1,48 +1,104 @@
 package com.engine.assets;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.utils.Array;
+import com.engine.graphics.animation.AnimationLoader;
+import com.engine.graphics.animation.AnimationPlayer;
 
 public abstract class AssetMaster
 {
-    protected AssetManager manager;
+    private AssetManager manager;
+
+    private Array<Asset> syncQueue;
+    private Array<Asset> asyncQueue;
+
     private boolean addedToAsyncQueue;
+    private boolean initializedAsyncInstances;
 
     public AssetMaster()
     {
         manager = new AssetManager();
+        syncQueue = new Array<Asset>();
+        asyncQueue = new Array<Asset>();
+
         addedToAsyncQueue = false;
+        initializedAsyncInstances = false;
+
+        // Loader para animaciones
+        manager.setLoader(AnimationPlayer.class, new AnimationLoader(new InternalFileHandleResolver()));
+
+        setCustomLoaders();
+    }
+
+    private void loadQueue(Array<Asset> queue)
+    {
+        for (Asset asset : queue)
+        {
+            if (asset.parameters == null)
+            {
+                manager.load(asset.path, asset.instanceClass);
+            }
+            else
+            {
+                manager.load(asset.path, asset.instanceClass, asset.parameters);
+            }
+        }
+    }
+
+    private void setQueueInstances(Array<Asset> queue)
+    {
+        for (Asset asset : queue)
+        {
+            asset.getInstanceFromManager(manager);
+        }
     }
 
     public final void loadSync()
     {
-        addToSyncQueue();
+        addToSyncQueue(syncQueue);
+        loadQueue(syncQueue);
+
         manager.finishLoading();
-        setSyncAssetsInstances();
+        setQueueInstances(syncQueue);
     }
 
+    /**
+     *
+     * @return True cuando se ha terminado de cargar
+     */
     public final boolean loadAsync()
     {
         if (!addedToAsyncQueue)
         {
-            addToASyncQueue();
+            addToASyncQueue(asyncQueue);
+            loadQueue(asyncQueue);
+
             addedToAsyncQueue = true;
         }
 
-        return manager.update();
+        boolean finished = manager.update();
+
+        if (finished && !initializedAsyncInstances)
+        {
+            setQueueInstances(asyncQueue);
+            initializedAsyncInstances = true;
+        }
+
+        return finished;
     }
 
-    public final float getAsyncProgress()
+    public float getAsyncProgress()
     {
         return manager.getProgress();
     }
 
-    public final void Dispose()
+    public void Dispose()
     {
         manager.dispose();
     }
 
-    protected abstract void addToSyncQueue();
-    protected abstract void addToASyncQueue();
-    protected abstract void setSyncAssetsInstances();
-    public abstract void setAsyncAssetsInstances();
+    protected abstract void setCustomLoaders();
+    protected abstract void addToSyncQueue(Array<Asset> queue);
+    protected abstract void addToASyncQueue(Array<Asset> queue);
 }
