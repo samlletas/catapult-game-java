@@ -28,7 +28,7 @@ public abstract class AssetMaster
         // Loader para animaciones
         manager.setLoader(AnimationPlayer.class, new AnimationLoader(new InternalFileHandleResolver()));
 
-        setCustomLoaders();
+        setCustomLoaders(manager);
     }
 
     private void loadQueue(Array<Asset> queue)
@@ -61,6 +61,7 @@ public abstract class AssetMaster
 
         manager.finishLoading();
         setQueueInstances(syncQueue);
+        onSyncLoadCompleted(manager);
     }
 
     /**
@@ -82,6 +83,7 @@ public abstract class AssetMaster
         if (finished && !initializedAsyncInstances)
         {
             setQueueInstances(asyncQueue);
+            onAsyncLoadCompleted(manager);
             initializedAsyncInstances = true;
         }
 
@@ -98,7 +100,9 @@ public abstract class AssetMaster
         manager.dispose();
     }
 
-    protected abstract void setCustomLoaders();
+    protected abstract void setCustomLoaders(AssetManager manager);
     protected abstract void addToSyncQueue(Array<Asset> queue);
     protected abstract void addToASyncQueue(Array<Asset> queue);
+    protected abstract void onSyncLoadCompleted(AssetManager manager);
+    protected abstract void onAsyncLoadCompleted(AssetManager manager);
 }
