@@ -23,6 +23,7 @@ public class AnimationPlayer
     private Array<Animation> animations;
     private Animation currentAnimation;
 
+    public float speed;
     public Vector2 position;
     public float rotation;
     public float scale;
@@ -35,6 +36,7 @@ public class AnimationPlayer
         animations = new Array<Animation>();
         currentAnimation = null;
 
+        speed = 1f;
         position = new Vector2(0f, 0f);
         rotation = 0f;
         scale = 1f;
@@ -99,7 +101,7 @@ public class AnimationPlayer
             root.offsetX = position.x;
             root.offsetY = position.y;
 
-            currentAnimation.update(gameTime, root, rotation, scale);
+            currentAnimation.update(gameTime, root, speed, rotation, scale);
         }
     }
 
@@ -194,7 +196,6 @@ public class AnimationPlayer
 
                 Animation newAnimation = new Animation(
                         a.get("name"),
-                        a.getFloat("speed"),
                         loop);
 
                 // Frames

@@ -6,10 +6,9 @@ import com.engine.graphics.animation.events.OnEndEvent;
 
 public class Animation
 {
-    public String name;
-    public float speed;
+    public final String name;
+    public final boolean loop;
 
-    private boolean loop;
     private Array<Frame> frames;
     private int currentFramePosition;
     private int nextFramePosition;
@@ -20,10 +19,9 @@ public class Animation
 
     public OnEndEvent onEnd = new OnEndEvent();
 
-    public Animation(String name, float speed, boolean loop)
+    public Animation(String name, boolean loop)
     {
         this.name = name;
-        this.speed = speed;
         this.loop = loop;
 
         this.frames = new Array<Frame>();
@@ -65,7 +63,7 @@ public class Animation
         }
     }
 
-    public void update(GameTime gameTime, Bone root, float rotation, float scale)
+    public void update(GameTime gameTime, Bone root, float speed, float rotation, float scale)
     {
         Frame currentFrame = frames.get(currentFramePosition);
         Frame nextFrame = frames.get(nextFramePosition);

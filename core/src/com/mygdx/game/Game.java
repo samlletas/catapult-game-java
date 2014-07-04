@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -48,13 +50,22 @@ public final class Game extends GameAdapter
         player = GameAssets.Animations.catapult.instance;
         player.position.x = 160f;
         player.position.y = 394f;
-        player.play("pull");
+        player.play("default");
 
-        player.getAnimation("default").onEnd.subscribe(new IAnimationHandler()
+        Gdx.input.setInputProcessor(new InputAdapter()
         {
             @Override
-            public void onEnd(Animation animation)
+            public boolean touchDown(int screenX, int screenY, int pointer, int button)
             {
+                player.play("pull");
+                return super.touchDown(screenX, screenY, pointer, button);
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button)
+            {
+                player.play("launch");
+                return super.touchUp(screenX, screenY, pointer, button);
             }
         });
     }
