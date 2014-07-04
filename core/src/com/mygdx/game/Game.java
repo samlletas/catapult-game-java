@@ -13,15 +13,14 @@ import com.engine.graphics.animation.*;
 import com.engine.graphics.animation.events.IAnimationHandler;
 import com.mygdx.game.assets.GameAssets;
 import com.mygdx.game.assets.GameAssetMaster;
+import com.mygdx.game.screens.gameplay.BaseGameScreen;
 import javafx.scene.Scene;
 
 public final class Game extends GameAdapter
 {
     private GameAssetMaster assetMaster;
     private FPSLogger fpsLogger;
-    private AnimationPlayer player;
-    private int updates = 1;
-    private int draws = 1;
+    private BaseGameScreen gameScreen;
 
     public Game()
     {
@@ -32,15 +31,15 @@ public final class Game extends GameAdapter
     @Override
     protected void setup2DViewport()
     {
-        viewport2D = new FitViewport(settings.virtualWidth, settings.virtualHeight,
-                orthographicCamera);
+        viewport2D = new FitViewport(settings.virtualWidth,
+                settings.virtualHeight, orthographicCamera);
     }
 
     @Override
     protected void setup3DViewport()
     {
-        viewport3D = new FitViewport(settings.virtualWidth, settings.virtualHeight,
-                perspectiveCamera);
+        viewport3D = new FitViewport(settings.virtualWidth,
+                settings.virtualHeight, perspectiveCamera);
     }
 
     @Override
@@ -48,30 +47,11 @@ public final class Game extends GameAdapter
     {
         assetMaster = new GameAssetMaster();
         fpsLogger = new FPSLogger();
+        gameScreen = new BaseGameScreen(settings, orthographicCamera,
+                perspectiveCamera);
 
         assetMaster.loadSync();
-
-        player = GameAssets.Animations.catapult.instance;
-        player.position.x = 160f;
-        player.position.y = 394f;
-        player.play("default");
-
-        Gdx.input.setInputProcessor(new InputAdapter()
-        {
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button)
-            {
-                player.play("pull");
-                return super.touchDown(screenX, screenY, pointer, button);
-            }
-
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button)
-            {
-                player.play("launch");
-                return super.touchUp(screenX, screenY, pointer, button);
-            }
-        });
+        gameScreen.initialize();
     }
 
     @Override
@@ -79,22 +59,12 @@ public final class Game extends GameAdapter
     {
         fpsLogger.log();
 
-        for (int i = 0; i < updates; i++)
-        {
-            player.update(gameTime);
-        }
+        gameScreen.update(gameTime);
     }
 
     @Override
     protected void draw(GameTime gameTime)
     {
-        spriteBatch.begin();
-
-        for (int i = 0; i < draws; i++)
-        {
-            player.draw(spriteBatch);
-        }
-
-        spriteBatch.end();
+        gameScreen.draw(gameTime, spriteBatch);
     }
 }
