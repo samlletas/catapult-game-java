@@ -12,9 +12,10 @@ import com.engine.utilities.ColorUtilities;
 
 public abstract class GameAdapter extends ApplicationAdapter
 {
+    protected GameSettings settings;
     protected SpriteBatch spriteBatch;
     protected ModelBatch modelBatch;
-    protected Default2DShader shader;
+    private Default2DShader shader;
 
     // Cámara 2D
     protected Viewport viewport2D;
@@ -24,37 +25,12 @@ public abstract class GameAdapter extends ApplicationAdapter
     protected Viewport viewport3D;
     protected PerspectiveCamera perspectiveCamera;
 
-    // Tamaño virtual del área de renderizado
-    protected int virtualWidth;
-    protected int virtualHeight;
-
-    protected Color clearColor;
     private GameTime gameTime;
     private Texture blackBarTexture;
 
-    public GameAdapter(int virtualWidth, int virtualHeight)
+    public GameAdapter(GameSettings settings)
     {
-        this(virtualWidth, virtualHeight, null);
-    }
-
-    public GameAdapter(int virtualWidth, int virtualHeight, Color clearColor)
-    {
-        this.virtualWidth = virtualWidth;
-        this.virtualHeight = virtualHeight;
-
-        if (clearColor == null)
-        {
-            // Color por default "CornFlowerBlue"
-            this.clearColor = new Color(
-                    ColorUtilities.ByteToFloat(100), // R
-                    ColorUtilities.ByteToFloat(149), // G
-                    ColorUtilities.ByteToFloat(237), // B
-                    1f);                             // A
-        }
-        else
-        {
-            this.clearColor = clearColor;
-        }
+        this.settings = settings;
     }
 
     @Override
@@ -80,13 +56,14 @@ public abstract class GameAdapter extends ApplicationAdapter
     private final void initialize2DCamera()
     {
         orthographicCamera = new OrthographicCamera();
-        orthographicCamera.setToOrtho(true, virtualWidth, virtualHeight);
+        orthographicCamera.setToOrtho(true, settings.virtualWidth,
+                settings.virtualHeight);
     }
 
     private final void initialize3DCamera()
     {
         perspectiveCamera = new PerspectiveCamera(75,
-                virtualWidth, virtualHeight);
+                settings.virtualWidth, settings.virtualHeight);
         perspectiveCamera.near = -1f;
         perspectiveCamera.far = 300f;
         perspectiveCamera.position.set(0f, 0f, 5f);
@@ -99,8 +76,8 @@ public abstract class GameAdapter extends ApplicationAdapter
      */
     protected void setup2DViewport()
     {
-        viewport2D = new StretchViewport(virtualWidth, virtualHeight,
-                orthographicCamera);
+        viewport2D = new StretchViewport(settings.virtualWidth,
+                settings.virtualHeight, orthographicCamera);
     }
 
     /**
@@ -109,8 +86,8 @@ public abstract class GameAdapter extends ApplicationAdapter
      */
     protected void setup3DViewport()
     {
-        viewport3D = new StretchViewport(virtualWidth, virtualHeight,
-                perspectiveCamera);
+        viewport3D = new StretchViewport(settings.virtualWidth,
+                settings.virtualHeight, perspectiveCamera);
     }
 
     private final void createBlackBarTexture()
@@ -134,7 +111,8 @@ public abstract class GameAdapter extends ApplicationAdapter
         spriteBatch.setTransformMatrix(orthographicCamera.view);
 
         update(gameTime);
-        Gdx.gl.glClearColor(clearColor.r, clearColor.g, clearColor.b, 1f);
+        Gdx.gl.glClearColor(settings.clearColor.r, settings.clearColor.g,
+                settings.clearColor.b, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         draw(gameTime);
 
