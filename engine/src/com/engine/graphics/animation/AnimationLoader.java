@@ -19,28 +19,13 @@ public class AnimationLoader extends AsynchronousAssetLoader<AnimationPlayer,
         AnimationLoader.AnimationLoaderParameter>
 {
     private XmlReader reader;
+    private String atlasFile;
 
     public AnimationLoader(FileHandleResolver resolver)
     {
         super(resolver);
 
         reader = new XmlReader();
-    }
-
-    @Override
-    public void loadAsync(AssetManager manager, String fileName,
-                          FileHandle file, AnimationLoaderParameter parameter)
-    {
-    }
-
-    @Override
-    public AnimationPlayer loadSync(AssetManager manager, String fileName,
-                                    FileHandle file, AnimationLoaderParameter parameter)
-    {
-        AnimationPlayer player = new AnimationPlayer();
-        player.load(reader, manager, file);
-
-        return player;
     }
 
     @Override
@@ -52,7 +37,15 @@ public class AnimationLoader extends AsynchronousAssetLoader<AnimationPlayer,
         try
         {
             XmlReader.Element root = reader.parse(file);
-            String atlasFile = file.parent().name() + "/" + root.get("atlasFile");
+
+            if (parameter != null && parameter.atlasPath != null)
+            {
+                atlasFile = parameter.atlasPath + "/" + root.get("atlasFile");
+            }
+            else
+            {
+                atlasFile = file.parent().name() + "/" + root.get("atlasFile");
+            }
 
             TextureAtlasLoader.TextureAtlasParameter textureAtlasParameter =
                     new TextureAtlasLoader.TextureAtlasParameter(true);
@@ -68,7 +61,30 @@ public class AnimationLoader extends AsynchronousAssetLoader<AnimationPlayer,
         return dependencies;
     }
 
+    @Override
+    public void loadAsync(AssetManager manager, String fileName,
+                          FileHandle file, AnimationLoaderParameter parameter)
+    {
+    }
+
+    @Override
+    public AnimationPlayer loadSync(AssetManager manager, String fileName,
+                                    FileHandle file, AnimationLoaderParameter parameter)
+    {
+        AnimationPlayer player = new AnimationPlayer();
+        TextureAtlas atlas = manager.get(atlasFile, TextureAtlas.class);
+        player.load(reader, atlas, file);
+
+        return player;
+    }
+
     public static class AnimationLoaderParameter extends AssetLoaderParameters<AnimationPlayer>
     {
+        String atlasPath;
+
+        public AnimationLoaderParameter(String atlasPath)
+        {
+            this.atlasPath = atlasPath;
+        }
     }
 }

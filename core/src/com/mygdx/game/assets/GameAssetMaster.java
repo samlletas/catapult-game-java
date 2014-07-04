@@ -19,16 +19,14 @@ public class GameAssetMaster extends AssetMaster
 
     }
 
+    /*************************************************************************
+     * Carga Síncrona
+     *************************************************************************/
+
     @Override
     protected void addToSyncQueue(Array<Asset> queue)
     {
         queue.add(GameAssets.Animations.catapult);
-    }
-
-    @Override
-    protected void addToASyncQueue(Array<Asset> queue)
-    {
-
     }
 
     @Override
@@ -43,7 +41,7 @@ public class GameAssetMaster extends AssetMaster
                 GameAssets.AtlasRegions.groundRegions;
         int size = localAtlasRegions.size;
 
-        TextureAtlas atlas = manager.get("animations/textures.atlas");
+        TextureAtlas atlas = manager.get("textures/textures.atlas");
 
         for(int i = 0; i < size; i++)
         {
@@ -53,6 +51,16 @@ public class GameAssetMaster extends AssetMaster
             newRegion.instance = atlas.findRegion("ground" + String.valueOf(i));
             localAtlasRegions.add(newRegion);
         }
+    }
+
+    /*************************************************************************
+     * Carga Asíncrona
+     *************************************************************************/
+
+    @Override
+    protected void addToASyncQueue(Array<Asset> queue)
+    {
+
     }
 
     @Override

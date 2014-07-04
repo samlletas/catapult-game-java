@@ -152,7 +152,7 @@ public class AnimationPlayer
         return null;
     }
 
-    public void load(XmlReader reader, AssetManager manager, FileHandle file)
+    public void load(XmlReader reader, TextureAtlas atlas, FileHandle file)
     {
         try
         {
@@ -160,7 +160,6 @@ public class AnimationPlayer
 
             // Bones
             Array<XmlReader.Element> boneElements = root.getChildByName("bones").getChildrenByName("bone");
-            TextureAtlas atlas = manager.get(file.parent().name() + "/" + root.get("atlasFile"), TextureAtlas.class);
 
             for (XmlReader.Element b : boneElements)
             {
