@@ -12,7 +12,13 @@ public class AndroidLauncher extends AndroidApplication
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+
+        // Deshabilitación para ahorro de batería
+        config.useAccelerometer = false;
+        config.useCompass = false;
+
         initialize(new Game(), config);
     }
 }
