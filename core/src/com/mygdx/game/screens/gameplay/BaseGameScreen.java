@@ -10,10 +10,12 @@ import com.engine.GameTime;
 import com.engine.graphics.animation.AnimationPlayer;
 import com.engine.screens.GameScreen;
 import com.mygdx.game.assets.GameAssets;
+import com.mygdx.game.gamelogic.Grass;
 
 public class BaseGameScreen extends GameScreen
 {
     protected AnimationPlayer player;
+    protected Grass grass;
     protected int updates = 1;
     protected int draws = 1;
 
@@ -29,7 +31,7 @@ public class BaseGameScreen extends GameScreen
     {
         player = GameAssets.Animations.catapult.instance;
         player.position.x = 160f;
-        player.position.y = 394f;
+        player.position.y = 395f;
         player.play("default");
 
         Gdx.input.setInputProcessor(new InputAdapter()
@@ -48,6 +50,8 @@ public class BaseGameScreen extends GameScreen
                 return super.touchUp(screenX, screenY, pointer, button);
             }
         });
+
+        grass = new Grass(settings);
     }
 
     @Override
@@ -56,6 +60,7 @@ public class BaseGameScreen extends GameScreen
         for (int i = 0; i < updates; i++)
         {
             player.update(gameTime);
+            grass.update(gameTime);
         }
     }
 
@@ -67,6 +72,7 @@ public class BaseGameScreen extends GameScreen
         for (int i = 0; i < draws; i++)
         {
             player.draw(spriteBatch);
+            grass.draw(spriteBatch);
         }
 
         spriteBatch.end();

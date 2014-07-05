@@ -33,17 +33,17 @@ public class GameAssetMaster extends AssetMaster
     protected void onSyncLoadCompleted(AssetManager manager)
     {
         loadGroundRegions(manager);
+        loadGrassRegions(manager);
     }
 
     private void loadGroundRegions(AssetManager manager)
     {
         Array<Asset<TextureAtlas.AtlasRegion>> localAtlasRegions =
                 GameAssets.AtlasRegions.groundRegions;
-        int size = localAtlasRegions.size;
 
         TextureAtlas atlas = manager.get("textures/textures.atlas");
 
-        for(int i = 0; i < size; i++)
+        for (int i = 0; i < 16; i++)
         {
             Asset<TextureAtlas.AtlasRegion> newRegion =
                     new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
@@ -51,6 +51,15 @@ public class GameAssetMaster extends AssetMaster
             newRegion.instance = atlas.findRegion("ground" + String.valueOf(i));
             localAtlasRegions.add(newRegion);
         }
+    }
+
+    private void loadGrassRegions(AssetManager manager)
+    {
+        TextureAtlas atlas = manager.get("textures/textures.atlas");
+
+        GameAssets.AtlasRegions.grass1.instance = atlas.findRegion("grass1");
+        GameAssets.AtlasRegions.grass2.instance = atlas.findRegion("grass2");
+        GameAssets.AtlasRegions.grass3.instance = atlas.findRegion("grass3");
     }
 
     /*************************************************************************

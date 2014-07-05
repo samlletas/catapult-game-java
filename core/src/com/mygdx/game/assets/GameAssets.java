@@ -20,6 +20,15 @@ public final class GameAssets
     public static final class AtlasRegions
     {
         public static Array<Asset<TextureAtlas.AtlasRegion>> groundRegions =
-                new Array<Asset<TextureAtlas.AtlasRegion>>(16);
+                new Array<Asset<TextureAtlas.AtlasRegion>>();
+
+        public static Asset<TextureAtlas.AtlasRegion> grass1 =
+                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+
+        public static Asset<TextureAtlas.AtlasRegion> grass2 =
+                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+
+        public static Asset<TextureAtlas.AtlasRegion> grass3 =
+                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
     }
 }
