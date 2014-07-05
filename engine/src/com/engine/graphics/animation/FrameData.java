@@ -26,4 +26,10 @@ public class FrameData
         this.scaleY = scaleY;
         this.interpolator = interpolator;
     }
+
+    public FrameData copy()
+    {
+        return new FrameData(boneID, rotation, scaleX, scaleY,
+                offsetDirection, offsetDistance, interpolator);
+    }
 }

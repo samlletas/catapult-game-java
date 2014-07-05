@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.engine.GameTime;
 import com.engine.Interpolation.IInterpolator;
 import com.engine.Interpolation.Interpolators;
+import com.sun.scenario.animation.shared.AnimationAccessor;
 import org.xml.sax.XMLReader;
 
 import java.io.IOException;
@@ -166,6 +167,7 @@ public class AnimationPlayer
                 Bone newBone = new Bone(
                         atlas.findRegion(b.get("region")),
                         b.getInt("id"),
+                        b.getInt("parent"),
                         b.getFloat("pivotX"),
                         b.getFloat("pivotY"),
                         b.getFloat("offsetX"),
@@ -174,7 +176,7 @@ public class AnimationPlayer
                 addBone(newBone);
             }
 
-            initializeBones(boneElements);
+            initializeBones();
 
             // Animaciones
             Array<XmlReader.Element> animationElements = root.getChildByName("animations").getChildrenByName("animation");
@@ -251,13 +253,12 @@ public class AnimationPlayer
         }
     }
 
-    private void initializeBones(Array<XmlReader.Element> boneElements)
+    private void initializeBones()
     {
         for (int i = 0; i < bones.size; i++)
         {
             Bone bone = bones.get(i);
-            int parentID = boneElements.get(i).getInt("parent");
-            Bone parent = getBone(parentID);
+            Bone parent = getBone(bone.parentId);
 
             if (parent != null)
             {
@@ -271,5 +272,24 @@ public class AnimationPlayer
                 position.y = root.offsetY;
             }
         }
+    }
+
+    public AnimationPlayer copy()
+    {
+        AnimationPlayer copy = new AnimationPlayer();
+
+        for (Bone b : bones)
+        {
+            copy.addBone(b.copy());
+        }
+
+        copy.initializeBones();
+
+        for (Animation a : animations)
+        {
+            copy.addAnimation(a.copy());
+        }
+
+        return copy;
     }
 }

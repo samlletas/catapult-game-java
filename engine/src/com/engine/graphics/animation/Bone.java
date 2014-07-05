@@ -12,6 +12,7 @@ public class Bone
     private TextureAtlas.AtlasRegion region;
 
     public final int id;
+    public final int parentId;
 
     public float pivotX;
     public float pivotY;
@@ -34,12 +35,13 @@ public class Bone
         return parent == null;
     }
 
-    public Bone(TextureAtlas.AtlasRegion region, int id,
+    public Bone(TextureAtlas.AtlasRegion region, int id, int parentId,
                 float pivotX, float pivotY, float offsetX, float offsetY)
     {
         this.region = region;
 
         this.id = id;
+        this.parentId = parentId;
         this.pivotX = pivotX;
         this.pivotY = pivotY;
         this.offsetX = offsetX;
@@ -153,5 +155,10 @@ public class Bone
         spriteBatch.draw(region, finalX, finalY, pivotX, pivotY,
                 region.getRegionWidth(), region.getRegionHeight(),
                 finalScaleX, finalScaleY, finalRotation);
+    }
+
+    public Bone copy()
+    {
+        return new Bone(region, id, parentId, pivotX, pivotY, offsetX, offsetY);
     }
 }

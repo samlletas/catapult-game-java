@@ -122,4 +122,16 @@ public class Animation
     {
         frames.add(frame);
     }
+
+    public Animation copy()
+    {
+        Animation copy = new Animation(name, loop);
+
+        for (Frame f : frames)
+        {
+            copy.addFrame(f.copy());
+        }
+
+        return copy;
+    }
 }

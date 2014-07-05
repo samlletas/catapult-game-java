@@ -1,7 +1,6 @@
 package com.engine.graphics.animation;
 
 import com.badlogic.gdx.utils.Array;
-import com.engine.Interpolation.IInterpolator;
 
 public class Frame
 {
@@ -22,5 +21,17 @@ public class Frame
     public FrameData getFrameData(int boneID)
     {
         return framesData.get(boneID);
+    }
+
+    public Frame copy()
+    {
+        Frame copy = new Frame(duration);
+
+        for (FrameData fd : framesData)
+        {
+            copy.addFrameData(fd.copy());
+        }
+
+        return copy;
     }
 }
