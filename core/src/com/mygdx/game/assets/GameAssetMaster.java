@@ -42,6 +42,7 @@ public class GameAssetMaster extends AssetMaster
 
         GameAssets.AtlasRegions.star.instance = atlas.findRegion("star");
         GameAssets.AtlasRegions.ball.instance = atlas.findRegion("ball");
+        GameAssets.AtlasRegions.rope.instance = atlas.findRegion("rope");
     }
 
     private void loadGroundRegions(TextureAtlas atlas)

@@ -231,8 +231,8 @@ handleGear
 rope
   rotate: false
   xy: 260, 428
-  size: 10, 12
-  orig: 10, 12
+  size: 1, 12
+  orig: 1, 12
   offset: 0, 0
   index: -1
 ropeHolder

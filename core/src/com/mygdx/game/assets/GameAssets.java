@@ -45,5 +45,8 @@ public final class GameAssets
 
         public static Asset<TextureAtlas.AtlasRegion> ball =
                 new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+
+        public static Asset<TextureAtlas.AtlasRegion> rope =
+                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
     }
 }

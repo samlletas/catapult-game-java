@@ -12,7 +12,7 @@
     <animations>
         <animation name="default" loop="false">
             <frame duration="2000">
-                <framedata boneID="0" rotation="90" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
+                <framedata boneID="0" rotation="108" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
@@ -25,7 +25,7 @@
         <animation name="pull" loop="false">
             <!-- Default -->
             <frame duration="800">
-                <framedata boneID="0" rotation="90" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="0" rotation="108" scaleX="1" scaleY="1" offsetDirection="70" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
@@ -36,7 +36,7 @@
             </frame>
             <!-- Retroceso -->
             <frame duration="0">
-                <framedata boneID="0" rotation="65" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
+                <framedata boneID="0" rotation="70" scaleX="1.2" scaleY="1" offsetDirection="70" offsetDistance="2" interpolator="linear"/>
                 <framedata boneID="1" rotation="175" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="330" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="3" rotation="180" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
@@ -49,7 +49,7 @@
         <animation name="launch" loop="false">
             <!-- Default -->
             <frame duration="75">
-                <framedata boneID="0" rotation="90" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
+                <framedata boneID="0" rotation="108" scaleX="0.8" scaleY="1" offsetDirection="70" offsetDistance="-4" interpolator="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
@@ -60,7 +60,7 @@
             </frame>
             <!-- Avance -->
             <frame duration="400">
-                <framedata boneID="0" rotation="90" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="0" rotation="130" scaleX="0.9" scaleY="1" offsetDirection="70" offsetDistance="-2" interpolator="cosine"/>
                 <framedata boneID="1" rotation="115" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
                 <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="10" interpolator="cosine"/>
@@ -71,7 +71,7 @@
             </frame>
             <!-- Retroceso -->
             <frame duration="150">
-                <framedata boneID="0" rotation="90" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
+                <framedata boneID="0" rotation="108" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
@@ -82,7 +82,7 @@
             </frame>
             <!-- Acomodo -->
             <frame duration="0">
-                <framedata boneID="0" rotation="90" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
+                <framedata boneID="0" rotation="108" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
