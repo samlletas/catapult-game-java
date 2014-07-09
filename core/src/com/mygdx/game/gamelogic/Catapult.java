@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.engine.GameTime;
+import com.engine.Interpolation.Interpolators;
+import com.engine.graphics.animation.Animation;
 import com.engine.graphics.animation.AnimationPlayer;
 import com.engine.graphics.animation.Bone;
+import com.engine.graphics.animation.events.IAnimationHandler;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Catapult
@@ -29,6 +32,14 @@ public final class Catapult
     private static final float ROPE_PIVOT_X = 1f;
     private static final float ROPE_PIVOT_Y = 6f;
 
+    // Variables para lanzamiento de bola
+    private float pullAngle;
+    private static final float MIN_PULL_ANGLE = 137f;
+    private static final float MAX_PULL_ANGLE = 179f;
+    private static final float MIN_LAUNCH_POWER = 100f;
+    private static final float MAX_LAUNCH_POWER = 1300f;
+    private static final float LAUNCH_ANGLE = 45f;
+
     public Catapult(Ball ball)
     {
         this.ball = ball;
@@ -41,9 +52,11 @@ public final class Catapult
     private void initializeAnimation()
     {
         player = GameAssets.Animations.catapult.instance;
-        player.position.x = 160f;
-        player.position.y = 395f;
+        player.position.x = 135f;
+        player.position.y = 397f;
+        player.rotation = 2f;
         player.play("default");
+//        player.speed = 0.25f;
 
         Gdx.input.setInputProcessor(new InputAdapter()
         {
@@ -57,10 +70,30 @@ public final class Catapult
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button)
             {
+                pullAngle = spoon.getFinalRotation();
                 player.play("launch");
                 return super.touchUp(screenX, screenY, pointer, button);
             }
         });
+
+        player.getAnimation("launch").onEnd.subscribe(new IAnimationHandler()
+        {
+            @Override
+            public void onEnd(Animation animation)
+            {
+                launch();
+                player.play("recover");
+            }
+        });
+    }
+
+    private void launch()
+    {
+        float diff = MAX_PULL_ANGLE - MIN_PULL_ANGLE;
+        float factor = (pullAngle - MIN_PULL_ANGLE) / diff;
+        float power = Interpolators.LinearInterpolator.interpolate(MIN_LAUNCH_POWER, MAX_LAUNCH_POWER, factor);
+
+        ball.launch(power, LAUNCH_ANGLE);
     }
 
     private void getBones()
@@ -80,10 +113,13 @@ public final class Catapult
 
     private void setBallPosition()
     {
-        Vector2 position = spoon.getTransformedPosition(98f, 25f);
+        if (!ball.isFlying())
+        {
+            Vector2 position = spoon.getTransformedPosition(98f, 25f);
 
-        ball.x = position.x - 17;
-        ball.y = position.y - 17;
+            ball.x = position.x - 17;
+            ball.y = position.y - 17;
+        }
     }
 
     private void calculateRopePosition()

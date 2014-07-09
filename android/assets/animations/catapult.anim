@@ -11,7 +11,7 @@
     </bones>
     <animations>
         <animation name="default" loop="false">
-            <frame duration="2000">
+            <frame duration="1000">
                 <framedata boneID="0" rotation="108" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
@@ -59,9 +59,21 @@
                 <framedata boneID="7" rotation="0" scaleX="1" scaleY="1" offsetDirection="85" offsetDistance="0" interpolator="linear"/>
             </frame>
             <!-- Avance -->
+            <frame duration="0">
+                <framedata boneID="0" rotation="130" scaleX="0.9" scaleY="1" offsetDirection="70" offsetDistance="-2" interpolator="cosine"/>
+                <framedata boneID="1" rotation="125" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="10" interpolator="cosine"/>
+                <framedata boneID="4" rotation="352" scaleX="1" scaleY="1" offsetDirection="20" offsetDistance="25" interpolator="cosine"/>
+                <framedata boneID="5" rotation="300" scaleX="1.1" scaleY="1.1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="6" rotation="340" scaleX="1.1" scaleY="1.1" offsetDirection="275" offsetDistance="7" interpolator="cosine"/>
+                <framedata boneID="7" rotation="340" scaleX="1.1" scaleY="1.1" offsetDirection="95" offsetDistance="5" interpolator="cosine"/>
+            </frame>
+        </animation>
+        <animation name="recover" loop="false">
             <frame duration="400">
                 <framedata boneID="0" rotation="130" scaleX="0.9" scaleY="1" offsetDirection="70" offsetDistance="-2" interpolator="cosine"/>
-                <framedata boneID="1" rotation="115" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="1" rotation="125" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
                 <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="10" interpolator="cosine"/>
                 <framedata boneID="4" rotation="352" scaleX="1" scaleY="1" offsetDirection="20" offsetDistance="25" interpolator="cosine"/>

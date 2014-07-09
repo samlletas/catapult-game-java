@@ -53,7 +53,7 @@ public class Bone
 
     public float getFinalRotation()
     {
-        return finalRotation;
+        return -finalRotation;
     }
 
     public boolean isRoot()
