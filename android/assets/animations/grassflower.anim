@@ -1,0 +1,24 @@
+<root atlasFile="textures.atlas">
+    <bones>
+        <bone id="0" region="grassFlowerBranch" parent="1" pivotX="4" pivotY="3" offsetX="42" offsetY="4" />
+        <bone id="1" region="grassFlowerRoot" parent="-1" pivotX="6" pivotY="5" offsetX="0" offsetY="0" />
+        <bone id="2" region="grassFlowerSmall" parent="0" pivotX="6" pivotY="6" offsetX="24" offsetY="3" />
+        <bone id="3" region="grassFlowerBig" parent="1" pivotX="5" pivotY="6" offsetX="65" offsetY="4" />
+    </bones>
+    <animations>
+        <animation name="blow" loop="true">
+            <frame duration="1200">
+                <framedata boneID="0" rotation="340" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="1" rotation="80" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="2" rotation="355" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="3" rotation="355" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+            </frame>
+            <frame duration="1200">
+                <framedata boneID="0" rotation="345" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="1" rotation="70" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="2" rotation="5" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="3" rotation="5" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+            </frame>
+        </animation>
+    </animations>
+</root>

@@ -1,20 +1,21 @@
 package com.mygdx.game.screens.gameplay;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.engine.GameSettings;
 import com.engine.GameTime;
-import com.engine.graphics.animation.AnimationPlayer;
 import com.engine.screens.GameScreen;
-import com.mygdx.game.assets.GameAssets;
+import com.mygdx.game.gamelogic.Background;
+import com.mygdx.game.gamelogic.Ball;
+import com.mygdx.game.gamelogic.Catapult;
 import com.mygdx.game.gamelogic.Grass;
 
 public class BaseGameScreen extends GameScreen
 {
-    protected AnimationPlayer player;
+    protected Background background;
+    protected Ball ball;
+    protected Catapult catapult;
     protected Grass grass;
     protected int updates = 1;
     protected int draws = 1;
@@ -29,28 +30,9 @@ public class BaseGameScreen extends GameScreen
     @Override
     public void initialize()
     {
-        player = GameAssets.Animations.catapult.instance;
-        player.position.x = 160f;
-        player.position.y = 395f;
-        player.play("default");
-
-        Gdx.input.setInputProcessor(new InputAdapter()
-        {
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button)
-            {
-                player.play("pull");
-                return super.touchDown(screenX, screenY, pointer, button);
-            }
-
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button)
-            {
-                player.play("launch");
-                return super.touchUp(screenX, screenY, pointer, button);
-            }
-        });
-
+        background = new Background();
+        ball = new Ball();
+        catapult = new Catapult(ball);
         grass = new Grass(settings);
     }
 
@@ -59,7 +41,9 @@ public class BaseGameScreen extends GameScreen
     {
         for (int i = 0; i < updates; i++)
         {
-            player.update(gameTime);
+            background.update(gameTime);
+            ball.update(gameTime);
+            catapult.update(gameTime);
             grass.update(gameTime);
         }
     }
@@ -71,7 +55,9 @@ public class BaseGameScreen extends GameScreen
 
         for (int i = 0; i < draws; i++)
         {
-            player.draw(spriteBatch);
+            background.draw(spriteBatch);
+            ball.draw(spriteBatch);
+            catapult.draw(spriteBatch);
             grass.draw(spriteBatch);
         }
 

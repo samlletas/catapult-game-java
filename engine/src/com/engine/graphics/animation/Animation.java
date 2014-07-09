@@ -35,13 +35,13 @@ public class Animation
         this.isPaused = false;
     }
 
-    public void start()
+    public void start(float timeOffset)
     {
         currentFramePosition = 0;
         nextFramePosition = advanceFramePosition(currentFramePosition);
 
         totalFrameTime = frames.get(currentFramePosition).duration;
-        currentFrameTime = totalFrameTime;
+        currentFrameTime = Math.max(0f, totalFrameTime - timeOffset);
 
         isPlaying = true;
         isPaused = false;

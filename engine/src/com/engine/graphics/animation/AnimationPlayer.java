@@ -45,6 +45,11 @@ public class AnimationPlayer
 
     public void play(String name)
     {
+        play(name, 0f);
+    }
+
+    public void play(String name, float frameOffset)
+    {
         for (Animation animation : animations)
         {
             if (animation.name.equals(name))
@@ -52,7 +57,7 @@ public class AnimationPlayer
                 if (animation != currentAnimation)
                 {
                     currentAnimation = animation;
-                    currentAnimation.start();
+                    currentAnimation.start(frameOffset);
                 }
 
                 return;
@@ -91,7 +96,7 @@ public class AnimationPlayer
     {
         if (currentAnimation != null)
         {
-            currentAnimation.start();
+            currentAnimation.start(0);
         }
     }
 

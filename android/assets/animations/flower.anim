@@ -1,0 +1,18 @@
+<root atlasFile="textures.atlas">
+    <bones>
+        <bone id="0" region="flowerRoot" parent="-1" pivotX="5" pivotY="2" offsetX="0" offsetY="0" />
+        <bone id="1" region="flower" parent="0" pivotX="12" pivotY="12" offsetX="38" offsetY="2" />
+    </bones>
+    <animations>
+        <animation name="blow" loop="true">
+            <frame duration="1200">
+                <framedata boneID="0" rotation="90" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="1" rotation="340" scaleX="1.1" scaleY="1.1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+            </frame>
+            <frame duration="1200">
+                <framedata boneID="0" rotation="75" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="1" rotation="320" scaleX="0.95" scaleY="0.95" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+            </frame>
+        </animation>
+    </animations>
+</root>

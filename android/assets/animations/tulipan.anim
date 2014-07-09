@@ -1,0 +1,24 @@
+<root atlasFile="textures.atlas">
+    <bones>
+        <bone id="0" region="tulipanRightLeaf" parent="2" pivotX="6" pivotY="5" offsetX="26" offsetY="3" />
+        <bone id="1" region="tulipanLeftLeaf" parent="2" pivotX="3" pivotY="10" offsetX="26" offsetY="1" />
+        <bone id="2" region="tulipanRoot" parent="-1" pivotX="2" pivotY="2" offsetX="0" offsetY="0" />
+        <bone id="3" region="tulipan" parent="2" pivotX="6" pivotY="7" offsetX="45" offsetY="2" />
+    </bones>
+    <animations>
+        <animation name="blow" loop="true">
+            <frame duration="1500">
+                <framedata boneID="0" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="1" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="2" rotation="90" scaleX="1" scaleY="1" offsetDirection="90" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="3" rotation="8" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+            </frame>
+            <frame duration="1500">
+                <framedata boneID="0" rotation="355" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="1" rotation="7" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+                <framedata boneID="2" rotation="80" scaleX="1" scaleY="1" offsetDirection="90" offsetDistance="5" interpolator="cosine"/>
+                <framedata boneID="3" rotation="352" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
+            </frame>
+        </animation>
+    </animations>
+</root>

@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.engine.GameSettings;
 import com.engine.GameTime;
 import com.engine.assets.Asset;
+import com.engine.graphics.animation.AnimationPlayer;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Grass
@@ -15,15 +16,24 @@ public final class Grass
     private GameSettings settings;
     private Array<Vector2> groundPositions;
     private Array<GrassData> grassDatas;
+    private Array<AnimationPlayer> tulipans;
+    private Array<AnimationPlayer> flowers;
+    private Array<AnimationPlayer> grassFlowers;
 
     public Grass(GameSettings settings)
     {
         this.settings = settings;
         this.groundPositions = new Array<Vector2>();
         this.grassDatas = new Array<GrassData>();
+        this.tulipans = new Array<AnimationPlayer>();
+        this.flowers = new Array<AnimationPlayer>();
+        this.grassFlowers = new Array<AnimationPlayer>();
 
         setGroundPositions();
         setGrassDatas();
+        initializeTulipans();
+        initializeFlowers();
+        initializeGrassFlowers();
     }
 
     private void setGroundPositions()
@@ -106,12 +116,106 @@ public final class Grass
         grassDatas.add(new GrassData(grass3, 68f, 428f, grass3pivotX, grass3pivotY, 92f, 2000f));
     }
 
+    private void initializeTulipans()
+    {
+        AnimationPlayer tulipan1 = GameAssets.Animations.tulipan.instance;
+        AnimationPlayer tulipan2 = tulipan1.copy();
+        AnimationPlayer tulipan3 = tulipan1.copy();
+
+        tulipan1.position.x = 634;
+        tulipan1.position.y = 445;
+        tulipan1.rotation = 10f;
+        tulipan1.play("blow", 100);
+
+        tulipan2.position.x = 644;
+        tulipan2.position.y = 441;
+        tulipan2.rotation = 350f;
+        tulipan2.play("blow", 400);
+
+        tulipan3.position.x = 652;
+        tulipan3.position.y = 444;
+        tulipan3.rotation = 330f;
+        tulipan3.play("blow", 700);
+
+        tulipans.add(tulipan1);
+        tulipans.add(tulipan2);
+        tulipans.add(tulipan3);
+    }
+
+    private void initializeFlowers()
+    {
+        AnimationPlayer flower1 = GameAssets.Animations.flower.instance;
+        AnimationPlayer flower2 = flower1.copy();
+
+        flower1.position.x = 310;
+        flower1.position.y = 405;
+        flower1.play("blow");
+
+        flower2.position.x = 347;
+        flower2.position.y = 408;
+        flower2.rotation = 345f;
+        flower2.play("blow", 500);
+
+        flowers.add(flower1);
+        flowers.add(flower2);
+    }
+
+    private void initializeGrassFlowers()
+    {
+        AnimationPlayer grassFlower1 = GameAssets.Animations.grassFlower.instance;
+        AnimationPlayer grassFlower2 = grassFlower1.copy();
+        AnimationPlayer grassFlower3 = grassFlower1.copy();
+        AnimationPlayer grassFlower4 = grassFlower1.copy();
+        AnimationPlayer grassFlower5 = grassFlower1.copy();
+        AnimationPlayer grassFlower6 = grassFlower1.copy();
+
+        grassFlower1.position.x = 240f;
+        grassFlower1.position.y = 427f;
+        grassFlower1.rotation = 0f;
+        grassFlower1.play("blow");
+
+        grassFlower2.position.x = 271;
+        grassFlower2.position.y = 429;
+        grassFlower2.rotation = 0f;
+        grassFlower2.play("blow", 200);
+
+        grassFlower3.position.x = 276;
+        grassFlower3.position.y = 428;
+        grassFlower3.rotation = 350f;
+        grassFlower3.play("blow", 600);
+
+        grassFlower4.position.x = 309;
+        grassFlower4.position.y = 427;
+        grassFlower4.rotation = 350f;
+        grassFlower4.play("blow", 400);
+
+        grassFlower5.position.x = 337;
+        grassFlower5.position.y = 435;
+        grassFlower5.rotation = 345f;
+        grassFlower5.play("blow", 1000);
+
+        grassFlower6.position.x = 367;
+        grassFlower6.position.y = 442;
+        grassFlower6.rotation = 340f;
+        grassFlower6.play("blow", 800);
+
+        grassFlowers.add(grassFlower1);
+        grassFlowers.add(grassFlower2);
+        grassFlowers.add(grassFlower3);
+        grassFlowers.add(grassFlower4);
+        grassFlowers.add(grassFlower5);
+        grassFlowers.add(grassFlower6);
+    }
+
     public void update(GameTime gameTime)
     {
         updateGrassDatas(gameTime);
+        updateTulipans(gameTime);
+        updateGrassFlowers(gameTime);
+        updateFlowers(gameTime);
     }
 
-    public void updateGrassDatas(GameTime gameTime)
+    private void updateGrassDatas(GameTime gameTime)
     {
         Array<GrassData> localGrassDatas = grassDatas;
         int size = localGrassDatas.size;
@@ -125,13 +229,100 @@ public final class Grass
         }
     }
 
+    private void updateTulipans(GameTime gameTime)
+    {
+        Array<AnimationPlayer> localTulipans = tulipans;
+        int size = localTulipans.size;
+
+        AnimationPlayer tulipan;
+
+        for (int i = 0; i < size; i++)
+        {
+            tulipan = localTulipans.get(i);
+            tulipan.update(gameTime);
+        }
+    }
+
+    private void updateGrassFlowers(GameTime gameTime)
+    {
+        Array<AnimationPlayer> localGrassFlowers = grassFlowers;
+        int size = localGrassFlowers.size;
+
+        AnimationPlayer grassFlower;
+
+        for (int i = 0; i < size; i++)
+        {
+            grassFlower = localGrassFlowers.get(i);
+            grassFlower.update(gameTime);
+        }
+    }
+
+    private void updateFlowers(GameTime gameTime)
+    {
+        Array<AnimationPlayer> localFlowers = flowers;
+        int size = localFlowers.size;
+
+        AnimationPlayer flower;
+
+        for (int i = 0; i < size; i++)
+        {
+            flower = localFlowers.get(i);
+            flower.update(gameTime);
+        }
+    }
+
     public void draw(SpriteBatch spriteBatch)
     {
+        drawTulipans(spriteBatch);
+        drawGrassFlowers(spriteBatch);
+        drawFlowers(spriteBatch);
         drawGrassDatas(spriteBatch);
         drawGround(spriteBatch);
     }
 
-    public void drawGrassDatas(SpriteBatch spriteBatch)
+    private void drawTulipans(SpriteBatch spriteBatch)
+    {
+        Array<AnimationPlayer> localTulipans = tulipans;
+        int size = localTulipans.size;
+
+        AnimationPlayer tulipan;
+
+        for (int i = 0; i < size; i++)
+        {
+            tulipan = localTulipans.get(i);
+            tulipan.draw(spriteBatch);
+        }
+    }
+
+    private void drawGrassFlowers(SpriteBatch spriteBatch)
+    {
+        Array<AnimationPlayer> localGrassFlowers = grassFlowers;
+        int size = localGrassFlowers.size;
+
+        AnimationPlayer grassFlower;
+
+        for (int i = 0; i < size; i++)
+        {
+            grassFlower = localGrassFlowers.get(i);
+            grassFlower.draw(spriteBatch);
+        }
+    }
+
+    private void drawFlowers(SpriteBatch spriteBatch)
+    {
+        Array<AnimationPlayer> localFlowers = flowers;
+        int size = localFlowers.size;
+
+        AnimationPlayer flower;
+
+        for (int i = 0; i < size; i++)
+        {
+            flower = localFlowers.get(i);
+            flower.draw(spriteBatch);
+        }
+    }
+
+    private void drawGrassDatas(SpriteBatch spriteBatch)
     {
         Array<GrassData> localGrassDatas = grassDatas;
         int size = localGrassDatas.size;
@@ -192,13 +383,15 @@ public final class Grass
             this.pivotY = pivotY;
             this.initialAngle = initialAngle;
             this.seed = seed;
+
+            this.initialAngle -= 10f;
         }
 
         void update(GameTime gameTime)
         {
             float sin = MathUtils.sin((gameTime.elapsed * 2.5f) + seed);
 
-            rotation = -initialAngle + 10f * sin;
+            rotation = -initialAngle + 12.5f * sin;
 //            rotation = -initialAngle;
 
             scale = 1.05f + 0.05f * sin;

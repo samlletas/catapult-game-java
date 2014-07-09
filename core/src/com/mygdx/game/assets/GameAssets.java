@@ -15,6 +15,15 @@ public final class GameAssets
 
         public static Asset<AnimationPlayer> catapult =
                 new Asset<AnimationPlayer>("animations/catapult.anim", AnimationPlayer.class, parameters);
+
+        public static Asset<AnimationPlayer> tulipan =
+                new Asset<AnimationPlayer>("animations/tulipan.anim", AnimationPlayer.class, parameters);
+
+        public static Asset<AnimationPlayer> grassFlower =
+                new Asset<AnimationPlayer>("animations/grassflower.anim", AnimationPlayer.class, parameters);
+
+        public static Asset<AnimationPlayer> flower =
+                new Asset<AnimationPlayer>("animations/flower.anim", AnimationPlayer.class, parameters);
     }
 
     public static final class AtlasRegions
@@ -29,6 +38,12 @@ public final class GameAssets
                 new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
 
         public static Asset<TextureAtlas.AtlasRegion> grass3 =
+                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+
+        public static Asset<TextureAtlas.AtlasRegion> star =
+                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+
+        public static Asset<TextureAtlas.AtlasRegion> ball =
                 new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
     }
 }

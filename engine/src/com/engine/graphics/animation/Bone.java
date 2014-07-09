@@ -3,6 +3,7 @@ package com.engine.graphics.animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
 import com.engine.Interpolation.IInterpolator;
@@ -30,9 +31,49 @@ public class Bone
     private float finalScaleY;
     private float finalRotation;
 
+    public float getFinalX()
+    {
+        return finalX;
+    }
+
+    public float getFinalY()
+    {
+        return finalY;
+    }
+
+    public float getFinalScaleX()
+    {
+        return finalScaleX;
+    }
+
+    public float getFinalScaleY()
+    {
+        return finalScaleY;
+    }
+
+    public float getFinalRotation()
+    {
+        return finalRotation;
+    }
+
     public boolean isRoot()
     {
         return parent == null;
+    }
+
+    private Vector2 transformed = new Vector2(0f, 0f);
+
+    public Vector2 getTransformedPosition(float x, float y)
+    {
+        float diffX = (x - pivotX) * finalScaleX;
+        float diffY = (y - pivotY) * finalScaleY;
+        float distance = (float)Math.sqrt((diffX * diffX) + (diffY * diffY));
+        float angle = MathUtils.atan2(diffY, diffX) + (float)Math.toRadians(finalRotation);
+
+        transformed.x = finalX + pivotX + (distance * MathUtils.cos(angle));
+        transformed.y = finalY + pivotY + (distance * MathUtils.sin(angle));
+
+        return transformed;
     }
 
     public Bone(TextureAtlas.AtlasRegion region, int id, int parentId,

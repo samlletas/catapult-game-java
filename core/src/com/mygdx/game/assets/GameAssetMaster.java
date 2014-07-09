@@ -27,21 +27,27 @@ public class GameAssetMaster extends AssetMaster
     protected void addToSyncQueue(Array<Asset> queue)
     {
         queue.add(GameAssets.Animations.catapult);
+        queue.add(GameAssets.Animations.tulipan);
+        queue.add(GameAssets.Animations.grassFlower);
+        queue.add(GameAssets.Animations.flower);
     }
 
     @Override
     protected void onSyncLoadCompleted(AssetManager manager)
     {
-        loadGroundRegions(manager);
-        loadGrassRegions(manager);
+        TextureAtlas atlas = manager.get("textures/textures.atlas");
+
+        loadGroundRegions(atlas);
+        loadGrassRegions(atlas);
+
+        GameAssets.AtlasRegions.star.instance = atlas.findRegion("star");
+        GameAssets.AtlasRegions.ball.instance = atlas.findRegion("ball");
     }
 
-    private void loadGroundRegions(AssetManager manager)
+    private void loadGroundRegions(TextureAtlas atlas)
     {
         Array<Asset<TextureAtlas.AtlasRegion>> localAtlasRegions =
                 GameAssets.AtlasRegions.groundRegions;
-
-        TextureAtlas atlas = manager.get("textures/textures.atlas");
 
         for (int i = 0; i < 16; i++)
         {
@@ -53,10 +59,8 @@ public class GameAssetMaster extends AssetMaster
         }
     }
 
-    private void loadGrassRegions(AssetManager manager)
+    private void loadGrassRegions(TextureAtlas atlas)
     {
-        TextureAtlas atlas = manager.get("textures/textures.atlas");
-
         GameAssets.AtlasRegions.grass1.instance = atlas.findRegion("grass1");
         GameAssets.AtlasRegions.grass2.instance = atlas.findRegion("grass2");
         GameAssets.AtlasRegions.grass3.instance = atlas.findRegion("grass3");

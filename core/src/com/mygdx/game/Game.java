@@ -25,7 +25,7 @@ public final class Game extends GameAdapter
     public Game()
     {
         super(new GameSettings(854, 480,
-                new Color(44f / 255f, 90f / 255f, 160f / 255f, 1f)));
+                new Color(36f / 255f, 82f / 255f, 130f / 255f, 1f)));
     }
 
     @Override
