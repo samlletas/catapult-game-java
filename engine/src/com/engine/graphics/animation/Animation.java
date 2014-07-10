@@ -2,7 +2,8 @@ package com.engine.graphics.animation;
 
 import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
-import com.engine.graphics.animation.events.OnEndEvent;
+import com.engine.events.Event;
+import com.engine.events.EventsArgs;
 
 public class Animation
 {
@@ -17,7 +18,8 @@ public class Animation
     private boolean isPlaying;
     private boolean isPaused;
 
-    public OnEndEvent onEnd = new OnEndEvent();
+    public Event<EventsArgs> onAnimationEnd = new Event<EventsArgs>();
+    private EventsArgs onAnimationEndArgs = new EventsArgs();
 
     public Animation(String name, boolean loop)
     {
@@ -87,7 +89,9 @@ public class Animation
                         isPaused = false;
 
                         currentFrameTime = 0.0f;
-                        onEnd.invoke(this);
+
+                        onAnimationEndArgs.sender = this;
+                        onAnimationEnd.invoke(onAnimationEndArgs);
                     }
                     else
                     {

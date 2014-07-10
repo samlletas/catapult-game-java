@@ -1,20 +1,13 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
 import com.engine.GameSettings;
 import com.engine.GameTime;
-import com.engine.graphics.animation.*;
-import com.engine.graphics.animation.events.IAnimationHandler;
-import com.mygdx.game.assets.GameAssets;
 import com.mygdx.game.assets.GameAssetMaster;
 import com.mygdx.game.screens.gameplay.BaseGameScreen;
-import javafx.scene.Scene;
 
 public final class Game extends GameAdapter
 {

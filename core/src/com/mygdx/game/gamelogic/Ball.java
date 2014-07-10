@@ -16,7 +16,7 @@ public final class Ball
     private float speedX;
     private float speedY;
 
-    private static float GRAVITY = 30f;
+    private static float GRAVITY = 35f;
     private static float MAX_SPEED_Y = 2000f;
 
     public boolean isFlying()

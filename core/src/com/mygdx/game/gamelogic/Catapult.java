@@ -8,10 +8,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.engine.GameTime;
 import com.engine.Interpolation.Interpolators;
-import com.engine.graphics.animation.Animation;
+import com.engine.events.EventsArgs;
+import com.engine.events.IEventHandler;
 import com.engine.graphics.animation.AnimationPlayer;
 import com.engine.graphics.animation.Bone;
-import com.engine.graphics.animation.events.IAnimationHandler;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Catapult
@@ -36,8 +36,8 @@ public final class Catapult
     private float pullAngle;
     private static final float MIN_PULL_ANGLE = 137f;
     private static final float MAX_PULL_ANGLE = 179f;
-    private static final float MIN_LAUNCH_POWER = 100f;
-    private static final float MAX_LAUNCH_POWER = 1300f;
+    private static final float MIN_LAUNCH_POWER = 150f;
+    private static final float MAX_LAUNCH_POWER = 1400f;
     private static final float LAUNCH_ANGLE = 45f;
 
     public Catapult(Ball ball)
@@ -76,10 +76,10 @@ public final class Catapult
             }
         });
 
-        player.getAnimation("launch").onEnd.subscribe(new IAnimationHandler()
+        player.getAnimation("launch").onAnimationEnd.subscribe(new IEventHandler<EventsArgs>()
         {
             @Override
-            public void onEnd(Animation animation)
+            public void onAction(EventsArgs args)
             {
                 launch();
                 player.play("recover");
