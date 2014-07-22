@@ -37,7 +37,7 @@ public final class Catapult
     private static final float MIN_PULL_ANGLE = 137f;
     private static final float MAX_PULL_ANGLE = 179f;
     private static final float MIN_LAUNCH_POWER = 150f;
-    private static final float MAX_LAUNCH_POWER = 1400f;
+    private static final float MAX_LAUNCH_POWER = 1500f;
     private static final float LAUNCH_ANGLE = 45f;
 
     public Catapult(Ball ball)
@@ -91,7 +91,8 @@ public final class Catapult
     {
         float diff = MAX_PULL_ANGLE - MIN_PULL_ANGLE;
         float factor = (pullAngle - MIN_PULL_ANGLE) / diff;
-        float power = Interpolators.LinearInterpolator.interpolate(MIN_LAUNCH_POWER, MAX_LAUNCH_POWER, factor);
+        float power = Interpolators.LinearInterpolator.interpolate(MIN_LAUNCH_POWER,
+                MAX_LAUNCH_POWER, factor);
 
         ball.launch(power, LAUNCH_ANGLE);
     }

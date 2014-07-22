@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.engine.GameSettings;
 import com.engine.GameTime;
+import com.engine.camera.CameraShaker2D;
 import com.engine.screens.GameScreen;
 import com.mygdx.game.gamelogic.Background;
 import com.mygdx.game.gamelogic.Ball;
@@ -13,10 +14,12 @@ import com.mygdx.game.gamelogic.Grass;
 
 public class BaseGameScreen extends GameScreen
 {
+    protected CameraShaker2D cameraShaker;
     protected Background background;
     protected Ball ball;
     protected Catapult catapult;
     protected Grass grass;
+
     protected int updates = 1;
     protected int draws = 1;
 
@@ -30,8 +33,9 @@ public class BaseGameScreen extends GameScreen
     @Override
     public void initialize()
     {
+        cameraShaker = new CameraShaker2D(orthographicCamera, 80, 0, 0, 0.75f, 0.99f);
         background = new Background();
-        ball = new Ball();
+        ball = new Ball(cameraShaker);
         catapult = new Catapult(ball);
         grass = new Grass(settings);
     }
@@ -41,6 +45,7 @@ public class BaseGameScreen extends GameScreen
     {
         for (int i = 0; i < updates; i++)
         {
+            cameraShaker.update(gameTime);
             background.update(gameTime);
             ball.update(gameTime);
             catapult.update(gameTime);
@@ -55,10 +60,14 @@ public class BaseGameScreen extends GameScreen
 
         for (int i = 0; i < draws; i++)
         {
+            cameraShaker.beginDraw(spriteBatch);
+
             background.draw(spriteBatch);
             ball.draw(spriteBatch);
             catapult.draw(spriteBatch);
             grass.draw(spriteBatch);
+
+            cameraShaker.endDraw(spriteBatch);
         }
 
         spriteBatch.end();

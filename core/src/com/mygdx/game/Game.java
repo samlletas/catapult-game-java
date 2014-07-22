@@ -50,7 +50,7 @@ public final class Game extends GameAdapter
     @Override
     protected void update(GameTime gameTime)
     {
-//        fpsLogger.log();
+        fpsLogger.log();
 
         gameScreen.update(gameTime);
     }

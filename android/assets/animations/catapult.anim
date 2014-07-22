@@ -48,7 +48,7 @@
         </animation>
         <animation name="launch" loop="false">
             <!-- Default -->
-            <frame duration="75">
+            <frame duration="50">
                 <framedata boneID="0" rotation="108" scaleX="0.8" scaleY="1" offsetDirection="70" offsetDistance="-4" interpolator="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="linear"/>
@@ -71,7 +71,7 @@
             </frame>
         </animation>
         <animation name="recover" loop="false">
-            <frame duration="400">
+            <frame duration="350">
                 <framedata boneID="0" rotation="130" scaleX="0.9" scaleY="1" offsetDirection="70" offsetDistance="-2" interpolator="cosine"/>
                 <framedata boneID="1" rotation="125" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolator="cosine"/>

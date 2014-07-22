@@ -30,6 +30,8 @@ public class GameAssetMaster extends AssetMaster
         queue.add(GameAssets.Animations.tulipan);
         queue.add(GameAssets.Animations.grassFlower);
         queue.add(GameAssets.Animations.flower);
+        queue.add(GameAssets.Particles.ballTrace);
+        queue.add(GameAssets.Particles.ballExplosion);
     }
 
     @Override
