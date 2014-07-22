@@ -1,6 +1,7 @@
-package com.engine;
+package com.engine.utilities;
 
 import com.badlogic.gdx.Gdx;
+import com.engine.GameTime;
 import com.engine.events.Event;
 import com.engine.events.EventsArgs;
 

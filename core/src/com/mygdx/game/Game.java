@@ -1,9 +1,9 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
+import com.engine.utilities.GameProfiler;
 import com.engine.GameSettings;
 import com.engine.GameTime;
 import com.mygdx.game.assets.GameAssetMaster;
@@ -11,8 +11,8 @@ import com.mygdx.game.screens.gameplay.BaseGameScreen;
 
 public final class Game extends GameAdapter
 {
+    private GameProfiler profiler;
     private GameAssetMaster assetMaster;
-    private FPSLogger fpsLogger;
     private BaseGameScreen gameScreen;
 
     public Game()
@@ -38,8 +38,8 @@ public final class Game extends GameAdapter
     @Override
     public void initialize()
     {
+        profiler = new GameProfiler(true, false);
         assetMaster = new GameAssetMaster();
-        fpsLogger = new FPSLogger();
         gameScreen = new BaseGameScreen(settings, orthographicCamera,
                 perspectiveCamera);
 
@@ -50,8 +50,6 @@ public final class Game extends GameAdapter
     @Override
     protected void update(GameTime gameTime)
     {
-        fpsLogger.log();
-
         gameScreen.update(gameTime);
     }
 
@@ -59,5 +57,6 @@ public final class Game extends GameAdapter
     protected void draw(GameTime gameTime)
     {
         gameScreen.draw(gameTime, spriteBatch);
+        profiler.profile(spriteBatch);
     }
 }
