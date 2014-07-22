@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.GameTime;
 import com.engine.Interpolation.IInterpolator;
 import com.engine.Interpolation.Interpolators;
-import com.engine.Timer;
+import com.engine.utilities.Timer;
 import com.engine.events.EventsArgs;
 import com.engine.events.IEventHandler;
 

@@ -5,10 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.viewport.*;
 import com.engine.graphics.shaders.shaders2d.Default2DShader;
-import com.engine.utilities.ColorUtilities;
 
 public abstract class GameAdapter extends ApplicationAdapter
 {
