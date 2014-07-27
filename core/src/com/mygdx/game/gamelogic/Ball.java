@@ -1,9 +1,12 @@
 package com.mygdx.game.gamelogic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.engine.GameTime;
 import com.engine.camera.CameraShaker2D;
 import com.mygdx.game.assets.GameAssets;
@@ -15,6 +18,7 @@ public final class Ball
 
     private final TextureAtlas.AtlasRegion region;
     private boolean flying;
+
     private float speedX;
     private float speedY;
 
@@ -75,10 +79,17 @@ public final class Ball
 
             speedY += GRAVITY * gameTime.delta;
 
+//            launchTime = TimeUtils.timeSinceMillis(startTime) / 1000f;
+//
+//            x = x0 + (speedX * launchTime);
+//            y = y0 + (speedY * launchTime) + (0.5f * GRAVITY * launchTime * launchTime);
+
             ballTrace.setPosition(x + 10, y + 14);
 
-            if (x >= 854 || y >= 480)
+            if (x >= 854 || y >= 480 || y < 0)
             {
+                logMaxY();
+
                 explode();
                 cancelFlight();
 
@@ -88,6 +99,11 @@ public final class Ball
 
         ballTrace.update(gameTime.delta);
         ballExplosion.update(gameTime.delta);
+    }
+
+    private void logMaxY()
+    {
+        Gdx.app.log("", "CollisionY: " + y);
     }
 
     public void draw(SpriteBatch spriteBatch)

@@ -3,15 +3,25 @@ apply plugin: "java"
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
 
+def dotTextureSrcDir = "src/com/engine";
+def dotTextureOutputDir = "build/classes/main/com/engine";
+
 def shader2DSrcDir = "src/com/engine/graphics/shaders/shaders2d";
 def shader2DOutputDir = "build/classes/main/com/engine/graphics/shaders/shaders2d";
 
 def shader3DSrcDir = "src/com/engine/graphics/shaders/shaders3d";
 def shader3DOutputDir = "build/classes/main/com/engine/graphics/shaders/shaders3d";
 
-// Se copian los shaders al .jar
+// Se copia la textura y los shaders al .jar
 jar
 {
+    // Textura
+    from(dotTextureSrcDir)
+    {
+        into dotTextureOutputDir
+        include "dot.png"
+    }
+
     // 2D Shaders
     from(shader2DSrcDir)
     {
@@ -25,6 +35,14 @@ jar
         into shader3DOutputDir
         include "*.*.glsl"
     }
+}
+
+// Se copia la textura al classPath
+task copyDotTexture(type: Copy) {
+    // Textura
+    from dotTextureSrcDir
+    into dotTextureOutputDir
+    include "dot.png"
 }
 
 // Se copian los shaders 2D al classPath
@@ -43,6 +61,7 @@ task copy3DShaders(type: Copy) {
     include "*.*.glsl"
 }
 
-// Se asegura que se ejecute el task de copiado de shaders
-compileJava.dependsOn copy2DShaders
+// Se asegura que se ejecuten los task de copiado de textura y shaders
+compileJava.dependsOn copyDotTexture
+copyDotTexture.dependsOn copy2DShaders
 copy2DShaders.dependsOn copy3DShaders

@@ -1,8 +1,8 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.engine.GameAdapter;
+import com.engine.utilities.ColorUtilities;
 import com.engine.utilities.GameProfiler;
 import com.engine.GameSettings;
 import com.engine.GameTime;
@@ -11,14 +11,14 @@ import com.mygdx.game.screens.gameplay.BaseGameScreen;
 
 public final class Game extends GameAdapter
 {
-    private GameProfiler profiler;
     private GameAssetMaster assetMaster;
+    private GameProfiler profiler;
     private BaseGameScreen gameScreen;
 
     public Game()
     {
         super(new GameSettings(854, 480,
-                new Color(36f / 255f, 82f / 255f, 130f / 255f, 1f)));
+                ColorUtilities.createColor(36, 82, 130, 255)));
     }
 
     @Override
@@ -38,8 +38,8 @@ public final class Game extends GameAdapter
     @Override
     public void initialize()
     {
-        profiler = new GameProfiler(true, false);
         assetMaster = new GameAssetMaster();
+        profiler = new GameProfiler(true, false);
         gameScreen = new BaseGameScreen(settings, orthographicCamera,
                 perspectiveCamera);
 

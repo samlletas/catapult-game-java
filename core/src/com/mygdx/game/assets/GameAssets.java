@@ -15,16 +15,16 @@ public final class GameAssets
                 new AnimationLoader.AnimationLoaderParameter("textures");
 
         public static Asset<AnimationPlayer> catapult =
-                new Asset<AnimationPlayer>("animations/catapult.anim", AnimationPlayer.class, parameters);
+                new Asset<AnimationPlayer>("animations/catapult.xml", AnimationPlayer.class, parameters);
 
         public static Asset<AnimationPlayer> tulipan =
-                new Asset<AnimationPlayer>("animations/tulipan.anim", AnimationPlayer.class, parameters);
+                new Asset<AnimationPlayer>("animations/tulipan.xml", AnimationPlayer.class, parameters);
 
         public static Asset<AnimationPlayer> grassFlower =
-                new Asset<AnimationPlayer>("animations/grassflower.anim", AnimationPlayer.class, parameters);
+                new Asset<AnimationPlayer>("animations/grassflower.xml", AnimationPlayer.class, parameters);
 
         public static Asset<AnimationPlayer> flower =
-                new Asset<AnimationPlayer>("animations/flower.anim", AnimationPlayer.class, parameters);
+                new Asset<AnimationPlayer>("animations/flower.xml", AnimationPlayer.class, parameters);
     }
 
     public static final class AtlasRegions

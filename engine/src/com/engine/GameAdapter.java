@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.viewport.*;
+import com.engine.assets.BaseAssetMaster;
 import com.engine.graphics.shaders.shaders2d.Default2DShader;
+import com.engine.utilities.ColorUtilities;
 
 public abstract class GameAdapter extends ApplicationAdapter
 {
@@ -14,6 +16,7 @@ public abstract class GameAdapter extends ApplicationAdapter
     protected SpriteBatch spriteBatch;
     protected ModelBatch modelBatch;
     private Default2DShader shader;
+    private GameTime gameTime;
 
     // Cámara 2D
     protected Viewport viewport2D;
@@ -22,9 +25,6 @@ public abstract class GameAdapter extends ApplicationAdapter
     // Cámara 3D
     protected Viewport viewport3D;
     protected PerspectiveCamera perspectiveCamera;
-
-    private GameTime gameTime;
-    private Texture blackBarTexture;
 
     public GameAdapter(GameSettings settings)
     {
@@ -47,7 +47,7 @@ public abstract class GameAdapter extends ApplicationAdapter
         setup2DViewport();
         setup3DViewport();
 
-        createBlackBarTexture();
+        Debug.dotTexture = new Texture(Gdx.files.classpath("com/engine/dot.png"));
         initialize();
     }
 
@@ -69,7 +69,7 @@ public abstract class GameAdapter extends ApplicationAdapter
     }
 
     /**
-     * Inicializa el viewport 2D (Por default StretchViewport), hacer override
+     * Inicializa el viewport 2D (Por default StretchViewport). Hacer override
      * en clase derivada para implementar un viewport personalizado
      */
     protected void setup2DViewport()
@@ -79,22 +79,13 @@ public abstract class GameAdapter extends ApplicationAdapter
     }
 
     /**
-     * Inicializa el viewport 3D (Por default StretchViewport), hacer override
+     * Inicializa el viewport 3D (Por default StretchViewport). Hacer override
      * en clase derivada para implementar un viewport personalizado
      */
     protected void setup3DViewport()
     {
         viewport3D = new StretchViewport(settings.virtualWidth,
                 settings.virtualHeight, perspectiveCamera);
-    }
-
-    private final void createBlackBarTexture()
-    {
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.BLACK);
-        pixmap.fill();
-
-        blackBarTexture = new Texture(pixmap);
     }
 
     @Override
@@ -141,32 +132,35 @@ public abstract class GameAdapter extends ApplicationAdapter
 
             // Reinicio al default shader
             spriteBatch.setShader(null);
+
             spriteBatch.begin();
+            ColorUtilities.setTint(spriteBatch, 0, 0, 0, 255);
 
             // Barras horizontales
             if (leftBarWidth > 0)
             {
-                spriteBatch.draw(blackBarTexture, 0, 0,
+                spriteBatch.draw(Debug.dotTexture, 0, 0,
                         leftBarWidth, screenHeight);
             }
             if (rightBarWidth > 0)
             {
-                spriteBatch.draw(blackBarTexture, viewport2D.getRightGutterX(), 0,
+                spriteBatch.draw(Debug.dotTexture, viewport2D.getRightGutterX(), 0,
                         rightBarWidth, screenHeight);
             }
 
             // Barras verticales
             if (bottomBarHeight > 0)
             {
-                spriteBatch.draw(blackBarTexture, 0, 0,
+                spriteBatch.draw(Debug.dotTexture, 0, 0,
                         screenWidth, bottomBarHeight);
             }
             if (topBarHeight > 0)
             {
-                spriteBatch.draw(blackBarTexture, 0, viewport2D.getTopGutterY(),
+                spriteBatch.draw(Debug.dotTexture, 0, viewport2D.getTopGutterY(),
                         screenWidth, topBarHeight);
             }
 
+            ColorUtilities.resetTint(spriteBatch);
             spriteBatch.end();
 
             // Reseteo del viewport
@@ -184,7 +178,6 @@ public abstract class GameAdapter extends ApplicationAdapter
     @Override
     public void resume()
     {
-        createBlackBarTexture();
     }
 
     @Override
@@ -193,10 +186,12 @@ public abstract class GameAdapter extends ApplicationAdapter
         spriteBatch.dispose();
         modelBatch.dispose();
         shader.dispose();
-        blackBarTexture.dispose();
+        Debug.dotTexture.dispose();
     }
 
     protected abstract void initialize();
+
     protected abstract void update(GameTime gameTime);
+
     protected abstract void draw(GameTime gameTime);
 }

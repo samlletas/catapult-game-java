@@ -3,10 +3,11 @@ package com.engine.assets;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.utils.Array;
+import com.engine.Debug;
 import com.engine.graphics.animation.AnimationLoader;
 import com.engine.graphics.animation.AnimationPlayer;
 
-public abstract class AssetMaster
+public abstract class BaseAssetMaster
 {
     private AssetManager manager;
 
@@ -16,7 +17,7 @@ public abstract class AssetMaster
     private boolean addedToAsyncQueue;
     private boolean initializedAsyncInstances;
 
-    public AssetMaster()
+    public BaseAssetMaster()
     {
         manager = new AssetManager();
         syncQueue = new Array<Asset>();
@@ -95,7 +96,7 @@ public abstract class AssetMaster
         return manager.getProgress();
     }
 
-    public void Dispose()
+    public void dispose()
     {
         manager.dispose();
     }

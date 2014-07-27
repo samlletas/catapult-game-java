@@ -4,9 +4,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.engine.assets.Asset;
-import com.engine.assets.AssetMaster;
+import com.engine.assets.BaseAssetMaster;
 
-public class GameAssetMaster extends AssetMaster
+public class GameAssetMaster extends BaseAssetMaster
 {
     public GameAssetMaster()
     {

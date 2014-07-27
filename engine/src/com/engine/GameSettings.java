@@ -11,11 +11,9 @@ public class GameSettings
 
     public GameSettings(int virtualWidth, int virtualHeight)
     {
-        this(virtualWidth, virtualHeight, new Color(
-                ColorUtilities.ByteToFloat(100),
-                ColorUtilities.ByteToFloat(149),
-                ColorUtilities.ByteToFloat(237),
-                1f));
+        // Color de fondo por default (CornFlower Blue)
+        this(virtualWidth, virtualHeight,
+                ColorUtilities.createColor(100, 149, 237, 255));
     }
 
     public GameSettings(int virtualWidth, int virtualHeight, Color clearColor)
