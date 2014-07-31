@@ -26,7 +26,8 @@ public abstract class BaseAssetMaster
         initializedAsyncInstances = false;
 
         // Loader para animaciones
-        manager.setLoader(AnimationPlayer.class, new AnimationLoader(new InternalFileHandleResolver()));
+        manager.setLoader(AnimationPlayer.class,
+                new AnimationLoader(new InternalFileHandleResolver()));
 
         setCustomLoaders(manager);
     }
