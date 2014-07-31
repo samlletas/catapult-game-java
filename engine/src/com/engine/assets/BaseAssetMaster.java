@@ -3,7 +3,6 @@ package com.engine.assets;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.utils.Array;
-import com.engine.Debug;
 import com.engine.graphics.animation.AnimationLoader;
 import com.engine.graphics.animation.AnimationPlayer;
 

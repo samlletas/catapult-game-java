@@ -12,6 +12,8 @@ import com.engine.utilities.ColorUtilities;
 
 public abstract class GameAdapter extends ApplicationAdapter
 {
+    public static Texture dotTexture;
+
     protected GameSettings settings;
     protected SpriteBatch spriteBatch;
     protected ModelBatch modelBatch;
@@ -47,7 +49,7 @@ public abstract class GameAdapter extends ApplicationAdapter
         setup2DViewport();
         setup3DViewport();
 
-        Debug.dotTexture = new Texture(Gdx.files.classpath("com/engine/dot.png"));
+        dotTexture = new Texture(Gdx.files.classpath("com/engine/dot.png"));
         initialize();
     }
 
@@ -139,24 +141,23 @@ public abstract class GameAdapter extends ApplicationAdapter
             // Barras horizontales
             if (leftBarWidth > 0)
             {
-                spriteBatch.draw(Debug.dotTexture, 0, 0,
+                spriteBatch.draw(dotTexture, 0, 0,
                         leftBarWidth, screenHeight);
             }
             if (rightBarWidth > 0)
             {
-                spriteBatch.draw(Debug.dotTexture, viewport2D.getRightGutterX(), 0,
+                spriteBatch.draw(dotTexture, viewport2D.getRightGutterX(), 0,
                         rightBarWidth, screenHeight);
             }
 
             // Barras verticales
             if (bottomBarHeight > 0)
             {
-                spriteBatch.draw(Debug.dotTexture, 0, 0,
-                        screenWidth, bottomBarHeight);
+                spriteBatch.draw(dotTexture, 0, 0, screenWidth, bottomBarHeight);
             }
             if (topBarHeight > 0)
             {
-                spriteBatch.draw(Debug.dotTexture, 0, viewport2D.getTopGutterY(),
+                spriteBatch.draw(dotTexture, 0, viewport2D.getTopGutterY(),
                         screenWidth, topBarHeight);
             }
 
@@ -186,7 +187,7 @@ public abstract class GameAdapter extends ApplicationAdapter
         spriteBatch.dispose();
         modelBatch.dispose();
         shader.dispose();
-        Debug.dotTexture.dispose();
+        dotTexture.dispose();
     }
 
     protected abstract void initialize();
