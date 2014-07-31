@@ -66,6 +66,17 @@ public final class ColorUtilities
     }
 
     /**
+     * Asigna un tinte a un spritebatch con el color RGBA especificado
+     *
+     * @param spriteBatch
+     * @param tint Tinte
+     */
+    public static void setTint(SpriteBatch spriteBatch, Color tint)
+    {
+        spriteBatch.setColor(tint);
+    }
+
+    /**
      * Reinicia el tinte a un spritebatch
      *
      * @param spriteBatch
