@@ -7,10 +7,7 @@ import com.engine.GameSettings;
 import com.engine.GameTime;
 import com.engine.camera.CameraShaker2D;
 import com.engine.screens.GameScreen;
-import com.mygdx.game.gamelogic.Background;
-import com.mygdx.game.gamelogic.Ball;
-import com.mygdx.game.gamelogic.Catapult;
-import com.mygdx.game.gamelogic.Grass;
+import com.mygdx.game.gamelogic.*;
 
 public class BaseGameScreen extends GameScreen
 {
@@ -19,6 +16,7 @@ public class BaseGameScreen extends GameScreen
     protected Ball ball;
     protected Catapult catapult;
     protected Grass grass;
+    protected CollisionTester collisionTester = new CollisionTester();
 
     protected int updates = 1;
     protected int draws = 1;
@@ -50,6 +48,7 @@ public class BaseGameScreen extends GameScreen
             ball.update(gameTime);
             catapult.update(gameTime);
             grass.update(gameTime);
+            collisionTester.update(gameTime);
         }
     }
 
@@ -66,6 +65,7 @@ public class BaseGameScreen extends GameScreen
             ball.draw(spriteBatch);
             catapult.draw(spriteBatch);
             grass.draw(spriteBatch);
+            collisionTester.draw(spriteBatch);
 
             cameraShaker.endDraw(spriteBatch);
         }
