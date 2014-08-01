@@ -18,7 +18,10 @@ public class BaseGameScreen extends GameScreen
     protected Grass grass;
     protected CollisionTester collisionTester = new CollisionTester();
 
+    // Para 60 FPS casi constantes(Android-Sam): 30 máx
     protected int updates = 1;
+
+    // Para 60 FPS casi constantes(Android-Sam): 7 máx
     protected int draws = 1;
 
     public BaseGameScreen(GameSettings settings,

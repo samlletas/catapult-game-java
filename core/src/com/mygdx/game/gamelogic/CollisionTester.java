@@ -20,17 +20,20 @@ public class CollisionTester
 
     public CollisionTester()
     {
-        a = PolygonUtilities.createConvex(4, 64);
+        a = PolygonUtilities.createConvex(6, 64);
         a.setPosition(400, 100);
 
         b = PolygonUtilities.createRhombus(64, 128);
-        b.setPosition(600, 200);
+        b.setPosition(400, 100);
     }
 
     public void update(GameTime gameTime)
     {
         updateA(gameTime);
         updateB(gameTime);
+
+        a.rotate(ROTATION_SPEED * gameTime.delta);
+        b.rotate(ROTATION_SPEED * gameTime.delta);
 
         if (PolygonUtilities.onCollision(a, b))
         {
