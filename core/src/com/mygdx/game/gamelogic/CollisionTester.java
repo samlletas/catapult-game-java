@@ -4,26 +4,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.engine.GameTime;
-import com.engine.utilities.PolygonUtilities;
+import com.engine.collision2d.GamePolygon;
 
 public class CollisionTester
 {
     final static float ROTATION_SPEED = 50f;
     final static float TRANSLATION_SPEED = 100f;
 
-    private Polygon a;
-    private Polygon b;
+    private GamePolygon a;
+    private GamePolygon b;
 
     private Color drawColor;
 
     public CollisionTester()
     {
-        a = PolygonUtilities.createConvex(6, 64);
+        a = GamePolygon.createConvex(5, 50);
         a.setPosition(400, 100);
 
-        b = PolygonUtilities.createRhombus(64, 128);
+        b = GamePolygon.createRhombus(70, 80);
         b.setPosition(400, 100);
     }
 
@@ -35,7 +34,7 @@ public class CollisionTester
         a.rotate(ROTATION_SPEED * gameTime.delta);
         b.rotate(ROTATION_SPEED * gameTime.delta);
 
-        if (PolygonUtilities.onCollision(a, b))
+        if (a.onCollision(b))
         {
             drawColor = Color.RED;
         }
@@ -109,7 +108,7 @@ public class CollisionTester
 
     public void draw(SpriteBatch spriteBatch)
     {
-        PolygonUtilities.draw(spriteBatch, a, drawColor);
-        PolygonUtilities.draw(spriteBatch, b, drawColor);
+        a.draw(spriteBatch, drawColor);
+        b.draw(spriteBatch, drawColor);
     }
 }
