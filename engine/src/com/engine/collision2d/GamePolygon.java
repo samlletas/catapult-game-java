@@ -17,12 +17,16 @@ public class GamePolygon extends Polygon
     private Projection cachedProjection = new Projection();
     private Vector2 cachedAxis = new Vector2();
 
+    public boolean checkCollisions;
+
     /**
      * Construye un polígono sin vértices
      */
     public GamePolygon()
     {
         super();
+
+        checkCollisions = true;
     }
 
     /**
@@ -33,6 +37,8 @@ public class GamePolygon extends Polygon
     public GamePolygon(float[] vertices)
     {
         super(vertices);
+
+        checkCollisions = true;
     }
 
     /**
@@ -44,7 +50,8 @@ public class GamePolygon extends Polygon
      */
     public boolean onCollision(GamePolygon other)
     {
-        return checkProjections(this, other) && checkProjections(other, this);
+        return checkCollisions &&
+                checkProjections(this, other) && checkProjections(other, this);
     }
 
     /**
