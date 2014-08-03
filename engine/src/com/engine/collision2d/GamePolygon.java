@@ -245,6 +245,12 @@ public class GamePolygon extends Polygon
         return new GamePolygon(vertices);
     }
 
+    /**
+     * Crea un polígono convexo (3 puntos = Triángulo, 6 = Hexágono, etc)
+     * @param points Cantidad de puntos de la figura
+     * @param radius Distancia de cada punto al centro de la figura
+     * @return Nuevo polígono convexo
+     */
     public static GamePolygon createConvex(int points, int radius)
     {
         if (points < 2)
