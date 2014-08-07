@@ -23,4 +23,40 @@ public class Projection
     {
         return !(other.max < min || other.min > max);
     }
+
+    public boolean contains(Projection other)
+    {
+        return other.min >= min && other.max <= max;
+    }
+
+    public float getOverlap(Projection other)
+    {
+        // Containment
+        if (this.contains(other))
+        {
+            return (other.max - other.min) + getMinContainmentDiff(other);
+        }
+        else if (other.contains(this))
+        {
+            return (max - min) + getMinContainmentDiff(other);
+        }
+        // Overlap sobre el límite superior
+        else if (other.min > min)
+        {
+            return max - other.min;
+        }
+        // Overlap sobre el límite inferior
+        else
+        {
+            return other.max - min;
+        }
+    }
+
+    private float getMinContainmentDiff(Projection other)
+    {
+        float mins = Math.abs(min - other.min);
+        float maxs = Math.abs(max - other.max);
+
+        return Math.min(mins, maxs);
+    }
 }

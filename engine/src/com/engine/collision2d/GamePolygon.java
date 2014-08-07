@@ -1,10 +1,12 @@
 package com.engine.collision2d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.GameAdapter;
 import com.engine.utilities.ColorUtilities;
@@ -15,8 +17,12 @@ import com.engine.utilities.ColorUtilities;
 public class GamePolygon extends Polygon
 {
     private Projection cachedProjection = new Projection();
-    private Vector2 cachedAxis = new Vector2();
+    private Vector2 cachedVector = new Vector2();
+    private float minOverlap = Float.MAX_VALUE;
 
+    private Array<Vector2> normals;
+
+    public boolean isSolid;
     public boolean checkCollisions;
 
     /**
@@ -24,9 +30,7 @@ public class GamePolygon extends Polygon
      */
     public GamePolygon()
     {
-        super();
-
-        checkCollisions = true;
+        this(new float[0]);
     }
 
     /**
@@ -38,34 +42,20 @@ public class GamePolygon extends Polygon
     {
         super(vertices);
 
-        checkCollisions = true;
+        this.isSolid = false;
+        this.checkCollisions = true;
+
+        calculateNormals(vertices);
     }
 
     /**
-     * Revisa si el polígono se encuentra en intersección con otro polígono
-     * convexo utilizando
-     * <a href="www.codezealot.org/archives/55">SAT (Separation Axis Theorem)</a>
-     * @param other Polígono con el cual se revisará si hay interseción
-     * @return true en caso de haber intersección, false en caso contrario
+     * Calcula las normales para cada uno de los lados del polígono (ignorando
+     * las normales paralelas para optimizar la revisión de colisiones)
+     * @param vertices
      */
-    public boolean onCollision(GamePolygon other)
+    private void calculateNormals(float[] vertices)
     {
-        return checkCollisions &&
-                checkProjections(this, other) && checkProjections(other, this);
-    }
-
-    /**
-     * Revisa si hay un overlap de las proyecciones de 2 polígonos sobre las
-     * normales de cada uno de los lados del polígono base
-     * @param base Polígono a partir del cual se obtendrán las normales de cada
-     *             uno de los lados para realizar las proyecciones
-     * @param other Polígono para revisar overlap de proyección
-     * @return true en caso de haber un overlap, false en caso contrario
-     */
-    private boolean checkProjections(GamePolygon base, GamePolygon other)
-    {
-        float[] vertices = base.getTransformedVertices();
-        int size = vertices.length;
+        normals = new Array<Vector2>(vertices.length / 2);
 
         float x1;
         float y1;
@@ -73,10 +63,10 @@ public class GamePolygon extends Polygon
         float x2;
         float y2;
 
-        // Recorre los vértices del polígono base para obtener las normales
-        // de cada uno de los lados y realizar la verificación de overlap
-        // de proyecciones
-        for (int i = 0; i < size; i+=2)
+        boolean foundParallel;
+        int size = vertices.length;
+
+        for (int i = 0; i < size; i+= 2)
         {
             x1 = vertices[i];
             y1 = vertices[i + 1];
@@ -98,18 +88,155 @@ public class GamePolygon extends Polygon
             x2 -= x1;
             y2 -= y1;
 
-            // Vector normal del vector edge
-            cachedAxis.set(-y2, x2);
-            cachedAxis.nor();
+            normals.add(new Vector2(-y2, x2).nor());
 
-            Projection projectionForBase = base.getProjection(cachedAxis);
-            Projection projectionForOther = other.getProjection(cachedAxis);
+            if (normals.size == 0)
+            {
+                normals.add(new Vector2(-y2, x2).nor());
+            }
+            else
+            {
+                foundParallel = false;
+
+                // Búsqueda de normales paralelas
+                for (Vector2 normal : normals)
+                {
+                    cachedVector.set(-y2, x2).nor();
+
+                    if (cachedVector.isOnLine(normal))
+                    {
+                        foundParallel = true;
+                        break;
+                    }
+                }
+
+                // Solamente agregar si no hay normales paralelas
+                if (!foundParallel)
+                {
+                    normals.add(new Vector2(-y2, x2).nor());
+                }
+            }
+        }
+
+        Gdx.app.log("Axes: ", String.valueOf(normals.size));
+    }
+
+    @Override
+    public void setVertices(float[] vertices)
+    {
+        throw new GdxRuntimeException("setVertices is not supported on GamePolygon");
+    }
+
+    @Override
+    public void setRotation(float degrees)
+    {
+        super.setRotation(degrees);
+        Array<Vector2> localNormals = normals;
+
+        // Rotación de las normales
+        for (Vector2 normal : localNormals)
+        {
+            normal.setAngle(degrees);
+        }
+    }
+
+    @Override
+    public void rotate(float degrees)
+    {
+        super.rotate(degrees);
+        Array<Vector2> localNormals = normals;
+
+        // Rotación de las normales
+        for (Vector2 normal : localNormals)
+        {
+            normal.rotate(degrees);
+        }
+    }
+
+    /**
+     * Revisa si el polígono se encuentra en intersección con otro polígono
+     * convexo utilizando
+     * <a href="www.codezealot.org/archives/55">SAT (Separation Axis Theorem)</a>
+     * @param other Polígono con el cual se revisará si hay interseción
+     * @return true en caso de haber intersección, false en caso contrario
+     */
+    public boolean onCollision(GamePolygon other)
+    {
+        if (checkCollisions &&
+                checkProjections(this, other) && checkProjections(other, this))
+        {
+            if (!this.isSolid && other.isSolid)
+            {
+                pushBack(other, cachedVector, minOverlap);
+            }
+            else if (this.isSolid && !other.isSolid)
+            {
+                other.pushBack(this, cachedVector, minOverlap);
+            }
+
+            cachedVector.setZero();
+            minOverlap = Float.MAX_VALUE;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void pushBack(Polygon other, Vector2 mtv, float distance)
+    {
+        float x = getX() - other.getX();
+        float y = getY() - other.getY();
+
+        float dot = mtv.dot(x, y);
+
+        if (dot < 0)
+        {
+            translate(-1f * mtv.x * distance, -1f * mtv.y * distance);
+        }
+        else
+        {
+            translate(mtv.x * distance, mtv.y * distance);
+        }
+    }
+
+    /**
+     * Revisa si hay un overlap de las proyecciones de 2 polígonos sobre las
+     * normales de cada uno de los lados del polígono base
+     * @param base Polígono a partir del cual se obtendrán las normales de cada
+     *             uno de los lados para realizar las proyecciones
+     * @param other Polígono para revisar overlap de proyección
+     * @return true en caso de haber un overlap, false en caso contrario
+     */
+    private boolean checkProjections(GamePolygon base, GamePolygon other)
+    {
+        Array<Vector2> localNormals = base.normals;
+
+        float overlap;
+
+        // Recorre los vértices del polígono base para obtener las normales
+        // de cada uno de los lados y realizar la verificación de overlap
+        // de proyecciones
+        for (Vector2 normal : localNormals)
+        {
+            Projection projectionForBase = base.getProjection(normal);
+            Projection projectionForOther = other.getProjection(normal);
 
             // Si no hay un overlap en las proyceciones entonces estamos seguros
             // que no hay intersección entre los polígonos
             if (!projectionForBase.overlaps(projectionForOther))
             {
                 return false;
+            }
+            else
+            {
+                overlap = projectionForBase.getOverlap(projectionForOther);
+
+                if (overlap < minOverlap)
+                {
+                    minOverlap = overlap;
+                    cachedVector.set(normal);
+                }
             }
         }
 
@@ -125,11 +252,12 @@ public class GamePolygon extends Polygon
     public Projection getProjection(Vector2 axis)
     {
         float[] vertices = getTransformedVertices();
+        int size = vertices.length;
         float min = axis.dot(vertices[0], vertices[1]);
         float max = min;
         float dot;
 
-        for (int i = 0; i < vertices.length; i+=2)
+        for (int i = 0; i < size; i+=2)
         {
             dot = axis.dot(vertices[i], vertices[i + 1]);
 
@@ -211,12 +339,12 @@ public class GamePolygon extends Polygon
         int halfHeight = height / 2;
 
         float[] vertices =
-                {
-                        -halfWidth, -halfHeight, // Esquina superior izquierda
-                        halfWidth, -halfHeight,  // Esquina superior derecha
-                        halfWidth,  halfHeight,  // Esquina inferior derecha
-                        -halfWidth,  halfHeight  // Esquina inferior izquierda
-                };
+        {
+                -halfWidth, -halfHeight, // Esquina superior izquierda
+                halfWidth, -halfHeight,  // Esquina superior derecha
+                halfWidth,  halfHeight,  // Esquina inferior derecha
+                -halfWidth,  halfHeight  // Esquina inferior izquierda
+        };
 
         return new GamePolygon(vertices);
     }
@@ -227,11 +355,11 @@ public class GamePolygon extends Polygon
         int halfHeight = height / 2;
 
         float[] vertices =
-                {
-                        -halfBase, halfHeight, // Esquina izquierda de base
-                        0, -halfHeight,        // Punta
-                        halfBase, halfHeight   // Esquina derecha de base
-                };
+        {
+                -halfBase, halfHeight, // Esquina izquierda de base
+                0, -halfHeight,        // Punta
+                halfBase, halfHeight   // Esquina derecha de base
+        };
 
         return new GamePolygon(vertices);
     }
@@ -242,12 +370,12 @@ public class GamePolygon extends Polygon
         int halfHeight = height / 2;
 
         float[] vertices =
-                {
-                        -halfLength, 0, // Esquina horizontal izquierda
-                        0, -halfHeight, // Esquina vertical derecha
-                        halfLength, 0,  // Esquina horizontal derecha
-                        0,  halfHeight  // Esquina vertical izquierda
-                };
+        {
+                -halfLength, 0, // Esquina horizontal izquierda
+                0, -halfHeight, // Esquina vertical derecha
+                halfLength, 0,  // Esquina horizontal derecha
+                0,  halfHeight  // Esquina vertical izquierda
+        };
 
         return new GamePolygon(vertices);
     }
