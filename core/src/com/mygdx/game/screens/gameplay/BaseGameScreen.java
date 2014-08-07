@@ -13,9 +13,10 @@ public class BaseGameScreen extends GameScreen
 {
     protected CameraShaker2D cameraShaker;
     protected Background background;
+    protected Grass grass;
     protected Ball ball;
     protected Catapult catapult;
-    protected Grass grass;
+
     protected CollisionTester collisionTester = new CollisionTester();
 
     // Para 60 FPS casi constantes(Android-Sam): 30 máx
@@ -36,9 +37,9 @@ public class BaseGameScreen extends GameScreen
     {
         cameraShaker = new CameraShaker2D(orthographicCamera, 80, 0, 0, 0.75f, 0.99f);
         background = new Background();
-        ball = new Ball(cameraShaker);
-        catapult = new Catapult(ball);
         grass = new Grass(settings);
+        ball = new Ball(settings, cameraShaker, grass);
+        catapult = new Catapult(ball);
     }
 
     @Override

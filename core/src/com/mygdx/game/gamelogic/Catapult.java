@@ -40,6 +40,8 @@ public final class Catapult
     private static final float MAX_LAUNCH_POWER = 1500f;
     private static final float LAUNCH_ANGLE = 45f;
 
+    private boolean holding = false;
+
     public Catapult(Ball ball)
     {
         this.ball = ball;
@@ -64,6 +66,8 @@ public final class Catapult
             public boolean touchDown(int screenX, int screenY, int pointer, int button)
             {
                 player.play("pull");
+                holding = true;
+
                 return super.touchDown(screenX, screenY, pointer, button);
             }
 
@@ -72,6 +76,8 @@ public final class Catapult
             {
                 pullAngle = spoon.getFinalRotation();
                 player.play("launch");
+                holding = false;
+
                 return super.touchUp(screenX, screenY, pointer, button);
             }
         });
@@ -114,12 +120,10 @@ public final class Catapult
 
     private void setBallPosition()
     {
-        if (!ball.isFlying())
+//        if (!ball.isFlying())
+        if (holding)
         {
-            Vector2 position = spoon.getTransformedPosition(98f, 25f);
-
-            ball.x = position.x - 17;
-            ball.y = position.y - 17;
+            ball.setPosition(spoon.getTransformedPosition(98f, 25f));
         }
     }
 

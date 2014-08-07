@@ -1,5 +1,6 @@
 package com.mygdx.game.gamelogic;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.engine.GameSettings;
 import com.engine.GameTime;
 import com.engine.assets.Asset;
+import com.engine.collision2d.GamePolygon;
 import com.engine.graphics.animation.AnimationPlayer;
 import com.mygdx.game.assets.GameAssets;
 
@@ -20,6 +22,9 @@ public final class Grass
     private Array<AnimationPlayer> flowers;
     private Array<AnimationPlayer> grassFlowers;
 
+    private GamePolygon leftSidePolygon;
+    private GamePolygon rightSidePolygon;
+
     public Grass(GameSettings settings)
     {
         this.settings = settings;
@@ -29,11 +34,40 @@ public final class Grass
         this.flowers = new Array<AnimationPlayer>();
         this.grassFlowers = new Array<AnimationPlayer>();
 
+        setGroundPolygons();
         setGroundPositions();
         setGrassDatas();
+
         initializeTulipans();
         initializeFlowers();
         initializeGrassFlowers();
+    }
+
+    private void setGroundPolygons()
+    {
+        leftSidePolygon = new GamePolygon(new float[]
+        {
+                -215f, -38f,
+                 -27f, -50f,
+                 114f, -48f,
+                 235f, -30f,
+                 235f,  20f,
+                -215f,  20f
+        });
+
+        rightSidePolygon = new GamePolygon(new float[]
+        {
+                -198, -30,
+                 202, -17,
+                 202,  20,
+                -198,  20
+        });
+
+        leftSidePolygon.setPosition(217, 459);
+        rightSidePolygon.setPosition(650, 459);
+
+        leftSidePolygon.isSolid = true;
+        rightSidePolygon.isSolid = true;
     }
 
     private void setGroundPositions()
@@ -207,6 +241,12 @@ public final class Grass
         grassFlowers.add(grassFlower6);
     }
 
+    public boolean onCollision(GamePolygon polygon)
+    {
+        return rightSidePolygon.onCollision(polygon) ||
+                leftSidePolygon.onCollision(polygon);
+    }
+
     public void update(GameTime gameTime)
     {
         updateGrassDatas(gameTime);
@@ -354,6 +394,9 @@ public final class Grass
             spriteBatch.draw(region, position.x, position.y, 55,
                     region.getRegionHeight());
         }
+
+        leftSidePolygon.draw(spriteBatch, Color.MAGENTA);
+        rightSidePolygon.draw(spriteBatch, Color.MAGENTA);
     }
 
     class GrassData

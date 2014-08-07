@@ -10,7 +10,7 @@ import com.engine.collision2d.GamePolygon;
 public class CollisionTester
 {
     final static float ROTATION_SPEED = 50f;
-    final static float TRANSLATION_SPEED = 100f;
+    final static float TRANSLATION_SPEED = 2500f;
 
     private GamePolygon a;
     private GamePolygon b;
@@ -19,11 +19,12 @@ public class CollisionTester
 
     public CollisionTester()
     {
-        a = GamePolygon.createConvex(5, 50);
+        a = GamePolygon.createConvex(5, 15);
         a.setPosition(400, 100);
+        a.isSolid = true;
 
-        b = GamePolygon.createRhombus(70, 80);
-        b.setPosition(400, 100);
+        b = GamePolygon.createRhombus(32, 40);
+        b.setPosition(400, 70);
     }
 
     public void update(GameTime gameTime)
@@ -32,7 +33,7 @@ public class CollisionTester
         updateB(gameTime);
 
         a.rotate(ROTATION_SPEED * gameTime.delta);
-        b.rotate(ROTATION_SPEED * gameTime.delta);
+//        b.rotate(ROTATION_SPEED * gameTime.delta);
 
         if (a.onCollision(b))
         {
