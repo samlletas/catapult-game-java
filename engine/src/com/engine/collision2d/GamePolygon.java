@@ -88,8 +88,6 @@ public class GamePolygon extends Polygon
             x2 -= x1;
             y2 -= y1;
 
-            normals.add(new Vector2(-y2, x2).nor());
-
             if (normals.size == 0)
             {
                 normals.add(new Vector2(-y2, x2).nor());
