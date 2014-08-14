@@ -3,7 +3,6 @@ package com.mygdx.game.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mygdx.game.Game;
-import org.lwjgl.util.Display;
 
 public class DesktopLauncher
 {
@@ -13,7 +12,7 @@ public class DesktopLauncher
         config.width = 854;
         config.height = 480;
 
-        int targetFPS = 60;
+        int targetFPS = 1;
 
         config.vSyncEnabled = false;
         config.foregroundFPS = targetFPS;

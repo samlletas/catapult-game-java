@@ -10,21 +10,28 @@ import com.engine.collision2d.GamePolygon;
 public class CollisionTester
 {
     final static float ROTATION_SPEED = 50f;
-    final static float TRANSLATION_SPEED = 2500f;
+    final static float TRANSLATION_SPEED = 15;
 
     private GamePolygon a;
     private GamePolygon b;
+    private Grass grass;
 
     private Color drawColor;
 
-    public CollisionTester()
+    public CollisionTester(Grass grass)
     {
-        a = GamePolygon.createConvex(5, 15);
+//        a = GamePolygon.createConvex(5, 15);
+        a = GamePolygon.createRectangle(50, 50);
         a.setPosition(400, 100);
         a.isSolid = true;
 
-        b = GamePolygon.createRhombus(32, 40);
-        b.setPosition(400, 70);
+//        b = GamePolygon.createRhombus(32, 40);
+//        b = GamePolygon.createConvex(6, 14);
+
+        b = GamePolygon.createRectangle(40, 40);
+        b.setPosition(a.getX() - 25 - 20, 100);
+
+        this.grass = grass;
     }
 
     public void update(GameTime gameTime)
@@ -32,10 +39,10 @@ public class CollisionTester
         updateA(gameTime);
         updateB(gameTime);
 
-        a.rotate(ROTATION_SPEED * gameTime.delta);
+//        a.rotate(ROTATION_SPEED * gameTime.delta);
 //        b.rotate(ROTATION_SPEED * gameTime.delta);
 
-        if (a.onCollision(b))
+        if (b.onCollision(a))
         {
             drawColor = Color.RED;
         }
@@ -43,26 +50,31 @@ public class CollisionTester
         {
             drawColor = Color.WHITE;
         }
+
+        a.translate(a.speed.x, a.speed.y);
+        b.translate(b.speed.x, b.speed.y);
     }
 
     private void updateA(GameTime gameTime)
     {
+        a.speed.setZero();
+
         // Translación
         if (Gdx.input.isKeyPressed(Input.Keys.A))
         {
-            a.translate(-TRANSLATION_SPEED * gameTime.delta, 0f);
+            a.speed.x = -TRANSLATION_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D))
         {
-            a.translate(TRANSLATION_SPEED * gameTime.delta, 0f);
+            a.speed.x = TRANSLATION_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W))
         {
-            a.translate(0f, -TRANSLATION_SPEED * gameTime.delta);
+            a.speed.y = -TRANSLATION_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S))
         {
-            a.translate(0f, TRANSLATION_SPEED * gameTime.delta);
+            a.speed.y = TRANSLATION_SPEED;
         }
 
         // Rotación
@@ -78,22 +90,24 @@ public class CollisionTester
 
     private void updateB(GameTime gameTime)
     {
+        b.speed.setZero();
+
         // Translación
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
-            b.translate(-TRANSLATION_SPEED * gameTime.delta, 0f);
+            b.speed.x = -TRANSLATION_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
         {
-            b.translate(TRANSLATION_SPEED * gameTime.delta, 0f);
+            b.speed.x = TRANSLATION_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
         {
-            b.translate(0f, -TRANSLATION_SPEED * gameTime.delta);
+            b.speed.y = -TRANSLATION_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
         {
-            b.translate(0f, TRANSLATION_SPEED * gameTime.delta);
+            b.speed.y = TRANSLATION_SPEED;
         }
 
         // Rotación

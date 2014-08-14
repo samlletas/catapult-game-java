@@ -18,12 +18,16 @@ public class GamePolygon extends Polygon
 {
     private Projection cachedProjection = new Projection();
     private Vector2 cachedVector = new Vector2();
-    private float minOverlap = Float.MAX_VALUE;
 
     private Array<Vector2> normals;
 
     public boolean isSolid;
     public boolean checkCollisions;
+
+    public Vector2 speed = new Vector2();
+
+    private float maxTEnter = Float.MIN_VALUE;
+    private float minTLeave = Float.MAX_VALUE;
 
     /**
      * Construye un polígono sin vértices
@@ -160,23 +164,18 @@ public class GamePolygon extends Polygon
      */
     public boolean onCollision(GamePolygon other)
     {
-        if (checkCollisions &&
-                checkProjections(this, other) && checkProjections(other, this))
+//        float vx = speed.x - other.speed.x;
+//        float vy = speed.y - other.speed.y;
+
+        if (checkCollisions && checkProjections(this, other) &&
+                checkProjections(other, this))
         {
-            if (!this.isSolid && other.isSolid)
-            {
-                pushBack(other, cachedVector, minOverlap);
-            }
-            else if (this.isSolid && !other.isSolid)
-            {
-                other.pushBack(this, cachedVector, minOverlap);
-            }
-
-            cachedVector.setZero();
-            minOverlap = Float.MAX_VALUE;
-
             return true;
         }
+
+        cachedVector.setZero();
+        maxTEnter = Float.MIN_VALUE;
+        minTLeave = Float.MAX_VALUE;
 
         return false;
     }
@@ -191,49 +190,96 @@ public class GamePolygon extends Polygon
         if (dot < 0)
         {
             translate(-1f * mtv.x * distance, -1f * mtv.y * distance);
+
+            x = -1f * mtv.x;
+            y = -1f * mtv.y;
+            float angle = -(float)Math.toDegrees(MathUtils.atan2(y, x));
+            Gdx.app.log("Pushed back: ", distance + " pixels on: " + angle);
         }
         else
         {
             translate(mtv.x * distance, mtv.y * distance);
+
+            x = mtv.x;
+            y = mtv.y;
+            float angle = -(float)Math.toDegrees(MathUtils.atan2(y, x));
+            Gdx.app.log("Pushed back: ", distance + " pixels on: " + angle);
         }
     }
 
     /**
      * Revisa si hay un overlap de las proyecciones de 2 polígonos sobre las
-     * normales de cada uno de los lados del polígono base
-     * @param base Polígono a partir del cual se obtendrán las normales de cada
-     *             uno de los lados para realizar las proyecciones
-     * @param other Polígono para revisar overlap de proyección
+     * normales de cada uno de los lados del polígono
      * @return true en caso de haber un overlap, false en caso contrario
      */
-    private boolean checkProjections(GamePolygon base, GamePolygon other)
+    private boolean checkProjections(GamePolygon a, GamePolygon b)
     {
-        Array<Vector2> localNormals = base.normals;
+        Array<Vector2> localNormals = a.normals;
 
-        float overlap;
+        float speedProjection;
+
+        float minDistance;
+        float maxDistance;
+
+        float tEnter;
+        float tLeave;
 
         // Recorre los vértices del polígono base para obtener las normales
         // de cada uno de los lados y realizar la verificación de overlap
         // de proyecciones
         for (Vector2 normal : localNormals)
         {
-            Projection projectionForBase = base.getProjection(normal);
-            Projection projectionForOther = other.getProjection(normal);
+//            normal = localNormals.get(0);
+//            Gdx.app.log("","X:" + normal.x + ", Y:" + normal.y);
 
-            // Si no hay un overlap en las proyceciones entonces estamos seguros
-            // que no hay intersección entre los polígonos
-            if (!projectionForBase.overlaps(projectionForOther))
+            Projection projectionA = a.getProjection(normal);
+            Projection projectionB = b.getProjection(normal);
+
+            float vx = a.speed.x - b.speed.x;
+            float vy = a.speed.y - b.speed.y;
+            speedProjection = normal.dot(vx, vy);
+
+            minDistance = projectionB.min - projectionA.max;
+            maxDistance = projectionB.max - projectionA.min;
+
+            if (Math.abs(minDistance) > Math.abs(maxDistance))
             {
-                return false;
+                float hold = minDistance;
+                minDistance = maxDistance;
+                maxDistance = hold;
+            }
+
+            tEnter = minDistance / speedProjection;
+            tLeave = maxDistance / speedProjection;
+
+//            Gdx.app.log("", "Time Enter:" + tEnter);
+//            Gdx.app.log("", "Time Leave:" + tLeave);
+
+            maxTEnter = Math.max(maxTEnter, tEnter);
+            minTLeave = Math.min(minTLeave, tLeave);
+
+            if (!projectionA.overlaps(projectionB))
+            {
+                if (tEnter < 0f || tEnter > 1f)
+                {
+                    return false;
+                }
             }
             else
             {
-                overlap = projectionForBase.getOverlap(projectionForOther);
-
-                if (overlap < minOverlap)
+                if (tEnter == 0f)
                 {
-                    minOverlap = overlap;
-                    cachedVector.set(normal);
+                    if (tLeave < 1)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if ((tEnter >= 0f && tEnter < 1f))
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -255,7 +301,7 @@ public class GamePolygon extends Polygon
         float max = min;
         float dot;
 
-        for (int i = 0; i < size; i+=2)
+        for (int i = 2; i < size; i+=2)
         {
             dot = axis.dot(vertices[i], vertices[i + 1]);
 
@@ -404,5 +450,12 @@ public class GamePolygon extends Polygon
         }
 
         return new GamePolygon(vertices);
+    }
+
+    @Override
+    public float[] getTransformedVertices()
+    {
+        dirty();
+        return super.getTransformedVertices();
     }
 }

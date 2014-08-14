@@ -17,7 +17,7 @@ public class BaseGameScreen extends GameScreen
     protected Ball ball;
     protected Catapult catapult;
 
-    protected CollisionTester collisionTester = new CollisionTester();
+    protected CollisionTester collisionTester;
 
     // Para 60 FPS casi constantes(Android-Sam): 30 máx
     protected int updates = 1;
@@ -40,6 +40,8 @@ public class BaseGameScreen extends GameScreen
         grass = new Grass(settings);
         ball = new Ball(settings, cameraShaker, grass);
         catapult = new Catapult(ball);
+
+        collisionTester = new CollisionTester(grass);
     }
 
     @Override

@@ -137,10 +137,10 @@ public final class Ball
 
     public void draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.draw(region, polygon.getX() - region.getRegionWidth() / 2,
-                polygon.getY() - region.getRegionHeight() / 2);
-        ballTrace.draw(spriteBatch);
-        ballExplosion.draw(spriteBatch);
+//        spriteBatch.draw(region, polygon.getX() - region.getRegionWidth() / 2,
+//                polygon.getY() - region.getRegionHeight() / 2);
+//        ballTrace.draw(spriteBatch);
+//        ballExplosion.draw(spriteBatch);
         polygon.draw(spriteBatch, Color.CYAN);
     }
 }
