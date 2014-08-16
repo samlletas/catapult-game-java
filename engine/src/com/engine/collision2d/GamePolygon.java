@@ -26,7 +26,7 @@ public class GamePolygon extends Polygon
 
     public Vector2 speed = new Vector2();
 
-    private float maxTEnter = Float.MIN_VALUE;
+    private float maxTEnter = -Float.MAX_VALUE;
     private float minTLeave = Float.MAX_VALUE;
 
     /**
@@ -164,47 +164,26 @@ public class GamePolygon extends Polygon
      */
     public boolean onCollision(GamePolygon other)
     {
-//        float vx = speed.x - other.speed.x;
-//        float vy = speed.y - other.speed.y;
+        cachedVector.setZero();
+        maxTEnter = 0;
+        minTLeave = Float.MAX_VALUE;
+
+        Gdx.app.log("", "--BEGIN--");
 
         if (checkCollisions && checkProjections(this, other) &&
                 checkProjections(other, this))
         {
+            speed.x *= maxTEnter;
+            speed.y *= maxTEnter;
+
+            Gdx.app.log("", "MAX TIME ENTER:" + maxTEnter);
+
             return true;
         }
 
-        cachedVector.setZero();
-        maxTEnter = Float.MIN_VALUE;
-        minTLeave = Float.MAX_VALUE;
+        Gdx.app.log("", "MAX TIME ENTER:" + maxTEnter);
 
         return false;
-    }
-
-    private void pushBack(Polygon other, Vector2 mtv, float distance)
-    {
-        float x = getX() - other.getX();
-        float y = getY() - other.getY();
-
-        float dot = mtv.dot(x, y);
-
-        if (dot < 0)
-        {
-            translate(-1f * mtv.x * distance, -1f * mtv.y * distance);
-
-            x = -1f * mtv.x;
-            y = -1f * mtv.y;
-            float angle = -(float)Math.toDegrees(MathUtils.atan2(y, x));
-            Gdx.app.log("Pushed back: ", distance + " pixels on: " + angle);
-        }
-        else
-        {
-            translate(mtv.x * distance, mtv.y * distance);
-
-            x = mtv.x;
-            y = mtv.y;
-            float angle = -(float)Math.toDegrees(MathUtils.atan2(y, x));
-            Gdx.app.log("Pushed back: ", distance + " pixels on: " + angle);
-        }
     }
 
     /**
@@ -215,6 +194,9 @@ public class GamePolygon extends Polygon
     private boolean checkProjections(GamePolygon a, GamePolygon b)
     {
         Array<Vector2> localNormals = a.normals;
+
+        float vx = a.speed.x - b.speed.x;
+        float vy = a.speed.y - b.speed.y;
 
         float speedProjection;
 
@@ -235,8 +217,6 @@ public class GamePolygon extends Polygon
             Projection projectionA = a.getProjection(normal);
             Projection projectionB = b.getProjection(normal);
 
-            float vx = a.speed.x - b.speed.x;
-            float vy = a.speed.y - b.speed.y;
             speedProjection = normal.dot(vx, vy);
 
             minDistance = projectionB.min - projectionA.max;
@@ -252,28 +232,46 @@ public class GamePolygon extends Polygon
             tEnter = minDistance / speedProjection;
             tLeave = maxDistance / speedProjection;
 
-//            Gdx.app.log("", "Time Enter:" + tEnter);
-//            Gdx.app.log("", "Time Leave:" + tLeave);
+            Gdx.app.log("", "Time Enter:" + tEnter);
+            Gdx.app.log("", "Time Leave:" + tLeave);
 
-            maxTEnter = Math.max(maxTEnter, tEnter);
-            minTLeave = Math.min(minTLeave, tLeave);
-
+            // Predicción
             if (!projectionA.overlaps(projectionB))
             {
                 if (tEnter < 0f || tEnter > 1f)
                 {
                     return false;
                 }
+
+                if (tEnter > maxTEnter)
+                {
+                    maxTEnter = tEnter;
+
+                    cachedVector.set(normal);
+                }
+
+                minTLeave = Math.min(minTLeave, tLeave);
             }
             else
             {
+                // En línea
                 if (tEnter == 0f)
                 {
-                    if (tLeave < 1)
+                    if (tLeave < 0f)
                     {
                         return false;
                     }
+
+                    if (tEnter > maxTEnter)
+                    {
+                        maxTEnter = tEnter;
+
+                        cachedVector.set(normal);
+                    }
+
+                    minTLeave = Math.min(minTLeave, tLeave);
                 }
+                // Overlapping
                 else
                 {
                     if ((tEnter >= 0f && tEnter < 1f))

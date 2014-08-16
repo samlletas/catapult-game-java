@@ -4,13 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Polygon;
 import com.engine.GameTime;
 import com.engine.collision2d.GamePolygon;
 
 public class CollisionTester
 {
     final static float ROTATION_SPEED = 50f;
-    final static float TRANSLATION_SPEED = 15;
+
+    final static float SPEED_X = 200f;
+    final static float SPEED_Y = 10f;
 
     private GamePolygon a;
     private GamePolygon b;
@@ -29,7 +32,8 @@ public class CollisionTester
 //        b = GamePolygon.createConvex(6, 14);
 
         b = GamePolygon.createRectangle(40, 40);
-        b.setPosition(a.getX() - 25 - 20, 100);
+        b.setPosition(330, 100);
+//        b.setPosition(a.getX() - 25 - 20, 100);
 
         this.grass = grass;
     }
@@ -59,22 +63,25 @@ public class CollisionTester
     {
         a.speed.setZero();
 
+        float sx = SPEED_X;
+        float sy = SPEED_Y;
+
         // Translación
         if (Gdx.input.isKeyPressed(Input.Keys.A))
         {
-            a.speed.x = -TRANSLATION_SPEED;
+            a.speed.x = -sx;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D))
         {
-            a.speed.x = TRANSLATION_SPEED;
+            a.speed.x = sx;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W))
         {
-            a.speed.y = -TRANSLATION_SPEED;
+            a.speed.y = -sy;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S))
         {
-            a.speed.y = TRANSLATION_SPEED;
+            a.speed.y = sy;
         }
 
         // Rotación
@@ -92,22 +99,25 @@ public class CollisionTester
     {
         b.speed.setZero();
 
+        float sx = SPEED_X;
+        float sy = SPEED_Y;
+
         // Translación
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
-            b.speed.x = -TRANSLATION_SPEED;
+            b.speed.x = -sx;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
         {
-            b.speed.x = TRANSLATION_SPEED;
+            b.speed.x = sx;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
         {
-            b.speed.y = -TRANSLATION_SPEED;
+            b.speed.y = -sy;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
         {
-            b.speed.y = TRANSLATION_SPEED;
+            b.speed.y = sy;
         }
 
         // Rotación
