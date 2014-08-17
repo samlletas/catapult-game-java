@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.GameAdapter;
 import com.engine.utilities.ColorUtilities;
+import com.sun.org.apache.bcel.internal.generic.FLOAD;
 
 /**
  * Representa un polígono en 2D que permite revisión de colisiones
@@ -165,7 +166,7 @@ public class GamePolygon extends Polygon
     public boolean onCollision(GamePolygon other)
     {
         cachedVector.setZero();
-        maxTEnter = 0;
+        maxTEnter = -Float.MAX_VALUE;
         minTLeave = Float.MAX_VALUE;
 
         Gdx.app.log("", "--BEGIN--");
@@ -173,15 +174,25 @@ public class GamePolygon extends Polygon
         if (checkCollisions && checkProjections(this, other) &&
                 checkProjections(other, this))
         {
-            speed.x *= maxTEnter;
-            speed.y *= maxTEnter;
+            if (Float.isFinite(maxTEnter))
+            {
+                speed.x *= Math.max(0f, maxTEnter);
+                speed.y *= Math.max(0f, maxTEnter);
+            }
+            else
+            {
+                speed.x = 0f;
+                speed.y = 0f;
+            }
 
             Gdx.app.log("", "MAX TIME ENTER:" + maxTEnter);
+            Gdx.app.log("", "MIN TIME LEAVE:" + minTLeave);
 
             return true;
         }
 
         Gdx.app.log("", "MAX TIME ENTER:" + maxTEnter);
+        Gdx.app.log("", "MIN TIME LEAVE:" + minTLeave);
 
         return false;
     }
@@ -211,9 +222,6 @@ public class GamePolygon extends Polygon
         // de proyecciones
         for (Vector2 normal : localNormals)
         {
-//            normal = localNormals.get(0);
-//            Gdx.app.log("","X:" + normal.x + ", Y:" + normal.y);
-
             Projection projectionA = a.getProjection(normal);
             Projection projectionB = b.getProjection(normal);
 
@@ -222,63 +230,25 @@ public class GamePolygon extends Polygon
             minDistance = projectionB.min - projectionA.max;
             maxDistance = projectionB.max - projectionA.min;
 
-            if (Math.abs(minDistance) > Math.abs(maxDistance))
-            {
-                float hold = minDistance;
-                minDistance = maxDistance;
-                maxDistance = hold;
-            }
-
             tEnter = minDistance / speedProjection;
             tLeave = maxDistance / speedProjection;
+
+            if (tEnter > tLeave)
+            {
+                float hold = tEnter;
+                tEnter = tLeave;
+                tLeave = hold;
+            }
 
             Gdx.app.log("", "Time Enter:" + tEnter);
             Gdx.app.log("", "Time Leave:" + tLeave);
 
-            // Predicción
-            if (!projectionA.overlaps(projectionB))
+            maxTEnter = Math.max(maxTEnter, tEnter);
+            minTLeave = Math.min(minTLeave, tLeave);
+
+            if (maxTEnter > minTLeave || tEnter > 1f || tLeave <= 0f)
             {
-                if (tEnter < 0f || tEnter > 1f)
-                {
-                    return false;
-                }
-
-                if (tEnter > maxTEnter)
-                {
-                    maxTEnter = tEnter;
-
-                    cachedVector.set(normal);
-                }
-
-                minTLeave = Math.min(minTLeave, tLeave);
-            }
-            else
-            {
-                // En línea
-                if (tEnter == 0f)
-                {
-                    if (tLeave < 0f)
-                    {
-                        return false;
-                    }
-
-                    if (tEnter > maxTEnter)
-                    {
-                        maxTEnter = tEnter;
-
-                        cachedVector.set(normal);
-                    }
-
-                    minTLeave = Math.min(minTLeave, tLeave);
-                }
-                // Overlapping
-                else
-                {
-                    if ((tEnter >= 0f && tEnter < 1f))
-                    {
-                        return false;
-                    }
-                }
+                return false;
             }
         }
 
@@ -448,12 +418,5 @@ public class GamePolygon extends Polygon
         }
 
         return new GamePolygon(vertices);
-    }
-
-    @Override
-    public float[] getTransformedVertices()
-    {
-        dirty();
-        return super.getTransformedVertices();
     }
 }
