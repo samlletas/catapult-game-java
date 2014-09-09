@@ -13,7 +13,7 @@ public class CollisionTester
     final static float ROTATION_SPEED = 50f;
 
     final static float SPEED_X = 200f;
-    final static float SPEED_Y = 10f;
+    final static float SPEED_Y = 200f;
 
     private GamePolygon a;
     private GamePolygon b;
@@ -24,14 +24,15 @@ public class CollisionTester
     public CollisionTester(Grass grass)
     {
 //        a = GamePolygon.createConvex(5, 15);
-        a = GamePolygon.createRectangle(50, 50);
+//        a = GamePolygon.createRectangle(50, 50);
+        a = GamePolygon.createRhombus(32, 40);
         a.setPosition(400, 100);
-        a.isSolid = true;
+//        a.isSolid = true;
 
-//        b = GamePolygon.createRhombus(32, 40);
+        b = GamePolygon.createRhombus(32, 40);
 //        b = GamePolygon.createConvex(6, 14);
 
-        b = GamePolygon.createRectangle(40, 40);
+//        b = GamePolygon.createRectangle(40, 40);
         b.setPosition(330, 100);
 //        b.setPosition(a.getX() - 25 - 20, 100);
 
@@ -55,16 +56,16 @@ public class CollisionTester
             drawColor = Color.WHITE;
         }
 
-        a.translate(a.speed.x, a.speed.y);
-        b.translate(b.speed.x, b.speed.y);
+        a.move();
+        b.move();
     }
 
     private void updateA(GameTime gameTime)
     {
         a.speed.setZero();
 
-        float sx = SPEED_X;
-        float sy = SPEED_Y;
+        float sx = SPEED_X * gameTime.delta;
+        float sy = SPEED_Y * gameTime.delta;
 
         // Translación
         if (Gdx.input.isKeyPressed(Input.Keys.A))
@@ -99,8 +100,8 @@ public class CollisionTester
     {
         b.speed.setZero();
 
-        float sx = SPEED_X;
-        float sy = SPEED_Y;
+        float sx = SPEED_X * gameTime.delta;
+        float sy = SPEED_Y * gameTime.delta;
 
         // Translación
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))

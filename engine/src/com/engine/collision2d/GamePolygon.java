@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.GameAdapter;
+import com.engine.GameTime;
 import com.engine.utilities.ColorUtilities;
 import com.sun.org.apache.bcel.internal.generic.FLOAD;
 
@@ -120,8 +121,6 @@ public class GamePolygon extends Polygon
                 }
             }
         }
-
-        Gdx.app.log("Axes: ", String.valueOf(normals.size));
     }
 
     @Override
@@ -169,32 +168,28 @@ public class GamePolygon extends Polygon
         maxTEnter = -Float.MAX_VALUE;
         minTLeave = Float.MAX_VALUE;
 
-        Gdx.app.log("", "--BEGIN--");
-
         if (checkCollisions && checkProjections(this, other) &&
                 checkProjections(other, this))
         {
-            if (Float.isFinite(maxTEnter))
+            if (this.isSolid && !other.isSolid)
             {
-                speed.x *= Math.max(0f, maxTEnter);
-                speed.y *= Math.max(0f, maxTEnter);
+                other.pushBack(maxTEnter);
             }
-            else
+            else if (!this.isSolid && other.isSolid)
             {
-                speed.x = 0f;
-                speed.y = 0f;
+                this.pushBack(maxTEnter);
             }
-
-            Gdx.app.log("", "MAX TIME ENTER:" + maxTEnter);
-            Gdx.app.log("", "MIN TIME LEAVE:" + minTLeave);
 
             return true;
         }
 
-        Gdx.app.log("", "MAX TIME ENTER:" + maxTEnter);
-        Gdx.app.log("", "MIN TIME LEAVE:" + minTLeave);
-
         return false;
+    }
+
+    private void pushBack(float tEnter)
+    {
+        speed.x *= Math.max(0f, tEnter);
+        speed.y *= Math.max(0f, tEnter);
     }
 
     /**
@@ -230,6 +225,11 @@ public class GamePolygon extends Polygon
             minDistance = projectionB.min - projectionA.max;
             maxDistance = projectionB.max - projectionA.min;
 
+            if (speedProjection == 0f)
+            {
+                speedProjection = Float.MIN_VALUE;
+            }
+
             tEnter = minDistance / speedProjection;
             tLeave = maxDistance / speedProjection;
 
@@ -239,9 +239,6 @@ public class GamePolygon extends Polygon
                 tEnter = tLeave;
                 tLeave = hold;
             }
-
-            Gdx.app.log("", "Time Enter:" + tEnter);
-            Gdx.app.log("", "Time Leave:" + tLeave);
 
             maxTEnter = Math.max(maxTEnter, tEnter);
             minTLeave = Math.min(minTLeave, tLeave);
@@ -287,6 +284,11 @@ public class GamePolygon extends Polygon
         cachedProjection.max = max;
 
         return cachedProjection;
+    }
+
+    public void move()
+    {
+        translate(speed.x, speed.y);
     }
 
     /**
