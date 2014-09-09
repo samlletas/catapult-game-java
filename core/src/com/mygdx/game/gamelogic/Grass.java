@@ -243,8 +243,8 @@ public final class Grass
 
     public boolean onCollision(GamePolygon polygon)
     {
-        return rightSidePolygon.onCollision(polygon) ||
-                leftSidePolygon.onCollision(polygon);
+        return polygon.onCollision(leftSidePolygon) ||
+                polygon.onCollision(rightSidePolygon);
     }
 
     public void update(GameTime gameTime)
@@ -313,10 +313,10 @@ public final class Grass
 
     public void draw(SpriteBatch spriteBatch)
     {
-//        drawTulipans(spriteBatch);
-//        drawGrassFlowers(spriteBatch);
-//        drawFlowers(spriteBatch);
-//        drawGrassDatas(spriteBatch);
+        drawTulipans(spriteBatch);
+        drawGrassFlowers(spriteBatch);
+        drawFlowers(spriteBatch);
+        drawGrassDatas(spriteBatch);
         drawGround(spriteBatch);
     }
 
@@ -378,22 +378,22 @@ public final class Grass
 
     private void drawGround(SpriteBatch spriteBatch)
     {
-//        Array<Vector2> localGroundPositions = groundPositions;
-//        Array<Asset<TextureAtlas.AtlasRegion>> groundRegions =
-//                GameAssets.AtlasRegions.groundRegions;
-//        int size = localGroundPositions.size;
-//
-//        Vector2 position;
-//        TextureAtlas.AtlasRegion region;
-//
-//        for (int i = 0; i < size; i++)
-//        {
-//            position = localGroundPositions.get(i);
-//            region = groundRegions.get(i).instance;
-//
-//            spriteBatch.draw(region, position.x, position.y, 55,
-//                    region.getRegionHeight());
-//        }
+        Array<Vector2> localGroundPositions = groundPositions;
+        Array<Asset<TextureAtlas.AtlasRegion>> groundRegions =
+                GameAssets.AtlasRegions.groundRegions;
+        int size = localGroundPositions.size;
+
+        Vector2 headPosition;
+        TextureAtlas.AtlasRegion region;
+
+        for (int i = 0; i < size; i++)
+        {
+            headPosition = localGroundPositions.get(i);
+            region = groundRegions.get(i).instance;
+
+            spriteBatch.draw(region, headPosition.x, headPosition.y, 55,
+                    region.getRegionHeight());
+        }
 
         leftSidePolygon.draw(spriteBatch, Color.MAGENTA);
         rightSidePolygon.draw(spriteBatch, Color.MAGENTA);
