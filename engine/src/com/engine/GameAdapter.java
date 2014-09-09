@@ -53,14 +53,15 @@ public abstract class GameAdapter extends ApplicationAdapter
         initialize();
     }
 
-    private final void initialize2DCamera()
+    private void initialize2DCamera()
     {
         orthographicCamera = new OrthographicCamera();
         orthographicCamera.setToOrtho(true, settings.virtualWidth,
                 settings.virtualHeight);
+        orthographicCamera.far = 300f;
     }
 
-    private final void initialize3DCamera()
+    private void initialize3DCamera()
     {
         perspectiveCamera = new PerspectiveCamera(75,
                 settings.virtualWidth, settings.virtualHeight);
@@ -110,7 +111,7 @@ public abstract class GameAdapter extends ApplicationAdapter
         drawBlackBars();
     }
 
-    private final void drawBlackBars()
+    private void drawBlackBars()
     {
         int leftBarWidth = viewport2D.getLeftGutterWidth();
         int rightBarWidth = viewport2D.getRightGutterWidth();
@@ -191,8 +192,6 @@ public abstract class GameAdapter extends ApplicationAdapter
     }
 
     protected abstract void initialize();
-
     protected abstract void update(GameTime gameTime);
-
     protected abstract void draw(GameTime gameTime);
 }
