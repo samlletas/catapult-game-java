@@ -2,6 +2,7 @@ package com.mygdx.game.gamelogic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -11,6 +12,7 @@ import com.engine.GameSettings;
 import com.engine.GameTime;
 import com.engine.camera.CameraShaker2D;
 import com.engine.collision2d.GamePolygon;
+import com.engine.graphics.effects.TrailEffect;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Ball
@@ -18,17 +20,17 @@ public final class Ball
     private final TextureAtlas.AtlasRegion region;
     private boolean flying;
 
-    private float speedX;
-    private float speedY;
-
     private GameSettings gameSettings;
     private CameraShaker2D cameraShaker;
     private Grass grass;
 
     private GamePolygon polygon;
+    private Vector2 speed;
 
-    private ParticleEffect ballTrace;
+    private TrailEffect ballTrail;
     private ParticleEffect ballExplosion;
+
+    private OrthographicCamera camera;
 
     private static float GRAVITY = 2500f;
 
@@ -37,7 +39,8 @@ public final class Ball
         return flying;
     }
 
-    public Ball(GameSettings gameSettings, CameraShaker2D cameraShaker, Grass grass)
+    public Ball(GameSettings gameSettings, CameraShaker2D cameraShaker,
+                Grass grass, OrthographicCamera camera)
     {
         this.region = GameAssets.AtlasRegions.ball.instance;
         this.flying = false;
@@ -48,9 +51,12 @@ public final class Ball
 
         this.polygon = GamePolygon.createConvex(6, 14);
         this.polygon.setPosition(0f, 0f);
+        this.speed = new Vector2();
 
-        this.ballTrace = GameAssets.Particles.ballTrace.instance;
+        this.ballTrail = new TrailEffect(Color.CYAN, 5, 200f, 0f, 25f, 0f, 0.5f, 800f);
         this.ballExplosion = GameAssets.Particles.ballExplosion.instance;
+
+        this.camera = camera;
     }
 
     public void setPosition(float x, float y)
@@ -65,20 +71,23 @@ public final class Ball
 
     public void launch(float power, float angle)
     {
-        speedX = power * MathUtils.cosDeg(angle);
-        speedY = -(power * MathUtils.sinDeg(angle));
+        speed.x = power * MathUtils.cosDeg(angle);
+        speed.y = -(power * MathUtils.sinDeg(angle));
 
         flying = true;
 
-        ballTrace.reset();
+        ballTrail.reset(polygon.getX(), polygon.getY());
     }
 
     private void cancelFlight()
     {
         flying = false;
 
-        speedX = 0f;
-        speedY = 0f;
+        speed.x = 0f;
+        speed.y = 0f;
+
+        polygon.speed.x = 0f;
+        polygon.speed.y = 0f;
     }
 
     private void explode()
@@ -92,29 +101,26 @@ public final class Ball
     {
         if (flying)
         {
-            polygon.translate(speedX * gameTime.delta, speedY * gameTime.delta);
+            speed.y += GRAVITY * gameTime.delta;
 
-            speedY += GRAVITY * gameTime.delta;
+            polygon.speed.x = speed.x * gameTime.delta;
+            polygon.speed.y = speed.y * gameTime.delta;
 
-//            launchTime = TimeUtils.timeSinceMillis(startTime) / 1000f;
-//
-//            x = x0 + (speedX * launchTime);
-//            y = y0 + (speedY * launchTime) + (0.5f * GRAVITY * launchTime * launchTime);
+            boolean collided = onCollisionWithGrass() || isOutsideBounds();
 
-            ballTrace.setPosition(polygon.getX(), polygon.getY());
+            polygon.move();
+            ballTrail.setPosition(polygon.getX(), polygon.getY());
 
-            if (isOutsideBounds() || onCollisionWithGrass())
+            if (collided)
             {
                 logMaxY();
-
                 explode();
                 cancelFlight();
-
                 cameraShaker.shake(2);
             }
         }
 
-        ballTrace.update(gameTime.delta);
+        ballTrail.update(gameTime);
         ballExplosion.update(gameTime.delta);
     }
 
@@ -137,10 +143,13 @@ public final class Ball
 
     public void draw(SpriteBatch spriteBatch)
     {
-//        spriteBatch.draw(region, polygon.getX() - region.getRegionWidth() / 2,
-//                polygon.getY() - region.getRegionHeight() / 2);
-//        ballTrace.draw(spriteBatch);
-//        ballExplosion.draw(spriteBatch);
+        ballTrail.draw(camera);
+
+        spriteBatch.begin();
+        spriteBatch.draw(region, polygon.getX() - region.getRegionWidth() / 2,
+                polygon.getY() - region.getRegionHeight() / 2);
+        ballExplosion.draw(spriteBatch);
         polygon.draw(spriteBatch, Color.CYAN);
+        spriteBatch.end();
     }
 }
