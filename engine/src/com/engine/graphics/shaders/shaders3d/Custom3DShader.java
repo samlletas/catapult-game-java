@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -34,8 +35,6 @@ public abstract class Custom3DShader implements Shader
     protected RenderContext context;
     protected ShaderProgram program;
 
-    protected Matrix4 modelView;
-    protected Matrix4 modelViewProjection;
     protected UniformCollection globalUniforms;
     protected UniformCollection localUniforms;
 
@@ -71,18 +70,15 @@ public abstract class Custom3DShader implements Shader
         mixer.mix(vertexBuilder, getCustomVertexShader());
         mixer.mix(fragmentBuilder, getCustomFragmentShader());
 
-//        System.out.print("---VERTEX SHADER---\n\n");
-//        System.out.println(vertexBuilder);
-//        System.out.print("---FRAGMENT SHADER---\n\n");
-//        System.out.println(fragmentBuilder);
+        System.out.print("---VERTEX SHADER---\n\n");
+        System.out.println(vertexBuilder);
+        System.out.print("---FRAGMENT SHADER---\n\n");
+        System.out.println(fragmentBuilder);
 
         program = new ShaderProgram(vertexBuilder.toString(), fragmentBuilder.toString());
 
         if (program.isCompiled())
         {
-            modelView = new Matrix4();
-            modelViewProjection = new Matrix4();
-
             globalUniforms = new UniformCollection();
             localUniforms = new UniformCollection();
 
@@ -250,25 +246,48 @@ public abstract class Custom3DShader implements Shader
 
     private void addBaseUniforms()
     {
-        // Matriz ModelView
+        // Matriz NormalMatrix
+        if (hasVertexAttribute(VertexAttributes.Usage.Normal))
+        {
+            localUniforms.add(new Uniform("u_normalMatrix", new IUniformSetter()
+            {
+                private Matrix3 matrix = new Matrix3();
+
+                @Override
+                public void set(Uniform uniform, ShaderProgram program,
+                                Renderable renderable)
+                {
+                    matrix.set(renderable.worldTransform).inv().transpose();
+                    program.setUniformMatrix(uniform.id, matrix);
+                }
+            }));
+        }
+
+        // Matriz ModelViewProjection
         localUniforms.add(new Uniform("u_modelView", new IUniformSetter()
         {
+            private Matrix4 matrix = new Matrix4();
+
             @Override
             public void set(Uniform uniform, ShaderProgram program,
                             Renderable renderable)
             {
-                program.setUniformMatrix(uniform.id, modelView);
+                matrix.set(camera.view).mul(renderable.worldTransform);
+                program.setUniformMatrix(uniform.id, matrix);
             }
         }));
 
         // Matriz ModelViewProjection
         localUniforms.add(new Uniform("u_modelViewProjection", new IUniformSetter()
         {
+            private Matrix4 matrix = new Matrix4();
+
             @Override
             public void set(Uniform uniform, ShaderProgram program,
                             Renderable renderable)
             {
-                program.setUniformMatrix(uniform.id, modelViewProjection);
+                matrix.set(camera.combined).mul(renderable.worldTransform);
+                program.setUniformMatrix(uniform.id, matrix);
             }
         }));
 
@@ -333,12 +352,6 @@ public abstract class Custom3DShader implements Shader
     @Override
     public void render(Renderable renderable)
     {
-        modelView.set(camera.view);
-        modelView.mul(renderable.worldTransform);
-
-        modelViewProjection.set(camera.projection);
-        modelViewProjection.mul(modelView);
-
         localUniforms.setUniforms(program, renderable);
 
         renderable.mesh.render(

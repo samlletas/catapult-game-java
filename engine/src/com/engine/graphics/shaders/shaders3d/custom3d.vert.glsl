@@ -3,6 +3,7 @@ varying vec3 v_position;
 
 #ifdef normalFlag
     attribute vec3 a_normal;
+    uniform mat3 u_normalMatrix;
     varying vec3 v_normal;
 #endif
 
@@ -37,9 +38,9 @@ void main()
 
     #ifdef normalFlag
         #ifdef skinningFlag
-            vec4 normal = skinning * vec4(a_normal, 0.0);
+            vec3 normal = normalize((u_modelView * skinning * vec4(a_normal, 0.0)).xyz);
         #else
-            vec4 normal = vec4(a_position, 0.0);
+            vec3 normal = normalize(u_normalMatrix * a_normal);
         #endif
     #endif
 
@@ -52,7 +53,7 @@ void main()
     v_position = (u_modelView * position).xyz;
 
     #ifdef normalFlag
-        v_normal = (u_modelView * normal).xyz;
+        v_normal = normal;
     #endif
 
     #ifdef textureFlag
