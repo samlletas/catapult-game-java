@@ -37,18 +37,51 @@ public final class Catapult
     private static final float MIN_PULL_ANGLE = 137f;
     private static final float MAX_PULL_ANGLE = 179f;
     private static final float MIN_LAUNCH_POWER = 150f;
-    private static final float MAX_LAUNCH_POWER = 1500f;
+    private static final float MAX_LAUNCH_POWER = 1600f;
     private static final float LAUNCH_ANGLE = 45f;
 
-    private boolean holding = false;
+    private boolean pulling = false;
 
     public Catapult(Ball ball)
     {
         this.ball = ball;
         this.ropeRegion = GameAssets.AtlasRegions.rope.instance;
 
+        initializeInput();
         initializeAnimation();
         getBones();
+    }
+
+    private void initializeInput()
+    {
+        Gdx.input.setInputProcessor(new InputAdapter()
+        {
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button)
+            {
+                if (!ball.isFlying())
+                {
+                    player.play("pull");
+                    pulling = true;
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button)
+            {
+                if (pulling)
+                {
+                    pullAngle = spoon.getFinalRotation();
+                    player.play("launch");
+                }
+
+                pulling = false;
+
+                return true;
+            }
+        });
     }
 
     private void initializeAnimation()
@@ -59,28 +92,6 @@ public final class Catapult
         player.rotation = 2f;
         player.play("default");
 //        player.speed = 0.25f;
-
-        Gdx.input.setInputProcessor(new InputAdapter()
-        {
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button)
-            {
-                player.play("pull");
-                holding = true;
-
-                return super.touchDown(screenX, screenY, pointer, button);
-            }
-
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button)
-            {
-                pullAngle = spoon.getFinalRotation();
-                player.play("launch");
-                holding = false;
-
-                return super.touchUp(screenX, screenY, pointer, button);
-            }
-        });
 
         player.getAnimation("launch").onAnimationEnd.subscribe(new IEventHandler<EventsArgs>()
         {
@@ -120,8 +131,7 @@ public final class Catapult
 
     private void setBallPosition()
     {
-//        if (!ball.isFlying())
-        if (holding)
+        if (!ball.isFlying())
         {
             ball.setPosition(spoon.getTransformedPosition(98f, 25f));
         }
