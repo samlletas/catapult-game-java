@@ -2,6 +2,7 @@ package com.mygdx.game.assets;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.utils.Array;
 import com.engine.assets.Asset;
 import com.engine.graphics.animation.AnimationLoader;
@@ -49,14 +50,20 @@ public final class GameAssets
 
         public static Asset<TextureAtlas.AtlasRegion> rope =
                 new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+
+        public static Asset<TextureAtlas.AtlasRegion> crystal =
+                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
     }
 
     public static final class Particles
     {
-        public static Asset<ParticleEffect> ballTrace =
-                new Asset<ParticleEffect>("particles/ball.p", ParticleEffect.class);
-
         public static Asset<ParticleEffect> ballExplosion =
                 new Asset<ParticleEffect>("particles/ballexplosion.p", ParticleEffect.class);
+    }
+
+    public static final class Models
+    {
+        public static Asset<Model> crystal =
+                new Asset<Model>("models/crystal.g3db", Model.class);
     }
 }

@@ -30,8 +30,8 @@ public class GameAssetMaster extends BaseAssetMaster
         queue.add(GameAssets.Animations.tulipan);
         queue.add(GameAssets.Animations.grassFlower);
         queue.add(GameAssets.Animations.flower);
-        queue.add(GameAssets.Particles.ballTrace);
         queue.add(GameAssets.Particles.ballExplosion);
+        queue.add(GameAssets.Models.crystal);
     }
 
     @Override
@@ -45,6 +45,7 @@ public class GameAssetMaster extends BaseAssetMaster
         GameAssets.AtlasRegions.star.instance = atlas.findRegion("star");
         GameAssets.AtlasRegions.ball.instance = atlas.findRegion("ball");
         GameAssets.AtlasRegions.rope.instance = atlas.findRegion("rope");
+        GameAssets.AtlasRegions.crystal.instance = atlas.findRegion("crystal");
     }
 
     private void loadGroundRegions(TextureAtlas atlas)

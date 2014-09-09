@@ -39,7 +39,7 @@ public final class Game extends GameAdapter
     public void initialize()
     {
         assetMaster = new GameAssetMaster();
-        profiler = new GameProfiler(true, false);
+        profiler = new GameProfiler(true, true);
         gameScreen = new BaseGameScreen(settings, orthographicCamera,
                 perspectiveCamera);
 

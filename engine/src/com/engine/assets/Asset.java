@@ -3,7 +3,7 @@ package com.engine.assets;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 
-public final class Asset<T>
+public class Asset<T>
 {
     public final String path;
     public final AssetLoaderParameters parameters;
