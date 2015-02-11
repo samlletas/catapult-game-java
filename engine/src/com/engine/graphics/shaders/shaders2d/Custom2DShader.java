@@ -1,64 +1,97 @@
 package com.engine.graphics.shaders.shaders2d;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.graphics.shaders.UniformCollection;
 
-public abstract class Custom2DShader implements Disposable
+public abstract class Custom2DShader extends ShaderProgram
 {
-    public ShaderProgram program;
-    protected UniformCollection customUniforms;
     private boolean hasCustomUniforms;
+    private UniformCollection customUniforms;
 
-    protected Custom2DShader(boolean hasCustomUniforms)
+    protected Custom2DShader(String vertexShader, String fragmentShader,
+                             boolean hasCustomUniforms)
     {
-        this.hasCustomUniforms = hasCustomUniforms;
+        super(vertexShader, fragmentShader);
 
-        if (hasCustomUniforms)
-        {
-            customUniforms = new UniformCollection();
-        }
+        this.hasCustomUniforms = hasCustomUniforms;
+        handleCompilation();
     }
 
-    public void init()
+    private void handleCompilation()
     {
-        program = new ShaderProgram(getCustomVertexShader(), getCustomFragmentShader());
-
-        if (program.isCompiled())
+        if (isCompiled())
         {
             if (hasCustomUniforms)
             {
-                addCustomUniforms();
-                customUniforms.initialize(program);
+                customUniforms = new UniformCollection();
+                addCustomUniforms(customUniforms);
+                customUniforms.initialize(this);
             }
         }
         else
         {
-            throw new GdxRuntimeException(program.getLog());
+            throw new GdxRuntimeException(getLog());
         }
     }
 
-    public final void setCustomUniforms()
+    @Override
+    public final void begin()
+    {
+        beforeBegin();
+        super.begin();
+        afterBegin();
+    }
+
+    public final void sendCustomUniforms()
     {
         if (hasCustomUniforms)
         {
-            customUniforms.setUniforms(program, null);
+            customUniforms.setUniforms(this, null);
         }
+    }
+
+    @Override
+    public final void end()
+    {
+        beforeEnd();
+        super.end();
+        afterEnd();
+    }
+
+    protected void addCustomUniforms(UniformCollection uniforms)
+    {
+
+    }
+
+    protected void beforeBegin()
+    {
+
+    }
+
+    protected void afterBegin()
+    {
+
+    }
+
+    protected void beforeEnd()
+    {
+
+    }
+
+    protected void afterEnd()
+    {
+
     }
 
     @Override
     public void dispose()
     {
-        program.dispose();
+        super.dispose();
 
         if (hasCustomUniforms)
         {
             customUniforms.dispose();
         }
     }
-
-    protected abstract String getCustomVertexShader();
-    protected abstract String getCustomFragmentShader();
-    protected abstract void addCustomUniforms();
 }

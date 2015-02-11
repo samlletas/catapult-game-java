@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.engine.GameTime;
 import com.engine.collision2d.GamePolygon;
+import com.mygdx.game.gamelogic.scene.Grass;
 
 public class CollisionTester
 {
@@ -134,7 +134,7 @@ public class CollisionTester
 
     public void draw(SpriteBatch spriteBatch)
     {
-        a.draw(spriteBatch, drawColor);
-        b.draw(spriteBatch, drawColor);
+//        a.draw(spriteBatch, drawColor);
+//        b.draw(spriteBatch, drawColor);
     }
 }

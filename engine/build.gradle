@@ -12,6 +12,9 @@ def shader2DOutputDir = "build/classes/main/com/engine/graphics/shaders/shaders2
 def shader3DSrcDir = "src/com/engine/graphics/shaders/shaders3d";
 def shader3DOutputDir = "build/classes/main/com/engine/graphics/shaders/shaders3d";
 
+def shaderDistanceFieldSrcDir = "src/com/engine/graphics/graphics2D/text";
+def shaderDistanceFieldOutputDir = "build/classes/main/com/engine/graphics/graphics2D/text";
+
 // Se copia la textura y los shaders al .jar
 jar
 {
@@ -33,6 +36,13 @@ jar
     from(shader3DSrcDir)
     {
         into shader3DOutputDir
+        include "*.*.glsl"
+    }
+
+    // DistanceField Shaders
+    from(shaderDistanceFieldSrcDir)
+    {
+        into shaderDistanceFieldOutputDir
         include "*.*.glsl"
     }
 }
@@ -61,7 +71,16 @@ task copy3DShaders(type: Copy) {
     include "*.*.glsl"
 }
 
+// Se copian los distanceField shaders al classPath
+task copyDistanceFieldShaders(type: Copy) {
+    // DistanceField Shaders
+    from shaderDistanceFieldSrcDir
+    into shaderDistanceFieldOutputDir
+    include "*.*.glsl"
+}
+
 // Se asegura que se ejecuten los task de copiado de textura y shaders
 compileJava.dependsOn copyDotTexture
 copyDotTexture.dependsOn copy2DShaders
 copy2DShaders.dependsOn copy3DShaders
+copy3DShaders.dependsOn copyDistanceFieldShaders

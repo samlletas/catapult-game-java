@@ -1,0 +1,54 @@
+<root atlasFile="textures.atlas">
+<bones>
+    <bone id="0" region="scoreCircle" parent="-1" pivotX="62" pivotY="58" offsetX="0" offsetY="0" />
+    <bone id="1" region="scoreSide1" parent="0" pivotX="-35" pivotY="31" offsetX="62" offsetY="57" />
+    <bone id="2" region="scoreSide1" parent="0" pivotX="-35" pivotY="31" offsetX="62" offsetY="57" />
+    <bone id="3" region="scoreSide1" parent="0" pivotX="-35" pivotY="31" offsetX="62" offsetY="57" />
+    <bone id="4" region="scoreSide1" parent="0" pivotX="-35" pivotY="31" offsetX="62" offsetY="57" />
+    <bone id="5" region="scoreSide1" parent="0" pivotX="-35" pivotY="31" offsetX="62" offsetY="57" />
+    <bone id="6" region="scoreSide1" parent="0" pivotX="-35" pivotY="31" offsetX="62" offsetY="57" />
+    <bone id="7" region="scoreSide2" parent="0" pivotX="-45" pivotY="46" offsetX="62" offsetY="57" />
+    <bone id="8" region="scoreSide3" parent="0" pivotX="-37" pivotY="63" offsetX="62" offsetY="57" />
+    <bone id="9" region="scoreSide4" parent="0" pivotX="-40" pivotY="55" offsetX="62" offsetY="57" />
+</bones>
+<animations>
+    <animation name="default" loop="true">
+        <frame duration="15000">
+            <framedata boneID="0" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="1" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="2" rotation="120" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="3" rotation="240" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="4" rotation="60" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="5" rotation="180" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="6" rotation="300" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="7" rotation="60" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="8" rotation="180" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="9" rotation="300" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+        </frame>
+        <frame duration="15000">
+            <framedata boneID="0" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="1" rotation="-180" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="2" rotation="-60" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="3" rotation="60" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="4" rotation="240" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="5" rotation="360" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="6" rotation="480" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="7" rotation="-120" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="8" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="9" rotation="120" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+        </frame>
+        <frame duration="1">
+            <framedata boneID="0" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="1" rotation="-360" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="2" rotation="-240" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="3" rotation="-120" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="4" rotation="420" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="5" rotation="540" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="6" rotation="660" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="7" rotation="-300" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="8" rotation="-180" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+            <framedata boneID="9" rotation="-60" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+        </frame>
+    </animation>
+</animations>
+</root>

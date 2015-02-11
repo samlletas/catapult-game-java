@@ -1,0 +1,48 @@
+<root atlasFile="textures.atlas">
+    <bones>
+        <bone id="0" region="shotCenter" parent="-1" pivotX="14" pivotY="14" offsetX="0" offsetY="0" />
+        <bone id="1" region="shotBody" parent="0" pivotX="20" pivotY="20" offsetX="14" offsetY="14" />
+        <bone id="2" region="shotSide" parent="1" pivotX="5" pivotY="17" offsetX="30" offsetY="10" />
+        <bone id="3" region="shotSide" parent="1" pivotX="5" pivotY="17" offsetX="10" offsetY="11" />
+        <bone id="4" region="shotSide" parent="1" pivotX="5" pivotY="17" offsetX="10" offsetY="30" />
+        <bone id="5" region="shotSide" parent="1" pivotX="5" pivotY="17" offsetX="30" offsetY="30" />
+    </bones>
+    <animations>
+        <animation name="default" loop="true">
+            <frame duration="1000">
+                <framedata boneID="0" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="1" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="2" rotation="45" scaleX="1" scaleY="1" offsetDirection="45" offsetDistance="-2" interpolation="sine"/>
+                <framedata boneID="3" rotation="135" scaleX="1" scaleY="1" offsetDirection="135" offsetDistance="-2" interpolation="sine"/>
+                <framedata boneID="4" rotation="225" scaleX="1" scaleY="1" offsetDirection="225" offsetDistance="-2" interpolation="sine"/>
+                <framedata boneID="5" rotation="315" scaleX="1" scaleY="1" offsetDirection="315" offsetDistance="-2" interpolation="sine"/>
+            </frame>
+            <frame duration="1000">
+                <framedata boneID="0" rotation="0" scaleX="0.45" scaleY="0.45" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="1" rotation="0" scaleX="1.3" scaleY="1.3" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="2" rotation="45" scaleX="1" scaleY="1" offsetDirection="45" offsetDistance="-10" interpolation="sine"/>
+                <framedata boneID="3" rotation="135" scaleX="1" scaleY="1" offsetDirection="135" offsetDistance="-10" interpolation="sine"/>
+                <framedata boneID="4" rotation="225" scaleX="1" scaleY="1" offsetDirection="225" offsetDistance="-10" interpolation="sine"/>
+                <framedata boneID="5" rotation="315" scaleX="1" scaleY="1" offsetDirection="315" offsetDistance="-10" interpolation="sine"/>
+            </frame>
+        </animation>
+        <animation name="disolve" loop="false">
+            <frame duration="350">
+                <framedata boneID="0" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+                <framedata boneID="1" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+                <framedata boneID="2" rotation="45" scaleX="1" scaleY="1" offsetDirection="45" offsetDistance="0" interpolation="linear"/>
+                <framedata boneID="3" rotation="135" scaleX="1" scaleY="1" offsetDirection="135" offsetDistance="0" interpolation="linear"/>
+                <framedata boneID="4" rotation="225" scaleX="1" scaleY="1" offsetDirection="225" offsetDistance="0" interpolation="linear"/>
+                <framedata boneID="5" rotation="315" scaleX="1" scaleY="1" offsetDirection="315" offsetDistance="0" interpolation="linear"/>
+            </frame>
+            <frame duration="0">
+                <framedata boneID="0" rotation="0" scaleX="0.3" scaleY="0.3" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+                <framedata boneID="1" rotation="0" scaleX="4.0" scaleY="4.0" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
+                <framedata boneID="2" rotation="45" scaleX="1" scaleY="1" offsetDirection="45" offsetDistance="40" interpolation="linear"/>
+                <framedata boneID="3" rotation="135" scaleX="1" scaleY="1" offsetDirection="135" offsetDistance="40" interpolation="linear"/>
+                <framedata boneID="4" rotation="225" scaleX="1" scaleY="1" offsetDirection="225" offsetDistance="40" interpolation="linear"/>
+                <framedata boneID="5" rotation="315" scaleX="1" scaleY="1" offsetDirection="315" offsetDistance="40" interpolation="linear"/>
+            </frame>
+        </animation>
+    </animations>
+</root>

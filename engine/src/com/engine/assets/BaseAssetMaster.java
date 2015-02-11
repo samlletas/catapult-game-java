@@ -3,15 +3,15 @@ package com.engine.assets;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.utils.Array;
-import com.engine.graphics.animation.AnimationLoader;
-import com.engine.graphics.animation.AnimationPlayer;
+import com.engine.graphics.graphics2D.animation.skeletal.AnimationLoader;
+import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
 
 public abstract class BaseAssetMaster
 {
     private AssetManager manager;
 
-    private Array<Asset> syncQueue;
-    private Array<Asset> asyncQueue;
+    private Array<IAsset> syncQueue;
+    private Array<IAsset> asyncQueue;
 
     private boolean addedToAsyncQueue;
     private boolean initializedAsyncInstances;
@@ -19,39 +19,36 @@ public abstract class BaseAssetMaster
     public BaseAssetMaster()
     {
         manager = new AssetManager();
-        syncQueue = new Array<Asset>();
-        asyncQueue = new Array<Asset>();
+        syncQueue = new Array<IAsset>();
+        asyncQueue = new Array<IAsset>();
 
         addedToAsyncQueue = false;
         initializedAsyncInstances = false;
 
-        // Loader para animaciones
+        addLoaders();
+    }
+
+    private void addLoaders()
+    {
         manager.setLoader(AnimationPlayer.class,
                 new AnimationLoader(new InternalFileHandleResolver()));
 
-        setCustomLoaders(manager);
+        addCustomLoaders(manager);
     }
 
-    private void loadQueue(Array<Asset> queue)
+    private void loadQueue(Array<IAsset> queue)
     {
-        for (Asset asset : queue)
+        for (int i = 0, n = queue.size; i < n; i++)
         {
-            if (asset.parameters == null)
-            {
-                manager.load(asset.path, asset.instanceClass);
-            }
-            else
-            {
-                manager.load(asset.path, asset.instanceClass, asset.parameters);
-            }
+            queue.get(i).load(manager);
         }
     }
 
-    private void setQueueInstances(Array<Asset> queue)
+    private void retrieveQueueInstances(Array<IAsset> queue)
     {
-        for (Asset asset : queue)
+        for (int i = 0, n = queue.size; i < n; i++)
         {
-            asset.getInstanceFromManager(manager);
+            queue.get(i).retrieveInstance(manager);
         }
     }
 
@@ -61,7 +58,7 @@ public abstract class BaseAssetMaster
         loadQueue(syncQueue);
 
         manager.finishLoading();
-        setQueueInstances(syncQueue);
+        retrieveQueueInstances(syncQueue);
         onSyncLoadCompleted(manager);
     }
 
@@ -83,7 +80,7 @@ public abstract class BaseAssetMaster
 
         if (finished && !initializedAsyncInstances)
         {
-            setQueueInstances(asyncQueue);
+            retrieveQueueInstances(asyncQueue);
             onAsyncLoadCompleted(manager);
             initializedAsyncInstances = true;
         }
@@ -101,9 +98,9 @@ public abstract class BaseAssetMaster
         manager.dispose();
     }
 
-    protected abstract void setCustomLoaders(AssetManager manager);
-    protected abstract void addToSyncQueue(Array<Asset> queue);
-    protected abstract void addToASyncQueue(Array<Asset> queue);
+    protected abstract void addCustomLoaders(AssetManager manager);
+    protected abstract void addToSyncQueue(Array<IAsset> queue);
+    protected abstract void addToASyncQueue(Array<IAsset> queue);
     protected abstract void onSyncLoadCompleted(AssetManager manager);
     protected abstract void onAsyncLoadCompleted(AssetManager manager);
 }

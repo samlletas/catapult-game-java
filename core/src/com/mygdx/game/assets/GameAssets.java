@@ -1,69 +1,206 @@
 package com.mygdx.game.assets;
 
+import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
+import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.utils.Array;
 import com.engine.assets.Asset;
-import com.engine.graphics.animation.AnimationLoader;
-import com.engine.graphics.animation.AnimationPlayer;
+import com.engine.assets.custom.AtlasRegionAsset;
+import com.engine.assets.custom.DistanceFieldFontAsset;
+import com.engine.assets.custom.SkinAsset;
+import com.engine.graphics.graphics2D.animation.skeletal.AnimationLoader;
+import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
 
 public final class GameAssets
 {
-    public final static class Animations
+    public TextureAtlases textureAtlases;
+    public AtlasRegions atlasRegions;
+    public Skins skins;
+    public Animations animations;
+    public Particles particles;
+    public Models models;
+    public BitmapFonts bitmapFonts;
+    public DistanceFieldFonts distanceFieldFonts;
+    public Sounds sounds;
+
+    private final String atlas = "textures/textures.atlas";
+
+    public GameAssets()
     {
-        private static AnimationLoader.AnimationLoaderParameter parameters =
-                new AnimationLoader.AnimationLoaderParameter("textures");
-
-        public static Asset<AnimationPlayer> catapult =
-                new Asset<AnimationPlayer>("animations/catapult.xml", AnimationPlayer.class, parameters);
-
-        public static Asset<AnimationPlayer> tulipan =
-                new Asset<AnimationPlayer>("animations/tulipan.xml", AnimationPlayer.class, parameters);
-
-        public static Asset<AnimationPlayer> grassFlower =
-                new Asset<AnimationPlayer>("animations/grassflower.xml", AnimationPlayer.class, parameters);
-
-        public static Asset<AnimationPlayer> flower =
-                new Asset<AnimationPlayer>("animations/flower.xml", AnimationPlayer.class, parameters);
+        textureAtlases = new TextureAtlases();
+        atlasRegions = new AtlasRegions();
+        skins = new Skins();
+        animations = new Animations();
+        particles = new Particles();
+        models = new Models();
+        bitmapFonts = new BitmapFonts();
+        distanceFieldFonts = new DistanceFieldFonts();
+        sounds = new Sounds();
     }
 
-    public static final class AtlasRegions
+    public final class TextureAtlases
     {
-        public static Array<Asset<TextureAtlas.AtlasRegion>> groundRegions =
-                new Array<Asset<TextureAtlas.AtlasRegion>>();
+        private TextureAtlasLoader.TextureAtlasParameter parameter;
 
-        public static Asset<TextureAtlas.AtlasRegion> grass1 =
-                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+        public Asset<TextureAtlas> gameTextures;
 
-        public static Asset<TextureAtlas.AtlasRegion> grass2 =
-                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
-
-        public static Asset<TextureAtlas.AtlasRegion> grass3 =
-                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
-
-        public static Asset<TextureAtlas.AtlasRegion> star =
-                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
-
-        public static Asset<TextureAtlas.AtlasRegion> ball =
-                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
-
-        public static Asset<TextureAtlas.AtlasRegion> rope =
-                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
-
-        public static Asset<TextureAtlas.AtlasRegion> crystal =
-                new Asset<TextureAtlas.AtlasRegion>(null, TextureAtlas.AtlasRegion.class);
+        private TextureAtlases()
+        {
+            parameter = new TextureAtlasLoader.TextureAtlasParameter(true);
+            gameTextures = new Asset<TextureAtlas>(atlas, TextureAtlas.class, parameter);
+        }
     }
 
-    public static final class Particles
+    public final class AtlasRegions
     {
-        public static Asset<ParticleEffect> ballExplosion =
-                new Asset<ParticleEffect>("particles/ballexplosion.p", ParticleEffect.class);
+        public AtlasRegionAsset pixel;
+        public AtlasRegionAsset libGdx;
+        public AtlasRegionAsset ground;
+        public AtlasRegionAsset buttonGlow;
+        public AtlasRegionAsset grass1;
+        public AtlasRegionAsset grass2;
+        public AtlasRegionAsset grass3;
+        public AtlasRegionAsset star;
+        public AtlasRegionAsset ball;
+        public AtlasRegionAsset rope;
+        public AtlasRegionAsset crystalGlow;
+        public AtlasRegionAsset crystalWaveBorder;
+        public AtlasRegionAsset crystalWaveFill;
+        public AtlasRegionAsset spikesGlow;
+        public AtlasRegionAsset hudCrystal;
+        public AtlasRegionAsset hudBarCorner;
+        public AtlasRegionAsset hudBarBorder;
+        public AtlasRegionAsset hudBar;
+        public AtlasRegionAsset hudChance;
+        public AtlasRegionAsset uiHeaderBackground;
+        public AtlasRegionAsset uiHeaderLine;
+        public AtlasRegionAsset titleGLow;
+
+        private AtlasRegions()
+        {
+            pixel = new AtlasRegionAsset("pixel", atlas);
+            libGdx = new AtlasRegionAsset("libGdx", atlas);
+            buttonGlow = new AtlasRegionAsset("ui-button-glow", atlas);
+            ground = new AtlasRegionAsset("ground", atlas);
+            grass1 = new AtlasRegionAsset("grass1", atlas);
+            grass2 = new AtlasRegionAsset("grass2", atlas);
+            grass3 = new AtlasRegionAsset("grass3", atlas);
+            star = new AtlasRegionAsset("star", atlas);
+            ball = new AtlasRegionAsset("ball", atlas);
+            rope = new AtlasRegionAsset("rope", atlas);
+            crystalGlow = new AtlasRegionAsset("crystalGlow", atlas);
+            crystalWaveBorder = new AtlasRegionAsset("crystalWaveBorder", atlas);
+            crystalWaveFill = new AtlasRegionAsset("crystalWaveFill", atlas);
+            spikesGlow = new AtlasRegionAsset("spikesGlow", atlas);
+            hudCrystal = new AtlasRegionAsset("hud-crystal", atlas);
+            hudBarCorner = new AtlasRegionAsset("hud-bar-corner", atlas);
+            hudBarBorder = new AtlasRegionAsset("hud-bar-border", atlas);
+            hudBar = new AtlasRegionAsset("hud-bar", atlas);
+            hudChance = new AtlasRegionAsset("hud-chance", atlas);
+            uiHeaderBackground = new AtlasRegionAsset("ui-header-background", atlas);
+            uiHeaderLine = new AtlasRegionAsset("ui-header-line", atlas);
+            titleGLow = new AtlasRegionAsset("titleGlow", atlas);
+        }
     }
 
-    public static final class Models
+    public final class Skins
     {
-        public static Asset<Model> crystal =
-                new Asset<Model>("models/crystal.g3db", Model.class);
+        public SkinAsset ui;
+
+        private Skins()
+        {
+            ui = new SkinAsset("skins/ui.json", atlas);
+        }
+    }
+
+    public final class Animations
+    {
+        private AnimationLoader.AnimationLoaderParameter parameters;
+
+        public Asset<AnimationPlayer> catapult;
+        public Asset<AnimationPlayer> tulipan;
+        public Asset<AnimationPlayer> grassFlower;
+        public Asset<AnimationPlayer> flower;
+
+        private Animations()
+        {
+            parameters = new AnimationLoader.AnimationLoaderParameter("textures");
+
+            catapult = new Asset<AnimationPlayer>("animations/catapult.xml", AnimationPlayer.class, parameters);
+            tulipan = new Asset<AnimationPlayer>("animations/tulipan.xml", AnimationPlayer.class, parameters);
+            grassFlower = new Asset<AnimationPlayer>("animations/grassflower.xml", AnimationPlayer.class, parameters);
+            flower = new Asset<AnimationPlayer>("animations/flower.xml", AnimationPlayer.class, parameters);
+        }
+    }
+
+    public final class Particles
+    {
+        public Asset<ParticleEffect> ballExplosion;
+        public Asset<ParticleEffect> crystalBreakNormal;
+        public Asset<ParticleEffect> crystalBreakSpecial;
+        public Asset<ParticleEffect> spikeBreak;
+
+        private Particles()
+        {
+            ballExplosion = new Asset<ParticleEffect>("particles/ballExplosion.p", ParticleEffect.class);
+            crystalBreakNormal = new Asset<ParticleEffect>("particles/crystalBreakNormal.p", ParticleEffect.class);
+            crystalBreakSpecial = new Asset<ParticleEffect>("particles/crystalBreakSpecial.p", ParticleEffect.class);
+            spikeBreak = new Asset<ParticleEffect>("particles/spikeBreak.p", ParticleEffect.class);
+        }
+    }
+
+    public final class Models
+    {
+        public Asset<Model> crystal;
+        public Asset<Model> bomb;
+
+        private Models()
+        {
+            crystal = new Asset<Model>("models/crystal.g3db", Model.class);
+            bomb = new Asset<Model>("models/bomb.g3db", Model.class);
+        }
+    }
+
+    public final class BitmapFonts
+    {
+        private BitmapFontLoader.BitmapFontParameter parameters;
+
+        public Asset<BitmapFont> furore;
+
+        private BitmapFonts()
+        {
+            parameters = new BitmapFontLoader.BitmapFontParameter();
+            parameters.flip = true;
+            parameters.minFilter = Texture.TextureFilter.Linear;
+            parameters.magFilter = Texture.TextureFilter.Linear;
+
+            furore = new Asset<BitmapFont>("fonts/furore.fnt", BitmapFont.class, parameters);
+        }
+    }
+
+    public final class DistanceFieldFonts
+    {
+        public DistanceFieldFontAsset furore;
+
+        private DistanceFieldFonts()
+        {
+            furore = new DistanceFieldFontAsset("fonts/furore.fnt", 4f, 0.55f);
+        }
+    }
+
+    public final class Sounds
+    {
+        public Asset<Sound> crystalBreak;
+        public Asset<Sound> shoot;
+
+        private Sounds()
+        {
+            crystalBreak = new Asset<Sound>("sounds/break.wav", Sound.class);
+            shoot = new Asset<Sound>("sounds/shoot.wav", Sound.class);
+        }
     }
 }

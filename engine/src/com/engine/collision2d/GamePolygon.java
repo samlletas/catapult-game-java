@@ -1,17 +1,15 @@
 package com.engine.collision2d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.GameAdapter;
-import com.engine.GameTime;
 import com.engine.utilities.ColorUtilities;
-import com.sun.org.apache.bcel.internal.generic.FLOAD;
 
 /**
  * Representa un polígono en 2D que permite revisión de colisiones
@@ -52,6 +50,7 @@ public class GamePolygon extends Polygon
         this.checkCollisions = true;
 
         calculateNormals(vertices);
+        getTransformedVertices();
     }
 
     /**
@@ -103,11 +102,13 @@ public class GamePolygon extends Polygon
                 foundParallel = false;
 
                 // Búsqueda de normales paralelas
-                for (Vector2 normal : normals)
+                Array<Vector2> localNormals = normals;
+
+                for (int j = 0, n = localNormals.size; j < n; j++)
                 {
                     cachedVector.set(-y2, x2).nor();
 
-                    if (cachedVector.isOnLine(normal))
+                    if (cachedVector.isOnLine(localNormals.get(j)))
                     {
                         foundParallel = true;
                         break;
@@ -136,9 +137,9 @@ public class GamePolygon extends Polygon
         Array<Vector2> localNormals = normals;
 
         // Rotación de las normales
-        for (Vector2 normal : localNormals)
+        for (int i = 0, n = localNormals.size; i < n; i++)
         {
-            normal.setAngle(degrees);
+            localNormals.get(i).setAngle(degrees);
         }
     }
 
@@ -149,9 +150,9 @@ public class GamePolygon extends Polygon
         Array<Vector2> localNormals = normals;
 
         // Rotación de las normales
-        for (Vector2 normal : localNormals)
+        for (int i = 0, n = localNormals.size; i < n; i++)
         {
-            normal.rotate(degrees);
+            localNormals.get(i).rotate(degrees);
         }
     }
 
@@ -200,6 +201,7 @@ public class GamePolygon extends Polygon
     private boolean checkProjections(GamePolygon a, GamePolygon b)
     {
         Array<Vector2> localNormals = a.normals;
+        Vector2 normal;
 
         float vx = a.speed.x - b.speed.x;
         float vy = a.speed.y - b.speed.y;
@@ -215,8 +217,10 @@ public class GamePolygon extends Polygon
         // Recorre los vértices del polígono base para obtener las normales
         // de cada uno de los lados y realizar la verificación de overlap
         // de proyecciones
-        for (Vector2 normal : localNormals)
+        for (int i = 0, n = localNormals.size; i < n; i++)
         {
+            normal = localNormals.get(i);
+
             Projection projectionA = a.getProjection(normal);
             Projection projectionB = b.getProjection(normal);
 
@@ -293,64 +297,20 @@ public class GamePolygon extends Polygon
 
     /**
      * Dibuja el polígono
-     * @param spriteBatch
+     * @param shapeRenderer shapeRenderer
      * @param color Color de dibujado de las líneas que conforman cada uno
      *              de los lados del polígono
      */
-    public void draw(SpriteBatch spriteBatch, Color color)
+    public void draw(ShapeRenderer shapeRenderer, Color color)
     {
-        float[] vertices = getTransformedVertices();
-        int size = vertices.length;
-
-        float x1;
-        float y1;
-
-        float x2;
-        float y2;
-
-        float dx;
-        float dy;
-        float angle;
-        float distance;
-
-        for (int i = 0; i < size; i+=2)
-        {
-            x1 = vertices[i];
-            y1 = vertices[i + 1];
-
-            // Ultimo vértice
-            if (i == size - 2)
-            {
-                x2 = vertices[0];
-                y2 = vertices[1];
-            }
-            else
-            {
-                x2 = vertices[i + 2];
-                y2 = vertices[i + 3];
-            }
-
-            dx = x2 - x1;
-            dy = y2 - y1;
-
-            // Cálculo del ángulo y distancia entre el vértice actual y el
-            // siguiente
-            angle = (float)Math.toDegrees(MathUtils.atan2(dy, dx));
-            distance = (float)Math.sqrt((dx * dx) + (dy * dy));
-
-            ColorUtilities.setTint(spriteBatch, color);
-
-            spriteBatch.draw(GameAdapter.dotTexture, x1, y1, 0f, 0f, 1f, 1f,
-                    distance, 1f, angle, 0, 0, 1, 1, false, false);
-
-            ColorUtilities.resetTint(spriteBatch);
-        }
+        shapeRenderer.setColor(color);
+        shapeRenderer.polygon(getTransformedVertices());
     }
 
-    public static GamePolygon createRectangle(int width, int height)
+    public static GamePolygon createRectangle(float width, float height)
     {
-        int halfWidth = width / 2;
-        int halfHeight = height / 2;
+        float halfWidth = width / 2f;
+        float halfHeight = height / 2f;
 
         float[] vertices =
         {
@@ -363,10 +323,10 @@ public class GamePolygon extends Polygon
         return new GamePolygon(vertices);
     }
 
-    public static GamePolygon createTriangle(int base, int height)
+    public static GamePolygon createTriangle(float base, float height)
     {
-        int halfBase = base / 2;
-        int halfHeight = height / 2;
+        float halfBase = base / 2f;
+        float halfHeight = height / 2f;
 
         float[] vertices =
         {
@@ -378,10 +338,10 @@ public class GamePolygon extends Polygon
         return new GamePolygon(vertices);
     }
 
-    public static GamePolygon createRhombus(int length, int height)
+    public static GamePolygon createRhombus(float length, float height)
     {
-        int halfLength = length / 2;
-        int halfHeight = height / 2;
+        float halfLength = length / 2f;
+        float halfHeight = height / 2f;
 
         float[] vertices =
         {
@@ -400,7 +360,7 @@ public class GamePolygon extends Polygon
      * @param radius Distancia de cada punto al centro de la figura
      * @return Nuevo polígono convexo
      */
-    public static GamePolygon createConvex(int points, int radius)
+    public static GamePolygon createConvex(int points, float radius)
     {
         if (points < 2)
         {
@@ -411,7 +371,7 @@ public class GamePolygon extends Polygon
         float angleDiff = 360f / points;
         float angle;
 
-        for (int i = 0; i < vertices.length; i+=2)
+        for (int i = 0, n = vertices.length; i < n; i+=2)
         {
             angle = 90f + angleDiff * (i / 2);
 

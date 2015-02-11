@@ -1,117 +1,88 @@
 package com.mygdx.game.gamelogic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.engine.GameTime;
-import com.engine.Interpolation.Interpolators;
 import com.engine.events.EventsArgs;
 import com.engine.events.IEventHandler;
-import com.engine.graphics.animation.AnimationPlayer;
-import com.engine.graphics.animation.Bone;
-import com.mygdx.game.assets.GameAssets;
+import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
+import com.engine.graphics.graphics2D.animation.skeletal.Bone;
+import com.mygdx.game.Common;
 
 public final class Catapult
 {
-    private Ball ball;
-    private AnimationPlayer player;
-
-    private Bone spoon;
-    private Bone handleGear;
-    private Bone ropeHolder;
-
-    // Variables para el dibujado de la cuerda
-    private TextureAtlas.AtlasRegion ropeRegion;
-    private float ropeX;
-    private float ropeY;
-    private float ropeRotation;
-    private float ropeLength;
-    private static final float ROPE_PIVOT_X = 1f;
-    private static final float ROPE_PIVOT_Y = 6f;
-
-    // Variables para lanzamiento de bola
-    private float pullAngle;
+    // Constantes para lanzamiento de bola
     private static final float MIN_PULL_ANGLE = 137f;
     private static final float MAX_PULL_ANGLE = 179f;
     private static final float MIN_LAUNCH_POWER = 150f;
     private static final float MAX_LAUNCH_POWER = 1600f;
     private static final float LAUNCH_ANGLE = 45f;
 
+    // Constantes para el dibujado de la cuerda
+    private static final float ROPE_PIVOT_X = 1f;
+    private static final float ROPE_PIVOT_Y = 6f;
+
+    private static final String ANIMATION_DEFAULT = "default";
+    private static final String ANIMATION_PULL    = "pull";
+    private static final String ANIMATION_LAUNCH  = "launch";
+    private static final String ANIMATION_RECOVER = "recover";
+
+    private Common common;
+    private Ball ball;
+    private Bone spoon;
+    private Bone handleGear;
+    private Bone ropeHolder;
+
+    // Variables para el dibujado de la cuerda
+    private float ropeX;
+    private float ropeY;
+    private float ropeRotation;
+    private float ropeLength;
+
+    // Variables para lanzamiento de bola
+    private boolean inputEnabled = false;
     private boolean pulling = false;
+    private float pullAngle;
 
-    public Catapult(Ball ball)
+    // Assets
+    private AnimationPlayer player;
+    private TextureAtlas.AtlasRegion ropeRegion;
+
+    // Input
+    private CatapultInputProcessor inputProcessor;
+
+    public Catapult(Common common, Ball ball)
     {
+        this.common = common;
         this.ball = ball;
-        this.ropeRegion = GameAssets.AtlasRegions.rope.instance;
+        this.ropeRegion = this.common.assets.atlasRegions.rope.getInstance();
+        this.inputProcessor = new CatapultInputProcessor();
 
-        initializeInput();
         initializeAnimation();
         getBones();
     }
 
-    private void initializeInput()
-    {
-        Gdx.input.setInputProcessor(new InputAdapter()
-        {
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button)
-            {
-                if (!ball.isFlying())
-                {
-                    player.play("pull");
-                    pulling = true;
-                }
-
-                return true;
-            }
-
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button)
-            {
-                if (pulling)
-                {
-                    pullAngle = spoon.getFinalRotation();
-                    player.play("launch");
-                }
-
-                pulling = false;
-
-                return true;
-            }
-        });
-    }
-
     private void initializeAnimation()
     {
-        player = GameAssets.Animations.catapult.instance;
+        player = common.assets.animations.catapult.getInstance();
         player.position.x = 135f;
         player.position.y = 397f;
         player.rotation = 2f;
-        player.play("default");
-//        player.speed = 0.25f;
+        player.play(ANIMATION_DEFAULT);
 
-        player.getAnimation("launch").onAnimationEnd.subscribe(new IEventHandler<EventsArgs>()
+        player.getAnimation(ANIMATION_LAUNCH).onAnimationEnd.subscribe(new IEventHandler<EventsArgs>()
         {
             @Override
             public void onAction(EventsArgs args)
             {
-                launch();
-                player.play("recover");
+                Catapult.this.launch();
+                Catapult.this.player.play(Catapult.ANIMATION_RECOVER);
             }
         });
-    }
-
-    private void launch()
-    {
-        float diff = MAX_PULL_ANGLE - MIN_PULL_ANGLE;
-        float factor = (pullAngle - MIN_PULL_ANGLE) / diff;
-        float power = Interpolators.LinearInterpolator.interpolate(MIN_LAUNCH_POWER,
-                MAX_LAUNCH_POWER, factor);
-
-        ball.launch(power, LAUNCH_ANGLE);
     }
 
     private void getBones()
@@ -119,6 +90,37 @@ public final class Catapult
         spoon = player.getBone(1);
         handleGear = player.getBone(3);
         ropeHolder = player.getBone(0);
+    }
+
+    public void enableInput()
+    {
+        inputEnabled = true;
+    }
+
+    public void disableInput()
+    {
+        inputEnabled = false;
+    }
+
+    public CatapultInputProcessor getInputProcessor()
+    {
+        return inputProcessor;
+    }
+
+    public void reset()
+    {
+        player.play(ANIMATION_DEFAULT);
+    }
+
+    private void launch()
+    {
+        float diff = MAX_PULL_ANGLE - MIN_PULL_ANGLE;
+        float factor = (pullAngle - MIN_PULL_ANGLE) / diff;
+        float power = Interpolation.linear.apply(MIN_LAUNCH_POWER,
+                MAX_LAUNCH_POWER, factor);
+
+        ball.launch(power, LAUNCH_ANGLE);
+        common.soundPlayer.playShoot();
     }
 
     public void update(GameTime gameTime)
@@ -163,5 +165,34 @@ public final class Catapult
         spriteBatch.draw(ropeRegion, ropeX, ropeY, ROPE_PIVOT_X, ROPE_PIVOT_Y,
                 ropeRegion.getRegionWidth(), ropeRegion.getRegionHeight(),
                 ropeLength, 1f, ropeRotation);
+    }
+
+    public class CatapultInputProcessor extends InputAdapter
+    {
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button)
+        {
+            if (Catapult.this.inputEnabled && !Catapult.this.ball.isFlying())
+            {
+                Catapult.this.player.play(Catapult.ANIMATION_PULL);
+                Catapult.this.pulling = true;
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button)
+        {
+            if (Catapult.this.inputEnabled && Catapult.this.pulling)
+            {
+                Catapult.this.pullAngle = Catapult.this.spoon.getFinalRotation();
+                Catapult.this.player.play(Catapult.ANIMATION_LAUNCH);
+            }
+
+            pulling = false;
+
+            return false;
+        }
     }
 }

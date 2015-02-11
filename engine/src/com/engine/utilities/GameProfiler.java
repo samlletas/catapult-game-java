@@ -5,76 +5,123 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.engine.text.IntegerSequence;
+import com.engine.text.LabelSequence;
 
 public class GameProfiler
 {
+    private static final int FPS_DISPLAY_DELAY = 1000;
+    private static final int VERTEXCOUNT_DISPLAY_DELAY = 500;
+    private static final float LINE_OFFSET = 15f;
+
+    public boolean profileFPS = true;
+    public boolean profileOpenGL = true;
+    public boolean profileMemory = true;
+
     public float x;
     public float y;
 
-    private boolean profileFPS;
-    private boolean profileOpenGL;
-
     private BitmapFont font;
-
-    private int fps;
-    private float totalVertexCount;
+    private float drawY;
 
     private long fpsStartTime;
     private long vertexCountStartTime;
 
-    private static final int FPS_DISPLAY_DELAY = 1000;
-    private static final int VERTEXCOUNT_DISPLAY_DELAY = 500;
+    private LabelSequence<IntegerSequence> fpsLabel;
+    private LabelSequence<IntegerSequence> glCallsLabel;
+    private LabelSequence<IntegerSequence> drawCallsLabel;
+    private LabelSequence<IntegerSequence> textureBindsLabel;
+    private LabelSequence<IntegerSequence> shaderSwitchesLabel;
+    private LabelSequence<IntegerSequence> vertexCountLabel;
+    private LabelSequence<IntegerSequence> maxSpritesLabel;
+    private LabelSequence<IntegerSequence> javaHeapLabel;
+    private LabelSequence<IntegerSequence> nativeHeapLabel;
 
-    public GameProfiler(boolean profileFPS, boolean profileOpenGL)
+    public GameProfiler()
     {
-        x = 10f;
-        y = 10f;
+        this(10f, 10f);
+    }
 
-        this.profileFPS = profileFPS;
-        this.profileOpenGL = profileOpenGL;
+    public GameProfiler(float x, float y)
+    {
+        this.x = x;
+        this.y = y;
 
         font = new BitmapFont(true);
 
-        fps = 0;
-        totalVertexCount = 0;
+        fpsStartTime = 0L;
+        vertexCountStartTime = 0L;
 
-        fpsStartTime = 0;
-        vertexCountStartTime = 0;
+        fpsLabel = new LabelSequence<IntegerSequence>("FPS: ", new IntegerSequence());
+        glCallsLabel = new LabelSequence<IntegerSequence>("Gl Calls: ", new IntegerSequence());
+        drawCallsLabel = new LabelSequence<IntegerSequence>("Draw Calls: ", new IntegerSequence());
+        textureBindsLabel = new LabelSequence<IntegerSequence>("Texture Binds: ", new IntegerSequence());
+        shaderSwitchesLabel = new LabelSequence<IntegerSequence>("Shader Switches: ", new IntegerSequence());
+        vertexCountLabel = new LabelSequence<IntegerSequence>("Vertex Count: ", new IntegerSequence());
+        maxSpritesLabel = new LabelSequence<IntegerSequence>("Sprites Batched: ", new IntegerSequence());
+        javaHeapLabel = new LabelSequence<IntegerSequence>("Java Heap (MB): ", new IntegerSequence());
+        nativeHeapLabel = new LabelSequence<IntegerSequence>("Native Heap (MB): ", new IntegerSequence());
 
         GLProfiler.enable();
     }
 
     public void profile(SpriteBatch spriteBatch)
     {
+        drawY = 0f;
         spriteBatch.begin();
 
         if (profileFPS)
         {
             if ((TimeUtils.millis() - fpsStartTime) > FPS_DISPLAY_DELAY)
             {
-                fps = Gdx.graphics.getFramesPerSecond();
+                fpsLabel.getValue().set(Gdx.graphics.getFramesPerSecond());
                 fpsStartTime = TimeUtils.millis();
             }
 
-            font.draw(spriteBatch, "FPS: " + fps, x, y);
+            drawSequence(spriteBatch, fpsLabel);
         }
 
         if (profileOpenGL)
         {
             if ((TimeUtils.millis() - vertexCountStartTime) > VERTEXCOUNT_DISPLAY_DELAY)
             {
-                totalVertexCount = GLProfiler.vertexCount.total;
+                vertexCountLabel.getValue().set((int)GLProfiler.vertexCount.total);
                 vertexCountStartTime = TimeUtils.millis();
             }
 
-            font.draw(spriteBatch, "Gl Calls: " + GLProfiler.calls, x, y + 15);
-            font.draw(spriteBatch, "Draw Calls: " + GLProfiler.drawCalls, x, y + 30);
-            font.draw(spriteBatch, "Texture Binds: " + GLProfiler.textureBindings, x, y + 45);
-            font.draw(spriteBatch, "Shader Switches: " + GLProfiler.shaderSwitches, x, y + 60);
-            font.draw(spriteBatch, "Vertex Count: " + totalVertexCount, x, y + 75);
+            glCallsLabel.getValue().set(GLProfiler.calls);
+            drawCallsLabel.getValue().set(GLProfiler.drawCalls);
+            textureBindsLabel.getValue().set(GLProfiler.textureBindings);
+            shaderSwitchesLabel.getValue().set(GLProfiler.shaderSwitches);
+            maxSpritesLabel.getValue().set(spriteBatch.maxSpritesInBatch);
+
+            drawSequence(spriteBatch, glCallsLabel);
+            drawSequence(spriteBatch, drawCallsLabel);
+            drawSequence(spriteBatch, textureBindsLabel);
+            drawSequence(spriteBatch, shaderSwitchesLabel);
+            drawSequence(spriteBatch, vertexCountLabel);
+            drawSequence(spriteBatch, maxSpritesLabel);
         }
+
+        if (profileMemory)
+        {
+            javaHeapLabel.getValue().set((int)((float)Gdx.app.getJavaHeap() / 1000000f));
+            nativeHeapLabel.getValue().set((int)((float)Gdx.app.getNativeHeap() / 1000000f));
+
+            drawSequence(spriteBatch, javaHeapLabel);
+            drawSequence(spriteBatch, nativeHeapLabel);
+        }
+
+//        drawSequence(spriteBatch, String.format("Java %f", (float)Gdx.app.getJavaHeap() / 1000000f));
+//        drawSequence(spriteBatch, String.format("Native %f", (float)Gdx.app.getNativeHeap() / 1000000f));
 
         spriteBatch.end();
         GLProfiler.reset();
+    }
+
+    private void drawSequence(SpriteBatch spriteBatch, CharSequence sequence)
+    {
+        font.draw(spriteBatch, sequence, x, y + drawY);
+        drawY += LINE_OFFSET;
     }
 }

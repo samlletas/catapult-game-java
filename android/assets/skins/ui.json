@@ -1,0 +1,85 @@
+{
+    com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle:
+    {
+        play:
+        {
+            up:        ui-button-up-big,
+            down:      ui-button-down-big,
+            imageUp:   ui-icon-play,
+            imageDown: ui-icon-play
+        },
+
+        settings:
+        {
+            up:        ui-button-up-medium,
+            down:      ui-button-down-medium,
+            imageUp:   ui-icon-settings,
+            imageDown: ui-icon-settings
+        },
+
+        scores:
+        {
+            up:        ui-button-up-medium,
+            down:      ui-button-down-medium,
+            imageUp:   ui-icon-scores,
+            imageDown: ui-icon-scores
+        },
+
+        home:
+        {
+            up:        ui-button-up-medium,
+            down:      ui-button-down-medium,
+            imageUp:   ui-icon-home,
+            imageDown: ui-icon-home
+        },
+
+        question:
+        {
+            up:        ui-button-up-medium,
+            down:      ui-button-down-medium,
+            imageUp:   ui-icon-question,
+            imageDown: ui-icon-question
+        },
+
+        power:
+        {
+            up:        ui-button-up-small,
+            down:      ui-button-down-small,
+            imageUp:   ui-icon-power,
+            imageDown: ui-icon-power
+        },
+
+        info:
+        {
+            up:        ui-button-up-small,
+            down:      ui-button-down-small,
+            imageUp:   ui-icon-info,
+            imageDown: ui-icon-info
+        },
+
+        back:
+        {
+            up:        ui-button-up-small,
+            down:      ui-button-down-small,
+            imageUp:   ui-icon-back,
+            imageDown: ui-icon-back
+        },
+
+        pause:
+        {
+            up:        ui-button-up-tiny,
+            down:      ui-button-down-tiny,
+            imageUp:   ui-icon-pause,
+            imageDown: ui-icon-pause
+        }
+    },
+
+    com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle:
+    {
+        default:
+        {
+            background: ui-slider-background,
+            knob:       ui-slider-knob
+        }
+    }
+}

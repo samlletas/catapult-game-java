@@ -12,6 +12,12 @@ public class DesktopLauncher
         config.width = 854;
         config.height = 480;
 
+//        config.width = 480;
+//        config.height = 320;
+
+//        config.width = 320;
+//        config.height = 240;
+
         int targetFPS = 60;
 
         config.vSyncEnabled = false;

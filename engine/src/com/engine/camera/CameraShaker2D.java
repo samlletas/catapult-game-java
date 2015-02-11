@@ -2,10 +2,9 @@ package com.engine.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.GameTime;
-import com.engine.Interpolation.IInterpolator;
-import com.engine.Interpolation.Interpolators;
 import com.engine.utilities.Timer;
 import com.engine.events.EventsArgs;
 import com.engine.events.IEventHandler;
@@ -13,7 +12,6 @@ import com.engine.events.IEventHandler;
 public final class CameraShaker2D
 {
     private OrthographicCamera camera;
-    private IInterpolator interpolator;
     private Timer timer;
 
     private float currentDisplacementX;
@@ -67,7 +65,6 @@ public final class CameraShaker2D
                           float maxRotation, float maxZoom)
     {
         this.camera = camera;
-        this.interpolator = Interpolators.LinearInterpolator;
 
         initializeTimer(shakeTime);
 
@@ -184,30 +181,30 @@ public final class CameraShaker2D
 
             if (!recovering)
             {
-                currentDisplacementX = interpolator.interpolate(0f,
+                currentDisplacementX = Interpolation.linear.apply(0f,
                         maxDisplacementX, elapsedTimePercentage);
 
-                currentDisplacementY = interpolator.interpolate(0f,
+                currentDisplacementY = Interpolation.linear.apply(0f,
                         maxDisplacementY, elapsedTimePercentage);
 
-                currentRotation = interpolator.interpolate(0f, maxRotation,
+                currentRotation = Interpolation.linear.apply(0f, maxRotation,
                         elapsedTimePercentage);
 
-                currentZoom = interpolator.interpolate(1f, maxZoom,
+                currentZoom = Interpolation.linear.apply(1f, maxZoom,
                         elapsedTimePercentage);
             }
             else
             {
-                currentDisplacementX = interpolator.interpolate(
+                currentDisplacementX = Interpolation.linear.apply(
                         maxDisplacementX, 0f, elapsedTimePercentage);
 
-                currentDisplacementY = interpolator.interpolate(
+                currentDisplacementY = Interpolation.linear.apply(
                         maxDisplacementY, 0f, elapsedTimePercentage);
 
-                currentRotation = interpolator.interpolate(maxRotation, 0f,
+                currentRotation = Interpolation.linear.apply(maxRotation, 0f,
                         elapsedTimePercentage);
 
-                currentZoom = interpolator.interpolate(maxZoom, 1f,
+                currentZoom = Interpolation.linear.apply(maxZoom, 1f,
                         elapsedTimePercentage);
             }
         }
@@ -231,8 +228,9 @@ public final class CameraShaker2D
             camera.translate(currentDisplacementX, currentDisplacementY, 0f);
             camera.update();
 
-            spriteBatch.setProjectionMatrix(camera.projection);
-            spriteBatch.setTransformMatrix(camera.view);
+            spriteBatch.setProjectionMatrix(camera.combined);
+//            spriteBatch.setProjectionMatrix(camera.projection);
+//            spriteBatch.setTransformMatrix(camera.view);
 
             beginCalled = true;
         }

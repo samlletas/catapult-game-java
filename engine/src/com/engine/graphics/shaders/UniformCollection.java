@@ -23,8 +23,13 @@ public class UniformCollection implements Disposable
 
     public Uniform get(String name)
     {
-        for (Uniform uniform : uniforms)
+        Array<Uniform> localUniforms = this.uniforms;
+        Uniform uniform;
+
+        for (int i = 0, n = localUniforms.size; i < n; i++)
         {
+            uniform = localUniforms.get(i);
+
             if (uniform.name.equals(name))
             {
                 return uniform;
@@ -36,8 +41,13 @@ public class UniformCollection implements Disposable
 
     public Uniform get(int id)
     {
-        for (Uniform uniform : uniforms)
+        Array<Uniform> localUniforms = this.uniforms;
+        Uniform uniform;
+
+        for (int i = 0, n = localUniforms.size; i < n; i++)
         {
+            uniform = localUniforms.get(i);
+
             if (uniform.id == id)
             {
                 return uniform;
@@ -51,9 +61,11 @@ public class UniformCollection implements Disposable
     {
         if (!initialized)
         {
-            for (Uniform uniform : uniforms)
+            Array<Uniform> localUniforms = this.uniforms;
+
+            for (int i = 0, n = localUniforms.size; i < n; i++)
             {
-                uniform.initialize(program);
+                localUniforms.get(i).initialize(program);
             }
 
             initialized = true;
@@ -62,9 +74,11 @@ public class UniformCollection implements Disposable
 
     public void setUniforms(ShaderProgram program, Renderable renderable)
     {
-        for (Uniform uniform : uniforms)
+        Array<Uniform> localUniforms = this.uniforms;
+
+        for (int i = 0, n = localUniforms.size; i < n; i++)
         {
-            uniform.setValue(program, renderable);
+            localUniforms.get(i).setValue(program, renderable);
         }
     }
 

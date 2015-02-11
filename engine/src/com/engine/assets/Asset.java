@@ -3,28 +3,47 @@ package com.engine.assets;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 
-public class Asset<T>
+public class Asset<T> implements IAsset<T>
 {
-    public final String path;
-    public final AssetLoaderParameters parameters;
-    public final Class<T> instanceClass;
+    private String fileName;
+    private AssetLoaderParameters<T> parameters;
+    private Class<T> type;
+    private T instance;
 
-    public T instance;
-
-    public Asset(String path, Class<T> instanceClass)
+    public Asset(String fileName, Class<T> instanceClass)
     {
-        this(path, instanceClass, null);
+        this(fileName, instanceClass, null);
     }
 
-    public Asset(String path, Class<T> instanceClass, AssetLoaderParameters parameters)
+    public Asset(String fileName, Class<T> type, AssetLoaderParameters<T> parameters)
     {
-        this.path = path;
-        this.instanceClass = instanceClass;
+        this.fileName = fileName;
+        this.type = type;
         this.parameters = parameters;
     }
 
-    public void getInstanceFromManager(AssetManager manager)
+    @Override
+    public T getInstance()
     {
-        instance = manager.get(path);
+        return instance;
+    }
+
+    @Override
+    public void load(AssetManager manager)
+    {
+        if (parameters == null)
+        {
+            manager.load(fileName, type);
+        }
+        else
+        {
+            manager.load(fileName, type, parameters);
+        }
+    }
+
+    @Override
+    public void retrieveInstance(AssetManager manager)
+    {
+        instance = manager.get(fileName);
     }
 }

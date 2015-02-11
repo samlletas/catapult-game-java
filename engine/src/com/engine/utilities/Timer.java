@@ -1,6 +1,5 @@
 package com.engine.utilities;
 
-import com.badlogic.gdx.Gdx;
 import com.engine.GameTime;
 import com.engine.events.Event;
 import com.engine.events.EventsArgs;
@@ -11,12 +10,21 @@ public final class Timer
 
     private float duration;
     private float counter;
-    private boolean isActive;
+    private boolean isRunning;
 
     public Event<EventsArgs> timerStopped = new Event<EventsArgs>();
     public Event<EventsArgs> timerReachedZero = new Event<EventsArgs>();
     private EventsArgs timerStoppedArgs = new EventsArgs();
     private EventsArgs timerReachedZeroArgs = new EventsArgs();
+
+    /**
+     *
+     * @return Valor booleano que indica si se encuentra activo el contador
+     */
+    public boolean isRunning()
+    {
+        return isRunning;
+    }
 
     /**
      *
@@ -26,7 +34,7 @@ public final class Timer
      */
     public float elapsedTimePercentage()
     {
-        if (!isActive)
+        if (!isRunning)
         {
             return 0f;
         }
@@ -46,7 +54,7 @@ public final class Timer
 
         this.duration = duration;
         this.counter = 0f;
-        this.isActive = false;
+        this.isRunning = false;
     }
 
     /**
@@ -63,12 +71,12 @@ public final class Timer
      */
     public void start(float duration)
     {
-        if (!isActive && enabled)
+        if (!isRunning && enabled)
         {
             this.duration = duration;
 
             counter = 0f;
-            isActive = true;
+            isRunning = true;
         }
     }
 
@@ -89,7 +97,7 @@ public final class Timer
         if (enabled)
         {
             counter = 0f;
-            isActive = true;
+            isRunning = true;
         }
     }
 
@@ -98,10 +106,10 @@ public final class Timer
      */
     public void stop()
     {
-        if (isActive && enabled)
+        if (isRunning && enabled)
         {
             counter = 0f;
-            isActive = false;
+            isRunning = false;
 
             timerStoppedArgs.sender = this;
             timerStopped.invoke(timerStoppedArgs);
@@ -110,7 +118,7 @@ public final class Timer
 
     public void update(GameTime gameTime)
     {
-        if (isActive && enabled)
+        if (isRunning && enabled)
         {
             counter += 1000f * gameTime.delta;
 

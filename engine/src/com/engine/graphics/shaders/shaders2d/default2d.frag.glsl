@@ -5,10 +5,10 @@
     #define LOWP
 #endif
 
+uniform sampler2D u_texture;
+
 varying LOWP vec4 v_color;
 varying vec2 v_texCoords;
-
-uniform sampler2D u_texture;
 
 void main()
 {

@@ -12,13 +12,9 @@ public class Event<T extends EventsArgs>
 
         if (localHandlers != null)
         {
-            int size = localHandlers.size;
-
-            for (int i = 0; i < size; i++)
+            for (int i = 0, n = localHandlers.size; i < n; i++)
             {
-                IEventHandler handler = localHandlers.get(i);
-
-                handler.onAction(args);
+                localHandlers.get(i).onAction(args);
             }
         }
     }

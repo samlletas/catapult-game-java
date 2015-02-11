@@ -4,7 +4,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.10+'
+        classpath 'com.android.tools.build:gradle:0.14.2'
         classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.9'
     }
 }
@@ -16,7 +16,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'Game'
-        gdxVersion = '1.2.0'
+        gdxVersion = '1.5.0'
         roboVMVersion = '0.0.13'
     }
 

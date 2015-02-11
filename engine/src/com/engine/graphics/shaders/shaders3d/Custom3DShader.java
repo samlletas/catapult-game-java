@@ -9,25 +9,20 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.engine.events.Event;
+import com.engine.events.EventsArgs;
 import com.engine.graphics.shaders.IUniformSetter;
 import com.engine.graphics.shaders.Uniform;
 import com.engine.graphics.shaders.UniformCollection;
 
 public abstract class Custom3DShader implements Shader
 {
-    private static final String SKINNING_LOGIC_TAG = "// <skinning-logic>";
-    private static final Matrix4 IDENTITY_MATRIX = new Matrix4().idt();
-    private static StringBuilder vertexBuilder = new StringBuilder();
-    private static StringBuilder fragmentBuilder = new StringBuilder();
-    private static StringBuilder tempBuilder = new StringBuilder();
-    private static String baseVertexShader;
-    private static String baseFragmentShader;
-
     private Renderable renderable;
 
     protected long attributesMask;
@@ -35,10 +30,19 @@ public abstract class Custom3DShader implements Shader
     protected RenderContext context;
     protected ShaderProgram program;
 
-    protected UniformCollection globalUniforms;
-    protected UniformCollection localUniforms;
+    private UniformCollection globalUniforms;
+    private UniformCollection localUniforms;
 
     protected int numBones;
+
+    private static StringBuilder vertexBuilder = new StringBuilder();
+    private static StringBuilder fragmentBuilder = new StringBuilder();
+    private static StringBuilder tempBuilder = new StringBuilder();
+    private static String baseVertexShader;
+    private static String baseFragmentShader;
+
+    private static final String SKINNING_LOGIC_TAG = "// <skinning-logic>";
+    private static final Matrix4 IDENTITY_MATRIX = new Matrix4().idt();
 
     public Custom3DShader(Renderable renderable)
     {
@@ -70,10 +74,10 @@ public abstract class Custom3DShader implements Shader
         mixer.mix(vertexBuilder, getCustomVertexShader());
         mixer.mix(fragmentBuilder, getCustomFragmentShader());
 
-        System.out.print("---VERTEX SHADER---\n\n");
-        System.out.println(vertexBuilder);
-        System.out.print("---FRAGMENT SHADER---\n\n");
-        System.out.println(fragmentBuilder);
+//        System.out.print("---VERTEX SHADER---\n\n");
+//        System.out.println(vertexBuilder);
+//        System.out.print("---FRAGMENT SHADER---\n\n");
+//        System.out.println(fragmentBuilder);
 
         program = new ShaderProgram(vertexBuilder.toString(), fragmentBuilder.toString());
 
@@ -83,13 +87,8 @@ public abstract class Custom3DShader implements Shader
             localUniforms = new UniformCollection();
 
             addBaseUniforms();
-            addCustomGlobalUniforms();
-            addCustomLocalUniforms();
-
-//            for(String u : program.getUniforms())
-//            {
-//                System.out.println(u);
-//            }
+            addCustomGlobalUniforms(globalUniforms);
+            addCustomLocalUniforms(localUniforms);
 
             globalUniforms.initialize(program);
             localUniforms.initialize(program);
@@ -170,8 +169,13 @@ public abstract class Custom3DShader implements Shader
     {
         if (hasSkinning())
         {
-            for(VertexAttribute attribute : renderable.mesh.getVertexAttributes())
+            VertexAttributes attributes = renderable.mesh.getVertexAttributes();
+            VertexAttribute attribute;
+
+            for(int i = 0, n = attributes.size(); i < n; i++)
             {
+                attribute = attributes.get(i);
+
                 if (attribute.usage == VertexAttributes.Usage.BoneWeight &&
                         attribute.unit < numBones)
                 {
@@ -180,7 +184,7 @@ public abstract class Custom3DShader implements Shader
                     vertexBuilder.append(attribute.unit);
                     vertexBuilder.append(";\n");
 
-                    // Uniforme
+                    // Uniform
                     vertexBuilder.append("uniform mat4 u_bone");
                     vertexBuilder.append(attribute.unit);
                     vertexBuilder.append(";\n");
@@ -377,8 +381,8 @@ public abstract class Custom3DShader implements Shader
 
     protected abstract String getCustomVertexShader();
     protected abstract String getCustomFragmentShader();
-    protected abstract void addCustomGlobalUniforms();
-    protected abstract void addCustomLocalUniforms();
+    protected abstract void addCustomGlobalUniforms(UniformCollection uniforms);
+    protected abstract void addCustomLocalUniforms(UniformCollection uniforms);
 
     class BoneTransformSetter implements IUniformSetter
     {

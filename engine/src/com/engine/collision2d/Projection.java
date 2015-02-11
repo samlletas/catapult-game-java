@@ -1,8 +1,5 @@
 package com.engine.collision2d;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * Representa la proyección de un polígono sobre un eje
  */
