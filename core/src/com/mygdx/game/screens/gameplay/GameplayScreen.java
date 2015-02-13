@@ -59,6 +59,7 @@ public final class GameplayScreen extends OverlayedScreen
     private GameHUD gameHUD;
     private StartCounter startCounter;
     private PauseOverlay pauseOverlay;
+    private ScoreLabelContainer scoreLabelContainer;
 
     // Ui para el botón de pausa
     private Stage pauseStage;
@@ -102,6 +103,7 @@ public final class GameplayScreen extends OverlayedScreen
         gameHUD = new GameHUD(common, gameplayData);
         startCounter = new StartCounter(graphicsSettings);
         pauseOverlay = new PauseOverlay(this, common, graphicsSettings, viewport2D, spriteBatch);
+        scoreLabelContainer = new ScoreLabelContainer();
 
         pauseButton = new GameButton(common, GameButton.ButtonTypes.TINY, Global.ButtonStyles.PAUSE);
         pauseButton.setPosition(790f, 10f);
@@ -166,8 +168,8 @@ public final class GameplayScreen extends OverlayedScreen
             @Override
             public void onAction(TargetCollisionArgs args)
             {
-                gameplayData.increaseScore(args.score);
                 gameplayData.increaseSpecial(args.special);
+                scoreLabelContainer.showScoreLabel(args, 74f, 35f);
             }
         });
 
@@ -178,6 +180,25 @@ public final class GameplayScreen extends OverlayedScreen
             {
                 gameHUD.disolveLive();
                 gameplayData.decreaseLive();
+            }
+        });
+
+        scoreLabelContainer.onScoreLabelFinished.subscribe(new IEventHandler<TargetCollisionArgs>()
+        {
+            @Override
+            public void onAction(TargetCollisionArgs args)
+            {
+                gameplayData.increaseScore(args.score);
+                gameHUD.bloom();
+            }
+        });
+
+        scoreLabelContainer.onChanceLabelFinished.subscribe(new IEventHandler<TargetCollisionArgs>()
+        {
+            @Override
+            public void onAction(TargetCollisionArgs args)
+            {
+
             }
         });
 
@@ -313,10 +334,11 @@ public final class GameplayScreen extends OverlayedScreen
                 ball.update(gameTime);
                 gameplayData.updateSpecial(gameTime);
                 crystalManager.update(gameTime);
-                gameHUD.update(gameTime);
 
                 crystalManager.checkCollisions(ball);
                 ball.checkCollisions(gameTime, grass);
+                scoreLabelContainer.update(gameTime);
+                gameHUD.update(gameTime);
 
                 if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
                 {
@@ -372,6 +394,7 @@ public final class GameplayScreen extends OverlayedScreen
 
             common.shaders.textShader.setForegroundColor(getTransitionForeColor(pauseOverlay.getOverlay()));
             distanceFieldRenderer.begin(distanceFieldFont);
+            scoreLabelContainer.drawText(distanceFieldRenderer, distanceFieldFont);
             gameHUD.drawScore(distanceFieldRenderer, distanceFieldFont);
             if (gameState == GameStates.Starting)
             {

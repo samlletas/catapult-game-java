@@ -119,6 +119,14 @@ public class GameHUD
         specialBarColor = SPECIAL_BAR_NORMAL_COLOR;
     }
 
+    public void bloom()
+    {
+        scoreActor.clearActions();
+        scoreActor.addAction(Actions.sequence(
+                Actions.scaleTo(1.3f, 1.3f, 0.025f, Interpolation.sine),
+                Actions.scaleTo(1.0f, 1.0f, 0.025f, Interpolation.sine)));
+    }
+
     public void update(GameTime gameTime)
     {
         crystalActor.act(gameTime.delta);

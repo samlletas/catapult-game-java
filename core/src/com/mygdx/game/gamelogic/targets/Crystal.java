@@ -66,6 +66,11 @@ public class Crystal extends Target
         }
     }
 
+    public CrystalTypes getType()
+    {
+        return type;
+    }
+
     public void startWaveAnimation()
     {
         waveAnimation.start();

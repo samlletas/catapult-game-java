@@ -21,8 +21,8 @@ import com.mygdx.game.gamelogic.targets.patterns.ingame.CircularSpikesPattern;
 
 public final class CrystalManager
 {
-    private static final int MAX_CRYSTALS = 8;
-    private static final int MAX_SPIKES = 3;
+    public static final int MAX_CRYSTALS = 8;
+    public static final int MAX_SPIKES = 3;
 
     private Common common;
     private FastArray<Crystal> crystals;
