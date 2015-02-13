@@ -3,6 +3,9 @@ package com.mygdx.game.screens.gameplay;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.engine.GameTime;
 import com.engine.actors.ActorOrigin;
 import com.engine.actors.DistanceFieldFontActor;
@@ -19,15 +22,17 @@ public class GameHUD
 {
     private final static float SPECIAL_BAR_X = 200f;
     private final static float SPECIAL_BAR_Y = 30f;
-    private final static float SPECIAL_BAR_WIDTH = 350f;
+    private final static float SPECIAL_BAR_WIDTH = 340f;
+    private final static float SPECIAL_BAR_HEIGHT = 13f;
 
     private final static float LIVES_START_X = 620f;
     private final static float LIVES_START_Y = 40f;
     private final static float LIVES_OFFSET_X = 55f;
     private final static int   MAX_LIVES = 3;
 
-    private final static Color SPECIAL_BAR_NORMAL_COLOR = ColorUtilities.createColor(85, 221, 225, 255);
-    private final static Color SPECIAL_BAR_ACTIVE_COLOR = ColorUtilities.createColor(85, 212, 0, 255);
+    private final static Color SPECIAL_BAR_BACK_COLOR = ColorUtilities.createColor(0, 0, 0, 76);
+    private final static Color SPECIAL_BAR_NORMAL_COLOR = ColorUtilities.createColor(0, 204, 255, 255);
+    private final static Color SPECIAL_BAR_ACTIVE_COLOR = ColorUtilities.createColor(12, 231, 0, 255);
 
     private final static String ANIMATION_DEFAULT = "default";
     private final static String LIVE_ANIMATION_DISOLVE = "disolve";
@@ -36,9 +41,9 @@ public class GameHUD
     private GameplayData gameplayData;
     private Color specialBarColor;
 
-    private TextureAtlas.AtlasRegion specialBarCornerRegion;
-    private TextureAtlas.AtlasRegion specialBarBorderRegion;
+    private TextureAtlas.AtlasRegion pixelRegion;
     private TextureAtlas.AtlasRegion specialBarRegion;
+    private TextureAtlas.AtlasRegion specialBarCornerRegion;
 
     private TextureRegionActor crystalActor;
     private IntegerSequence integerSequence;
@@ -70,9 +75,9 @@ public class GameHUD
 
     private void initializeSpecialBar()
     {
-        specialBarCornerRegion = common.assets.atlasRegions.hudBarCorner.getInstance();
-        specialBarBorderRegion = common.assets.atlasRegions.hudBarBorder.getInstance();
+        pixelRegion = common.assets.atlasRegions.pixel.getInstance();
         specialBarRegion = common.assets.atlasRegions.hudBar.getInstance();
+        specialBarCornerRegion = common.assets.atlasRegions.hudBarCorner.getInstance();
     }
 
     private void initializeChanceActors()
@@ -82,7 +87,7 @@ public class GameHUD
 
         for (int i = 0; i < MAX_LIVES; i++)
         {
-            actor = new TextureRegionActor(common.assets.atlasRegions.hudChance.getInstance());
+            actor = new TextureRegionActor(common.assets.atlasRegions.hudChanceActive.getInstance());
             actor.setActorOrigin(ActorOrigin.Center);
             actor.setPosition(LIVES_START_X + LIVES_OFFSET_X * i, LIVES_START_Y);
             chanceActors.add(actor);
@@ -148,22 +153,24 @@ public class GameHUD
 
     private void drawSpecialBar(SpriteBatch spriteBatch)
     {
+        ColorUtilities.setColor(spriteBatch, SPECIAL_BAR_BACK_COLOR);
+        spriteBatch.draw(pixelRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y, SPECIAL_BAR_WIDTH, SPECIAL_BAR_HEIGHT);
+
         ColorUtilities.setColor(spriteBatch, specialBarColor);
+        float special = gameplayData.getSpecial();
+        float barWidth = special * SPECIAL_BAR_WIDTH / 100f;
 
-        if (specialBarCornerRegion.isFlipX()) specialBarCornerRegion.flip(true, false);
-        spriteBatch.draw(specialBarCornerRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y);
+        spriteBatch.draw(specialBarRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y - 9f,
+                barWidth, specialBarRegion.getRegionHeight());
 
-        spriteBatch.draw(specialBarBorderRegion,
-                SPECIAL_BAR_X + specialBarCornerRegion.getRegionWidth(),
-                SPECIAL_BAR_Y, SPECIAL_BAR_WIDTH, specialBarBorderRegion.getRegionHeight());
-
-        specialBarCornerRegion.flip(true, false);
-        spriteBatch.draw(specialBarCornerRegion,
-                SPECIAL_BAR_X + specialBarCornerRegion.getRegionWidth() + SPECIAL_BAR_WIDTH,
-                SPECIAL_BAR_Y);
-
-        spriteBatch.draw(specialBarRegion, SPECIAL_BAR_X + 3, SPECIAL_BAR_Y + 3,
-               gameplayData.getSpecial() * SPECIAL_BAR_WIDTH / 100f, specialBarRegion.getRegionHeight());
+        if (special> 0f)
+        {
+            if (specialBarCornerRegion.isFlipX()) specialBarCornerRegion.flip(true, false);
+            spriteBatch.draw(specialBarCornerRegion, SPECIAL_BAR_X - (float)specialBarCornerRegion.getRegionWidth(),
+                    SPECIAL_BAR_Y - 9f);
+            specialBarCornerRegion.flip(true, false);
+            spriteBatch.draw(specialBarCornerRegion, SPECIAL_BAR_X + barWidth, SPECIAL_BAR_Y - 9f);
+        }
 
         ColorUtilities.resetColor(spriteBatch);
     }

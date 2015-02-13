@@ -44,13 +44,11 @@ public final class GameAssets
 
     public final class TextureAtlases
     {
-        private TextureAtlasLoader.TextureAtlasParameter parameter;
-
         public Asset<TextureAtlas> gameTextures;
 
         private TextureAtlases()
         {
-            parameter = new TextureAtlasLoader.TextureAtlasParameter(true);
+            TextureAtlasLoader.TextureAtlasParameter parameter = new TextureAtlasLoader.TextureAtlasParameter(true);
             gameTextures = new Asset<TextureAtlas>(atlas, TextureAtlas.class, parameter);
         }
     }
@@ -72,10 +70,10 @@ public final class GameAssets
         public AtlasRegionAsset crystalWaveFill;
         public AtlasRegionAsset spikesGlow;
         public AtlasRegionAsset hudCrystal;
-        public AtlasRegionAsset hudBarCorner;
-        public AtlasRegionAsset hudBarBorder;
         public AtlasRegionAsset hudBar;
-        public AtlasRegionAsset hudChance;
+        public AtlasRegionAsset hudBarCorner;
+        public AtlasRegionAsset hudChanceActive;
+        public AtlasRegionAsset hudChanceInactive;
         public AtlasRegionAsset uiHeaderBackground;
         public AtlasRegionAsset uiHeaderLine;
         public AtlasRegionAsset titleGLow;
@@ -97,10 +95,10 @@ public final class GameAssets
             crystalWaveFill = new AtlasRegionAsset("crystalWaveFill", atlas);
             spikesGlow = new AtlasRegionAsset("spikesGlow", atlas);
             hudCrystal = new AtlasRegionAsset("hud-crystal", atlas);
-            hudBarCorner = new AtlasRegionAsset("hud-bar-corner", atlas);
-            hudBarBorder = new AtlasRegionAsset("hud-bar-border", atlas);
             hudBar = new AtlasRegionAsset("hud-bar", atlas);
-            hudChance = new AtlasRegionAsset("hud-chance", atlas);
+            hudBarCorner = new AtlasRegionAsset("hud-bar-corner", atlas);
+            hudChanceActive = new AtlasRegionAsset("hud-chance-active", atlas);
+            hudChanceInactive = new AtlasRegionAsset("hud-chance-inactive", atlas);
             uiHeaderBackground = new AtlasRegionAsset("ui-header-background", atlas);
             uiHeaderLine = new AtlasRegionAsset("ui-header-line", atlas);
             titleGLow = new AtlasRegionAsset("titleGlow", atlas);

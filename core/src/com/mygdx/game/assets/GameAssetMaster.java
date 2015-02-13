@@ -44,10 +44,10 @@ public class GameAssetMaster extends BaseAssetMaster
         queue.add(assets.atlasRegions.crystalWaveFill);
         queue.add(assets.atlasRegions.spikesGlow);
         queue.add(assets.atlasRegions.hudCrystal);
-        queue.add(assets.atlasRegions.hudBarCorner);
-        queue.add(assets.atlasRegions.hudBarBorder);
         queue.add(assets.atlasRegions.hudBar);
-        queue.add(assets.atlasRegions.hudChance);
+        queue.add(assets.atlasRegions.hudBarCorner);
+        queue.add(assets.atlasRegions.hudChanceActive);
+        queue.add(assets.atlasRegions.hudChanceInactive);
         queue.add(assets.atlasRegions.uiHeaderBackground);
         queue.add(assets.atlasRegions.uiHeaderLine);
         queue.add(assets.atlasRegions.titleGLow);

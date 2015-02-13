@@ -2,123 +2,123 @@
 textures.png
 size: 1022,1022
 format: RGBA8888
-filter: Linear,Linear
+filter: MipMapLinearNearest,Linear
 repeat: none
 axisGear
   rotate: false
-  xy: 224, 353
+  xy: 347, 555
   size: 42, 42
   orig: 42, 42
   offset: 0, 0
   index: -1
 backTire
   rotate: false
-  xy: 154, 436
+  xy: 184, 650
   size: 68, 68
   orig: 68, 68
   offset: 0, 0
   index: -1
 ball
   rotate: false
-  xy: 173, 177
+  xy: 246, 439
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
   index: -1
 body
   rotate: false
-  xy: 184, 827
+  xy: 2, 720
   size: 200, 128
   orig: 200, 128
   offset: 0, 0
   index: -1
 crystalGlow
   rotate: false
-  xy: 224, 397
+  xy: 235, 53
   size: 40, 49
   orig: 40, 49
   offset: 0, 0
   index: -1
 crystalWaveBorder
   rotate: false
-  xy: 235, 221
+  xy: 438, 938
   size: 33, 43
   orig: 33, 43
   offset: 0, 0
   index: -1
 crystalWaveFill
   rotate: false
-  xy: 174, 132
+  xy: 473, 938
   size: 32, 43
   orig: 32, 43
   offset: 0, 0
   index: -1
 flower
   rotate: false
-  xy: 210, 188
+  xy: 59, 2
   size: 25, 24
   orig: 25, 24
   offset: 0, 0
   index: -1
 flowerRoot
   rotate: false
-  xy: 35, 4
+  xy: 382, 839
   size: 41, 4
   orig: 41, 4
   offset: 0, 0
   index: -1
 frontTire
   rotate: false
-  xy: 112, 111
+  xy: 184, 506
   size: 60, 60
   orig: 60, 60
   offset: 0, 0
   index: -1
 grass1
   rotate: false
-  xy: 128, 43
+  xy: 249, 582
   size: 48, 66
   orig: 48, 66
   offset: 0, 0
   index: -1
 grass2
   rotate: false
-  xy: 177, 265
+  xy: 347, 599
   size: 45, 68
   orig: 45, 68
   offset: 0, 0
   index: -1
 grass3
   rotate: false
-  xy: 224, 448
+  xy: 291, 458
   size: 41, 56
   orig: 41, 56
   offset: 0, 0
   index: -1
 grassFlowerBig
   rotate: false
-  xy: 406, 524
+  xy: 538, 968
   size: 21, 13
   orig: 21, 13
   offset: 0, 0
   index: -1
 grassFlowerBranch
   rotate: false
-  xy: 2, 2
+  xy: 204, 720
   size: 31, 6
   orig: 31, 6
   offset: 0, 0
   index: -1
 grassFlowerRoot
   rotate: false
-  xy: 834, 1009
+  xy: 2, 35
   size: 80, 13
   orig: 80, 13
   offset: 0, 0
   index: -1
 grassFlowerSmall
   rotate: false
-  xy: 266, 427
+  xy: 184, 368
   size: 20, 14
   orig: 20, 14
   offset: 0, 0
@@ -132,126 +132,126 @@ ground
   index: -1
 handle
   rotate: false
-  xy: 336, 674
+  xy: 400, 957
   size: 36, 22
   orig: 36, 22
   offset: 0, 0
   index: -1
 handleGear
   rotate: false
-  xy: 267, 469
+  xy: 235, 11
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 hud-bar
   rotate: false
-  xy: 430, 968
-  size: 1, 11
-  orig: 3, 11
-  offset: 0, 0
-  index: -1
-hud-bar-border
-  rotate: false
-  xy: 375, 679
-  size: 1, 17
-  orig: 3, 17
+  xy: 235, 900
+  size: 1, 31
+  orig: 3, 31
   offset: 0, 0
   index: -1
 hud-bar-corner
   rotate: false
-  xy: 309, 492
-  size: 5, 17
-  orig: 5, 17
+  xy: 378, 522
+  size: 9, 31
+  orig: 10, 31
   offset: 0, 0
   index: -1
-hud-chance
+hud-chance-active
   rotate: false
-  xy: 128, 2
-  size: 46, 39
-  orig: 46, 39
+  xy: 184, 451
+  size: 60, 53
+  orig: 60, 53
+  offset: 0, 0
+  index: -1
+hud-chance-inactive
+  rotate: false
+  xy: 335, 518
+  size: 41, 35
+  orig: 41, 35
   offset: 0, 0
   index: -1
 hud-crystal
   rotate: false
-  xy: 379, 764
+  xy: 382, 894
   size: 51, 61
   orig: 51, 61
   offset: 0, 0
   index: -1
 libGdx
   rotate: false
-  xy: 184, 591
+  xy: 2, 893
   size: 230, 38
   orig: 230, 38
   offset: 0, 0
   index: -1
 pixel
   rotate: false
-  xy: 374, 674
-  size: 3, 3
+  xy: 336, 556
+  size: 1, 1
   orig: 3, 3
   offset: 0, 0
   index: -1
 rope
   rotate: false
-  xy: 266, 397
+  xy: 391, 585
   size: 1, 12
   orig: 1, 12
   offset: 0, 0
   index: -1
 ropeHolder
   rotate: false
-  xy: 400, 961
+  xy: 2, 8
   size: 27, 18
   orig: 27, 18
   offset: 0, 0
   index: -1
 scoreCircle
   rotate: false
-  xy: 2, 322
+  xy: 255, 839
   size: 125, 116
   orig: 125, 116
   offset: 0, 0
   index: -1
 scoreSide1
   rotate: false
-  xy: 386, 892
+  xy: 241, 309
   size: 24, 63
   orig: 24, 63
   offset: 0, 0
   index: -1
 scoreSide2
   rotate: false
-  xy: 83, 8
+  xy: 246, 476
   size: 43, 90
   orig: 43, 90
   offset: 0, 0
   index: -1
 scoreSide3
   rotate: false
-  xy: 336, 698
+  xy: 237, 147
   size: 41, 127
   orig: 41, 127
   offset: 0, 0
   index: -1
 scoreSide4
   rotate: false
-  xy: 129, 327
+  xy: 299, 560
   size: 46, 107
   orig: 46, 107
   offset: 0, 0
   index: -1
 shotBody
   rotate: false
-  xy: 224, 266
+  xy: 236, 104
   size: 41, 41
   orig: 41, 41
   offset: 0, 0
   index: -1
 shotCenter
   rotate: false
-  xy: 379, 674
+  xy: 507, 952
   size: 29, 29
   orig: 29, 29
   offset: 0, 0
@@ -265,7 +265,7 @@ shotSide
   index: -1
 spikesGlow
   rotate: false
-  xy: 975, 975
+  xy: 382, 845
   size: 47, 47
   orig: 47, 47
   offset: 0, 0
@@ -279,112 +279,112 @@ spoon
   index: -1
 star
   rotate: false
-  xy: 224, 309
+  xy: 291, 516
   size: 42, 42
   orig: 42, 42
   offset: 0, 0
   index: -1
 titleGlow
   rotate: false
-  xy: 184, 631
+  xy: 2, 850
   size: 225, 41
   orig: 225, 41
   offset: 0, 0
   index: -1
 tulipan
   rotate: false
-  xy: 174, 115
+  xy: 254, 652
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: -1
 tulipanLeftLeaf
   rotate: false
-  xy: 266, 411
+  xy: 241, 293
   size: 20, 14
   orig: 20, 14
   offset: 0, 0
   index: -1
 tulipanRightLeaf
   rotate: false
-  xy: 267, 443
+  xy: 31, 2
   size: 26, 24
   orig: 26, 24
   offset: 0, 0
   index: -1
 tulipanRoot
   rotate: false
-  xy: 834, 1002
+  xy: 2, 28
   size: 59, 5
   orig: 59, 5
   offset: 0, 0
   index: -1
 ui-button-down-big
   rotate: false
-  xy: 2, 775
+  xy: 2, 538
   size: 180, 180
   orig: 180, 180
   offset: 0, 0
   index: -1
 ui-button-down-medium
   rotate: false
-  xy: 2, 440
+  xy: 2, 203
   size: 150, 151
   orig: 150, 151
   offset: 0, 0
   index: -1
 ui-button-down-small
   rotate: false
-  xy: 2, 211
+  xy: 204, 728
   size: 108, 109
   orig: 108, 109
   offset: 0, 0
   index: -1
 ui-button-down-tiny
   rotate: false
-  xy: 379, 705
+  xy: 254, 669
   size: 57, 57
   orig: 57, 57
   offset: 0, 0
   index: -1
 ui-button-glow
   rotate: false
-  xy: 406, 539
+  xy: 267, 322
   size: 21, 50
   orig: 21, 50
   offset: 0, 0
   index: -1
 ui-button-up-big
   rotate: false
-  xy: 2, 593
+  xy: 2, 356
   size: 180, 180
   orig: 180, 180
   offset: 0, 0
   index: -1
 ui-button-up-medium
   rotate: false
-  xy: 184, 674
+  xy: 2, 50
   size: 150, 151
   orig: 150, 151
   offset: 0, 0
   index: -1
 ui-button-up-small
   rotate: false
-  xy: 2, 100
+  xy: 314, 728
   size: 108, 109
   orig: 108, 109
   offset: 0, 0
   index: -1
 ui-button-up-tiny
   rotate: false
-  xy: 916, 965
+  xy: 313, 669
   size: 57, 57
   orig: 57, 57
   offset: 0, 0
   index: -1
 ui-header-background
   rotate: false
-  xy: 581, 1000
+  xy: 2, 933
   size: 251, 22
   orig: 251, 22
   offset: 0, 0
@@ -398,63 +398,63 @@ ui-header-line
   index: -1
 ui-icon-back
   rotate: false
-  xy: 177, 214
+  xy: 372, 677
   size: 56, 49
   orig: 56, 49
   offset: 0, 0
   index: -1
 ui-icon-home
   rotate: false
-  xy: 324, 509
+  xy: 154, 109
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 ui-icon-info
   rotate: false
-  xy: 386, 827
+  xy: 245, 374
   size: 34, 63
   orig: 34, 63
   offset: 0, 0
   index: -1
 ui-icon-pause
   rotate: false
-  xy: 410, 676
+  xy: 229, 864
   size: 24, 27
   orig: 24, 27
   offset: 0, 0
   index: -1
 ui-icon-play
   rotate: false
-  xy: 2, 10
+  xy: 154, 19
   size: 79, 88
   orig: 79, 88
   offset: 0, 0
   index: -1
 ui-icon-power
   rotate: false
-  xy: 112, 173
+  xy: 184, 384
   size: 59, 65
   orig: 59, 65
   offset: 0, 0
   index: -1
 ui-icon-question
   rotate: false
-  xy: 112, 240
+  xy: 184, 568
   size: 63, 80
   orig: 63, 80
   offset: 0, 0
   index: -1
 ui-icon-scores
   rotate: false
-  xy: 237, 511
+  xy: 154, 276
   size: 85, 78
   orig: 85, 78
   offset: 0, 0
   index: -1
 ui-icon-settings
   rotate: false
-  xy: 154, 506
+  xy: 154, 191
   size: 81, 83
   orig: 81, 83
   offset: 0, 0
@@ -468,7 +468,7 @@ ui-slider-background
   index: -1
 ui-slider-knob
   rotate: false
-  xy: 177, 335
+  xy: 394, 576
   size: 45, 99
   orig: 45, 99
   offset: 0, 0
