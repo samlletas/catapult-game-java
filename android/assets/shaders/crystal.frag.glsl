@@ -28,6 +28,7 @@
     color.xyz -= shadowColorDifference * shadow;
     color.xyz += specularColor * specular;
 
+
     // Aplicación de alpha blending con el foregroundColor
     color.rgb = color.rgb * (1.0 - v_foregroundColor.a) + (v_foregroundColor.rgb * v_foregroundColor.a);
 
