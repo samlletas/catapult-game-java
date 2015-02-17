@@ -45,7 +45,7 @@ public class GameTitle implements ICustomWidget
         this.x = graphicsSettings.virtualWidth / 2f;
         this.y = 105f;
 
-        this.glowActor = new TextureRegionActor(common.assets.atlasRegions.titleGLow.getInstance());
+        this.glowActor = new TextureRegionActor(common.assets.atlasRegions.titleGlow.getInstance());
         this.textActor = new DistanceFieldFontActor(GAME_TITLE);
         this.textAnimationActor = new DistanceFieldFontActor(GAME_TITLE);
 

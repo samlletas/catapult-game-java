@@ -16,11 +16,11 @@ import com.mygdx.game.Common;
 public final class Catapult
 {
     // Constantes para lanzamiento de bola
+    public static final float LAUNCH_ANGLE = 45f;
     private static final float MIN_PULL_ANGLE = 137f;
     private static final float MAX_PULL_ANGLE = 179f;
     private static final float MIN_LAUNCH_POWER = 150f;
     private static final float MAX_LAUNCH_POWER = 1600f;
-    private static final float LAUNCH_ANGLE = 45f;
 
     // Constantes para el dibujado de la cuerda
     private static final float ROPE_PIVOT_X = 1f;
@@ -33,6 +33,8 @@ public final class Catapult
 
     private Common common;
     private Ball ball;
+    private BallPath ballPath;
+
     private Bone spoon;
     private Bone handleGear;
     private Bone ropeHolder;
@@ -55,10 +57,12 @@ public final class Catapult
     // Input
     private CatapultInputProcessor inputProcessor;
 
-    public Catapult(Common common, Ball ball)
+    public Catapult(Common common, Ball ball, BallPath ballPath)
     {
         this.common = common;
         this.ball = ball;
+        this.ballPath = ballPath;
+
         this.ropeRegion = this.common.assets.atlasRegions.rope.getInstance();
         this.inputProcessor = new CatapultInputProcessor();
 
@@ -114,13 +118,18 @@ public final class Catapult
 
     private void launch()
     {
-        float diff = MAX_PULL_ANGLE - MIN_PULL_ANGLE;
-        float factor = (pullAngle - MIN_PULL_ANGLE) / diff;
-        float power = Interpolation.linear.apply(MIN_LAUNCH_POWER,
-                MAX_LAUNCH_POWER, factor);
+        float power = getCurrentPower(pullAngle);
 
         ball.launch(power, LAUNCH_ANGLE);
         common.soundPlayer.playShoot();
+    }
+
+    private float getCurrentPower(float angle)
+    {
+        float diff = MAX_PULL_ANGLE - MIN_PULL_ANGLE;
+        float factor = (angle - MIN_PULL_ANGLE) / diff;
+        return Interpolation.linear.apply(MIN_LAUNCH_POWER,
+                MAX_LAUNCH_POWER, factor);
     }
 
     public void update(GameTime gameTime)
@@ -128,6 +137,7 @@ public final class Catapult
         player.update(gameTime);
 
         setBallPosition();
+        updateBallPath();
         calculateRopePosition();
     }
 
@@ -136,6 +146,14 @@ public final class Catapult
         if (!ball.isFlying())
         {
             ball.setPosition(spoon.getTransformedPosition(98f, 25f));
+        }
+    }
+
+    private void updateBallPath()
+    {
+        if (pulling)
+        {
+            ballPath.setPower(getCurrentPower(spoon.getFinalRotation()));
         }
     }
 
@@ -175,7 +193,9 @@ public final class Catapult
             if (Catapult.this.inputEnabled && !Catapult.this.ball.isFlying())
             {
                 Catapult.this.player.play(Catapult.ANIMATION_PULL);
+                Catapult.this.ballPath.show();
                 Catapult.this.pulling = true;
+
             }
 
             return false;
@@ -188,6 +208,7 @@ public final class Catapult
             {
                 Catapult.this.pullAngle = Catapult.this.spoon.getFinalRotation();
                 Catapult.this.player.play(Catapult.ANIMATION_LAUNCH);
+                Catapult.this.ballPath.hide();
             }
 
             pulling = false;

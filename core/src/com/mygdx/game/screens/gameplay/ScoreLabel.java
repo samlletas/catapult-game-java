@@ -19,7 +19,7 @@ public class ScoreLabel extends DistanceFieldFontActor
 {
     private static final String TEXT_CRYSTAL_NORMAL = "+1";
     private static final String TEXT_CRYSTAL_SPECIAL = "+3";
-    private static final String TEXT_SPIKE = "BAD";
+    private static final String TEXT_SPIKE = "MISS!";
 
     private boolean isActive;
     public Event<TargetCollisionArgs> onFinish;
@@ -96,8 +96,8 @@ public class ScoreLabel extends DistanceFieldFontActor
                                         Actions.scaleTo(1.3f, 1.3f, 0.15f, Interpolation.sine)),
                                 Actions.scaleTo(1f, 1f, 0.15f, Interpolation.sine))),
                 Actions.parallel(
-                        Actions.moveTo(destX, destY, 0.4f, Interpolation.sine),
-                        Actions.scaleTo(0.7f, 0.7f, 0.4f, Interpolation.exp10)),
+                        Actions.moveTo(destX, destY, 0.3f, Interpolation.sine),
+                        Actions.scaleTo(0.7f, 0.7f, 0.3f, Interpolation.exp10)),
                 Actions.run(onFinishRunnable)));
     }
 

@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.engine.actors.TextureRegionActor;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.GameTime;
 import com.engine.camera.CameraShaker2D;
@@ -42,6 +43,13 @@ public final class GameplayScreen extends OverlayedScreen
     // Para 60 FPS casi constantes(Android-Sam): 3 máx
     private int draws = 1;
 
+    /**
+     * Acumulador para permitir un fixed timestep
+     *
+     * <a href="http://gafferongames.com/game-physics/fix-your-timestep/">Link</a>
+     */
+    private float accumulator;
+
     private final Common common;
     private final DistanceFieldRenderer distanceFieldRenderer;
     private final DistanceFieldFont distanceFieldFont;
@@ -53,6 +61,7 @@ public final class GameplayScreen extends OverlayedScreen
     private Grass grass;
     private Catapult catapult;
     private Ball ball;
+    private BallPath ballPath;
     private CrystalManager crystalManager;
 
     private GameplayData gameplayData;
@@ -95,8 +104,9 @@ public final class GameplayScreen extends OverlayedScreen
         cameraShaker = new CameraShaker2D(orthographicCamera, 80, 0, 0, 0.75f, 0.99f);
         background = common.background;
         grass = common.grass;
-        ball = new Ball(common, graphicsSettings, cameraShaker);
-        catapult = new Catapult(common, ball);
+        ball = new Ball(common, graphicsSettings);
+        ballPath = new BallPath(common);
+        catapult = new Catapult(common, ball, ballPath);
         crystalManager = new CrystalManager(common);
 
         gameplayData = new GameplayData();
@@ -169,7 +179,7 @@ public final class GameplayScreen extends OverlayedScreen
             public void onAction(TargetCollisionArgs args)
             {
                 gameplayData.increaseSpecial(args.special);
-                scoreLabelContainer.showScoreLabel(args, 74f, 35f);
+                scoreLabelContainer.showScoreLabel(args, GameHUD.SCORE_TEXT_X, GameHUD.SCORE_TEXT_Y);
             }
         });
 
@@ -178,8 +188,16 @@ public final class GameplayScreen extends OverlayedScreen
             @Override
             public void onAction(TargetCollisionArgs args)
             {
-                gameHUD.disolveLive();
-                gameplayData.decreaseLive();
+                int chances = gameplayData.getLives();
+
+                if (chances > 0)
+                {
+                    TextureRegionActor chanceActor = gameHUD.getChance(chances - 1);
+                    scoreLabelContainer.showChanceLabel(args, chanceActor.getX(), chanceActor.getY());
+                    gameplayData.decreaseLive();
+                }
+
+                cameraShaker.shake(2);
             }
         });
 
@@ -189,7 +207,7 @@ public final class GameplayScreen extends OverlayedScreen
             public void onAction(TargetCollisionArgs args)
             {
                 gameplayData.increaseScore(args.score);
-                gameHUD.bloom();
+                gameHUD.bloomScore();
             }
         });
 
@@ -198,7 +216,8 @@ public final class GameplayScreen extends OverlayedScreen
             @Override
             public void onAction(TargetCollisionArgs args)
             {
-
+                gameHUD.disolveChance();
+                gameHUD.animateCurrentChance();
             }
         });
 
@@ -281,6 +300,7 @@ public final class GameplayScreen extends OverlayedScreen
         ball.reset();
         pauseOverlay.reset();
 
+        accumulator = 0f;
         gameState = GameStates.Starting;
     }
 
@@ -332,11 +352,20 @@ public final class GameplayScreen extends OverlayedScreen
                 grass.update(gameTime);
                 catapult.update(gameTime);
                 ball.update(gameTime);
+                ballPath.update(gameTime);
                 gameplayData.updateSpecial(gameTime);
                 crystalManager.update(gameTime);
 
-                crystalManager.checkCollisions(ball);
-                ball.checkCollisions(gameTime, grass);
+//                while (accumulator >= gameTime.delta)
+//                {
+//                    ball.update(Global.TIME_STEP);
+//                    ballPath.update(Global.TIME_STEP);
+//                    crystalManager.update(gameTime);
+//
+                    crystalManager.checkCollisions(ball);
+                    ball.checkCollisions(gameTime, grass);
+//                }
+
                 scoreLabelContainer.update(gameTime);
                 gameHUD.update(gameTime);
 
@@ -364,7 +393,7 @@ public final class GameplayScreen extends OverlayedScreen
             // AlphaAction en un Actor
             ColorUtilities.resetColor(spriteBatch);
 
-//            cameraShaker.beginDraw(spriteBatch);
+            cameraShaker.beginDraw(spriteBatch);
 
             common.shaders.defaultShader.setForegroundColor(getTransitionForeColor(pauseOverlay.getOverlay()));
             spriteBatch.begin();
@@ -390,6 +419,7 @@ public final class GameplayScreen extends OverlayedScreen
 
             spriteBatch.begin();
             crystalManager.drawEffects(spriteBatch);
+            ballPath.draw(spriteBatch);
             spriteBatch.end();
 
             common.shaders.textShader.setForegroundColor(getTransitionForeColor(pauseOverlay.getOverlay()));
@@ -414,10 +444,10 @@ public final class GameplayScreen extends OverlayedScreen
                 common.shapeRenderer.end();
             }
 
-//            cameraShaker.endDraw(spriteBatch);
+            cameraShaker.endDraw(spriteBatch);
 
 
-            else if (gameState == GameStates.Paused)
+            if (gameState == GameStates.Paused)
             {
                 common.shaders.defaultShader.setForegroundColor(getTransitionForeColor());
                 spriteBatch.begin();

@@ -16,6 +16,7 @@ public class GameTime
     public void update()
     {
         delta = Gdx.graphics.getDeltaTime();
+//        delta = Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f);
         elapsed += delta;
     }
 }

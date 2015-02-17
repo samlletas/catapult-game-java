@@ -6,8 +6,12 @@ import com.engine.utilities.ColorUtilities;
 
 public final class Global
 {
+    public static final boolean DEBUG_FPS = true;
     public static final boolean DEBUG_OPENGL = false;
+    public static final boolean DEBUG_MEMORY = false;
     public static final boolean DEBUG_POLYGONS = false;
+
+    public static final float TIME_STEP = 1f / 60f;
 
     public static final float OVERLAY_ALPHA = 0.7f;
     public static final float OVERLAY_PAUSE_ALPHA = 0.8f;

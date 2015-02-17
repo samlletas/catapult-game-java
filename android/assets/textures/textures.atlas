@@ -20,7 +20,7 @@ backTire
   index: -1
 ball
   rotate: false
-  xy: 246, 439
+  xy: 245, 400
   size: 35, 35
   orig: 35, 35
   offset: 0, 0
@@ -97,7 +97,7 @@ grass3
   index: -1
 grassFlowerBig
   rotate: false
-  xy: 538, 968
+  xy: 254, 654
   size: 21, 13
   orig: 21, 13
   offset: 0, 0
@@ -118,7 +118,7 @@ grassFlowerRoot
   index: -1
 grassFlowerSmall
   rotate: false
-  xy: 184, 368
+  xy: 277, 653
   size: 20, 14
   orig: 20, 14
   offset: 0, 0
@@ -146,7 +146,7 @@ handleGear
   index: -1
 hud-bar
   rotate: false
-  xy: 235, 900
+  xy: 285, 443
   size: 1, 31
   orig: 3, 31
   offset: 0, 0
@@ -193,6 +193,13 @@ pixel
   orig: 3, 3
   offset: 0, 0
   index: -1
+red-dot
+  rotate: false
+  xy: 246, 437
+  size: 36, 37
+  orig: 36, 37
+  offset: 0, 0
+  index: -1
 rope
   rotate: false
   xy: 391, 585
@@ -216,7 +223,7 @@ scoreCircle
   index: -1
 scoreSide1
   rotate: false
-  xy: 241, 309
+  xy: 435, 873
   size: 24, 63
   orig: 24, 63
   offset: 0, 0
@@ -293,14 +300,14 @@ titleGlow
   index: -1
 tulipan
   rotate: false
-  xy: 254, 652
+  xy: 184, 367
   size: 23, 15
   orig: 23, 15
   offset: 0, 0
   index: -1
 tulipanLeftLeaf
   rotate: false
-  xy: 241, 293
+  xy: 245, 384
   size: 20, 14
   orig: 20, 14
   offset: 0, 0
@@ -349,7 +356,7 @@ ui-button-down-tiny
   index: -1
 ui-button-glow
   rotate: false
-  xy: 267, 322
+  xy: 461, 886
   size: 21, 50
   orig: 21, 50
   offset: 0, 0
@@ -412,7 +419,7 @@ ui-icon-home
   index: -1
 ui-icon-info
   rotate: false
-  xy: 245, 374
+  xy: 277, 39
   size: 34, 63
   orig: 34, 63
   offset: 0, 0

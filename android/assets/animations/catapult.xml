@@ -24,7 +24,7 @@
         </animation>
         <animation name="pull" loop="false">
             <!-- Default -->
-            <frame duration="800">
+            <frame duration="1200">
                 <framedata boneID="0" rotation="108" scaleX="1" scaleY="1" offsetDirection="70" offsetDistance="0" interpolation="linear"/>
                 <framedata boneID="1" rotation="135" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>
                 <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="linear"/>

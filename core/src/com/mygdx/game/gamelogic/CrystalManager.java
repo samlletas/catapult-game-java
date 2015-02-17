@@ -76,7 +76,7 @@ public final class CrystalManager
     {
         patterns = new FastArray<BasePattern>();
         patterns.add(new CircularCrystalsPattern(common, crystals, spikes, 8, 75f, 100f, false));
-        patterns.add(new CircularSpikesPattern(common, crystals, spikes, 2, 75f, 50f, false));
+        patterns.add(new CircularSpikesPattern(common, crystals, spikes, 2, 75f, 150f, false));
 
         currentPattern = patterns.get(index);
         currentPattern.start(onSpecial);

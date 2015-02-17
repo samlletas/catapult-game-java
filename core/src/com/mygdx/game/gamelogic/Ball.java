@@ -1,5 +1,6 @@
 package com.mygdx.game.gamelogic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -20,11 +21,10 @@ import com.mygdx.game.shaders.TrailShader;
 
 public final class Ball
 {
-    private static final float GRAVITY = 2500f;
+    public static final float GRAVITY = 2500f;
 
     private Common common;
     private GraphicsSettings graphicsSettings;
-    private CameraShaker2D cameraShaker;
 
     public GamePolygon polygon;
     private Vector2 speed;
@@ -37,12 +37,10 @@ public final class Ball
     private TextureAtlas.AtlasRegion region;
     private ParticleEffect ballExplosion;
 
-    public Ball(Common common, GraphicsSettings graphicsSettings,
-                CameraShaker2D cameraShaker)
+    public Ball(Common common, GraphicsSettings graphicsSettings)
     {
         this.common = common;
         this.graphicsSettings = graphicsSettings;
-        this.cameraShaker = cameraShaker;
 
         this.polygon = GamePolygon.createConvex(6, 14);
         this.polygon.setPosition(0f, 0f);
@@ -79,6 +77,9 @@ public final class Ball
 
     public void launch(float power, float angle)
     {
+        Gdx.app.log("X: ", String.valueOf(polygon.getX()));
+        Gdx.app.log("Y: ", String.valueOf(polygon.getY()));
+
         speed.x = power * MathUtils.cosDeg(angle);
         speed.y = -(power * MathUtils.sinDeg(angle));
 
@@ -149,7 +150,6 @@ public final class Ball
             {
 //                logMaxY();
                 explode();
-                cameraShaker.shake(2);
             }
         }
 

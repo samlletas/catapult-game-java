@@ -64,6 +64,7 @@ public final class GameAssets
         public AtlasRegionAsset grass3;
         public AtlasRegionAsset star;
         public AtlasRegionAsset ball;
+        public AtlasRegionAsset redDot;
         public AtlasRegionAsset rope;
         public AtlasRegionAsset crystalGlow;
         public AtlasRegionAsset crystalWaveBorder;
@@ -76,7 +77,7 @@ public final class GameAssets
         public AtlasRegionAsset hudChanceInactive;
         public AtlasRegionAsset uiHeaderBackground;
         public AtlasRegionAsset uiHeaderLine;
-        public AtlasRegionAsset titleGLow;
+        public AtlasRegionAsset titleGlow;
 
         private AtlasRegions()
         {
@@ -89,6 +90,7 @@ public final class GameAssets
             grass3 = new AtlasRegionAsset("grass3", atlas);
             star = new AtlasRegionAsset("star", atlas);
             ball = new AtlasRegionAsset("ball", atlas);
+            redDot = new AtlasRegionAsset("red-dot", atlas);
             rope = new AtlasRegionAsset("rope", atlas);
             crystalGlow = new AtlasRegionAsset("crystalGlow", atlas);
             crystalWaveBorder = new AtlasRegionAsset("crystalWaveBorder", atlas);
@@ -101,7 +103,7 @@ public final class GameAssets
             hudChanceInactive = new AtlasRegionAsset("hud-chance-inactive", atlas);
             uiHeaderBackground = new AtlasRegionAsset("ui-header-background", atlas);
             uiHeaderLine = new AtlasRegionAsset("ui-header-line", atlas);
-            titleGLow = new AtlasRegionAsset("titleGlow", atlas);
+            titleGlow = new AtlasRegionAsset("titleGlow", atlas);
         }
     }
 

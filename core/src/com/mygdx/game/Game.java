@@ -64,12 +64,12 @@ public final class Game extends GameAdapter
         common = new Common(assets, graphicsSettings, spriteBatch,
                 (AlphaBlended2DShader)defaultShader);
 
-        if (Global.DEBUG_OPENGL)
+        if (Global.DEBUG_FPS || Global.DEBUG_OPENGL || Global.DEBUG_MEMORY)
         {
             profiler = new GameProfiler(680f, 10f);
-            profiler.profileFPS = true;
-            profiler.profileOpenGL = true;
-            profiler.profileMemory = true;
+            profiler.profileFPS = Global.DEBUG_FPS;
+            profiler.profileOpenGL = Global.DEBUG_OPENGL;
+            profiler.profileMemory = Global.DEBUG_MEMORY;
         }
 
         initializeScreens();
@@ -116,7 +116,7 @@ public final class Game extends GameAdapter
     {
         screenManager.draw(gameTime);
 
-        if (Global.DEBUG_OPENGL)
+        if (Global.DEBUG_FPS || Global.DEBUG_OPENGL || Global.DEBUG_MEMORY)
         {
             common.shaders.defaultShader.setForegroundColor(Global.Colors.NO_OVERLAY);
             profiler.profile(spriteBatch);
