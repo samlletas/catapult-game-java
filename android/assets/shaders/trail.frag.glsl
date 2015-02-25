@@ -9,8 +9,6 @@ varying LOWP vec4 v_color;
 varying vec2 v_texCoords;
 varying vec4 v_foregroundColor;
 
-uniform sampler2D u_texture;
-
 void main()
 {
     vec4 color = v_color;

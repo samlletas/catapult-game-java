@@ -183,8 +183,6 @@ public class TrailEffect
                 "varying LOWP vec4 v_color;\n" +
                 "varying vec2 v_texCoords;\n" +
                 "\n" +
-                "uniform sampler2D u_texture;\n" +
-                "\n" +
                 "void main()\n" +
                 "{\n" +
                 "    gl_FragColor = v_color;\n" +
