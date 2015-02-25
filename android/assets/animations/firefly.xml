@@ -1,0 +1,24 @@
+<root atlasFile="textures.atlas">
+    <bones>
+        <bone id="0" region="firefly-glow" parent="3" pivotX="10" pivotY="10" offsetX="7" offsetY="7" />
+        <bone id="1" region="firefly-wing" parent="3" pivotX="2" pivotY="5" offsetX="5" offsetY="7" />
+        <bone id="2" region="firefly-wing" parent="3" pivotX="2" pivotY="5" offsetX="8" offsetY="6" />
+        <bone id="3" region="firefly-body" parent="-1" pivotX="6" pivotY="6" offsetX="0" offsetY="0" />
+    </bones>
+    <animations>
+        <animation name="fly" loop="true">
+            <frame duration="100">
+                <framedata boneID="0" rotation="0" scaleX="2" scaleY="2" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="1" rotation="145" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="2" rotation="35" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+            </frame>
+            <frame duration="100">
+                <framedata boneID="0" rotation="0" scaleX="2" scaleY="2" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="1" rotation="215" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="2" rotation="325" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+                <framedata boneID="3" rotation="0" scaleX="1" scaleY="1" offsetDirection="0" offsetDistance="0" interpolation="sine"/>
+            </frame>
+        </animation>
+    </animations>
+</root>
