@@ -1,6 +1,7 @@
 package com.mygdx.game.screens.gameplay;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +15,7 @@ import com.engine.actors.TextureRegionActor;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.text.IntegerSequence;
+import com.engine.utilities.ActorUtilities;
 import com.engine.utilities.ColorUtilities;
 import com.engine.utilities.FastArray;
 import com.mygdx.game.Common;
@@ -83,6 +85,7 @@ public class GameHUD
         scoreActor.setFontBaseScale(SCORE_TEXT_SCALE);
         scoreActor.setActorOrigin(ActorOrigin.CenterLeft);
         scoreActor.setPosition(SCORE_TEXT_X, SCORE_TEXT_Y);
+        ActorUtilities.growActionsArray(scoreActor, 1);
     }
 
     private void initializeSpecialBar()
@@ -102,6 +105,7 @@ public class GameHUD
             actor = new TextureRegionActor(common.assets.atlasRegions.hudChanceActive.getInstance());
             actor.setActorOrigin(ActorOrigin.Center);
             chanceActors.add(actor);
+            ActorUtilities.growActionsArray(actor, 1);
         }
 
         chanceInactiveRegion = common.assets.atlasRegions.hudChanceInactive.getInstance();
@@ -170,12 +174,6 @@ public class GameHUD
         activeChances--;
 
         chance.clearActions();
-//        chance.addAction(Actions.sequence(
-//                Actions.parallel(
-//                        Actions.alpha(0f, 0.5f, Interpolation.sine),
-//                        Actions.rotateTo(90f, 0.5f, Interpolation.sine),
-//                        Actions.moveBy(20f, 20f, 0.5f, Interpolation.sine))));
-
         chance.addAction(Actions.sequence(
                 Actions.parallel(
                         Actions.alpha(0f, 0.25f, Interpolation.sineOut),
@@ -211,11 +209,11 @@ public class GameHUD
         }
     }
 
-    public void drawTextures(SpriteBatch spriteBatch)
+    public void drawTextures(Batch batch)
     {
-        crystalActor.draw(spriteBatch, 1f);
-        drawChances(spriteBatch);
-        drawSpecialBar(spriteBatch);
+        crystalActor.draw(batch, 1f);
+        drawChances(batch);
+        drawSpecialBar(batch);
     }
 
     public void drawScore(DistanceFieldRenderer renderer, DistanceFieldFont font)
@@ -224,12 +222,12 @@ public class GameHUD
         scoreActor.draw(renderer, font);
     }
 
-    private void drawChances(SpriteBatch spriteBatch)
+    private void drawChances(Batch batch)
     {
         // Chances inactivas
         for (int i = 0; i < MAX_LIVES; i++)
         {
-            spriteBatch.draw(chanceInactiveRegion,
+            batch.draw(chanceInactiveRegion,
                     CHANCES_INACTIVE_START_X + CHANCES_INACTIVE_OFFSET_X * i,
                     CHANCES_INACTIVE_START_Y);
         }
@@ -237,31 +235,31 @@ public class GameHUD
         // Chances activas
         for (TextureRegionActor chance : chanceActors)
         {
-            chance.draw(spriteBatch, 1f);
+            chance.draw(batch, 1f);
         }
     }
 
-    private void drawSpecialBar(SpriteBatch spriteBatch)
+    private void drawSpecialBar(Batch batch)
     {
-        ColorUtilities.setColor(spriteBatch, SPECIAL_BAR_BACK_COLOR);
-        spriteBatch.draw(pixelRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y, SPECIAL_BAR_WIDTH, SPECIAL_BAR_HEIGHT);
+        ColorUtilities.setColor(batch, SPECIAL_BAR_BACK_COLOR);
+        batch.draw(pixelRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y, SPECIAL_BAR_WIDTH, SPECIAL_BAR_HEIGHT);
 
-        ColorUtilities.setColor(spriteBatch, specialBarColor);
+        ColorUtilities.setColor(batch, specialBarColor);
         float special = gameplayData.getSpecial();
         float barWidth = special * SPECIAL_BAR_WIDTH / 100f;
 
-        spriteBatch.draw(specialBarRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y - 9f,
+        batch.draw(specialBarRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y - 9f,
                 barWidth, specialBarRegion.getRegionHeight());
 
         if (special> 0f)
         {
             if (specialBarCornerRegion.isFlipX()) specialBarCornerRegion.flip(true, false);
-            spriteBatch.draw(specialBarCornerRegion, SPECIAL_BAR_X - (float)specialBarCornerRegion.getRegionWidth(),
+            batch.draw(specialBarCornerRegion, SPECIAL_BAR_X - (float) specialBarCornerRegion.getRegionWidth(),
                     SPECIAL_BAR_Y - 9f);
             specialBarCornerRegion.flip(true, false);
-            spriteBatch.draw(specialBarCornerRegion, SPECIAL_BAR_X + barWidth, SPECIAL_BAR_Y - 9f);
+            batch.draw(specialBarCornerRegion, SPECIAL_BAR_X + barWidth, SPECIAL_BAR_Y - 9f);
         }
 
-        ColorUtilities.resetColor(spriteBatch);
+        ColorUtilities.resetColor(batch);
     }
 }

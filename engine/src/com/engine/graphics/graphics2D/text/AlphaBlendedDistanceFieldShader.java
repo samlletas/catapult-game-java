@@ -13,8 +13,6 @@ import com.engine.utilities.ColorUtilities;
 public class AlphaBlendedDistanceFieldShader extends DistanceFieldShader
 {
     private Color foregroundColor;
-
-    private boolean renderShadows;
     private Color shadowColor;
     private Vector2 shadowOffset;
 
@@ -25,7 +23,6 @@ public class AlphaBlendedDistanceFieldShader extends DistanceFieldShader
 
         this.foregroundColor = ColorUtilities.createColor(0, 0, 0, 0);
 
-        this.renderShadows = false;
         this.shadowColor = ColorUtilities.createColor(0, 0, 0, 0);
         this.shadowOffset = new Vector2(0f, 0f);
     }
@@ -33,11 +30,6 @@ public class AlphaBlendedDistanceFieldShader extends DistanceFieldShader
     public void setForegroundColor(Color color)
     {
         foregroundColor.set(color);
-    }
-
-    public void setRenderShadows(boolean renderShadows)
-    {
-        this.renderShadows = renderShadows;
     }
 
     public void setShadowColor(Color color)
@@ -65,15 +57,6 @@ public class AlphaBlendedDistanceFieldShader extends DistanceFieldShader
                         foregroundColor.g,
                         foregroundColor.b,
                         foregroundColor.a);
-            }
-        }));
-
-        uniforms.add(new Uniform("u_renderShadows", new IUniformSetter()
-        {
-            @Override
-            public void set(Uniform uniform, ShaderProgram program, Renderable renderable)
-            {
-                program.setUniformf(uniform.id, renderShadows? 1f : 0f);
             }
         }));
 

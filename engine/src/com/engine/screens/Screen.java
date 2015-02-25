@@ -1,7 +1,7 @@
 package com.engine.screens;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.graphics.GraphicsSettings;
@@ -14,27 +14,27 @@ public abstract class Screen implements Disposable
     protected final GraphicsSettings graphicsSettings;
     protected final Viewport viewport2D;
     protected final Viewport viewport3D;
-    protected final SpriteBatch spriteBatch;
+    protected final Batch batch;
     protected Color clearColor;
     protected ScreenManager screenManager;
 
     public Screen(String name, GraphicsSettings graphicsSettings,
                   Viewport viewport2D, Viewport viewport3D,
-                  SpriteBatch spriteBatch)
+                  Batch batch)
     {
-        this(name, graphicsSettings, viewport2D, viewport3D, spriteBatch,
+        this(name, graphicsSettings, viewport2D, viewport3D, batch,
                 ColorUtilities.createColor(graphicsSettings.clearColor));
     }
 
     public Screen(String name, GraphicsSettings graphicsSettings,
                   Viewport viewport2D, Viewport viewport3D,
-                  SpriteBatch spriteBatch, Color clearColor)
+                  Batch batch, Color clearColor)
     {
         this.name = name;
         this.graphicsSettings = graphicsSettings;
         this.viewport2D = viewport2D;
         this.viewport3D = viewport3D;
-        this.spriteBatch = spriteBatch;
+        this.batch = batch;
         this.clearColor = clearColor;
         this.screenManager = null;
     }

@@ -1,9 +1,10 @@
 package com.mygdx.game.gamelogic.targets.patterns;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.RandomXS128;
+import com.engine.collision2d.IPhysicsObject;
 import com.engine.events.IEventHandler;
 import com.engine.utilities.FastArray;
 import com.engine.GameTime;
@@ -17,7 +18,7 @@ import com.mygdx.game.gamelogic.targets.CrystalTypes;
 import com.mygdx.game.gamelogic.targets.Spike;
 import com.mygdx.game.helpers.SoundPlayer;
 
-public abstract class BasePattern
+public abstract class BasePattern implements IPhysicsObject
 {
     private static final int CRYSTAL_NORMAL_SCORE = 1;
     private static final int CRYSTAL_SPECIAL_SCORE = 3;
@@ -190,26 +191,49 @@ public abstract class BasePattern
     {
         if (isActive)
         {
-            onUpdateStart(gameTime);
-
             FastArray<Crystal> localCrystals = crystals;
             FastArray<Spike> localSpikes = spikes;
 
             for (int i = 0; i < crystalCount; i++)
             {
-                Crystal crystal = localCrystals.get(i);
-                crystal.update(gameTime);
-                updateCrystal(gameTime, crystal, i);
+                localCrystals.get(i).update(gameTime);
             }
 
             for (int i = 0; i < spikeCount; i++)
             {
-                Spike spike = localSpikes.get(i);
-                spike.update(gameTime);
-                updateSpike(gameTime, spike, i);
+                localSpikes.get(i).update(gameTime);
             }
 
             disappearTimer.update(gameTime);
+        }
+    }
+
+    @Override
+    public final void step(float elapsed, float delta)
+    {
+        if (isActive)
+        {
+            onStepStart(elapsed, delta);
+
+            FastArray<Crystal> localCrystals = crystals;
+            FastArray<Spike> localSpikes = spikes;
+
+            Crystal crystal;
+            Spike spike;
+
+            for (int i = 0; i < crystalCount; i++)
+            {
+                crystal = localCrystals.get(i);
+                crystal.step(elapsed, delta);
+                stepCrystal(elapsed, delta, crystal, i);
+            }
+
+            for (int i = 0; i < spikeCount; i++)
+            {
+                spike = localSpikes.get(i);
+                spike.step(elapsed, delta);
+                stepSpike(elapsed, delta, localSpikes.get(i), i);
+            }
         }
     }
 
@@ -224,7 +248,6 @@ public abstract class BasePattern
             {
                 Crystal crystal = localCrystals.get(i);
                 collided = crystal.onCollision(ball.polygon);
-
                 crystal.move();
 
                 if (collided)
@@ -259,7 +282,6 @@ public abstract class BasePattern
             {
                 Spike spike = localSpikes.get(i);
                 collided = spike.onCollision(ball.polygon);
-
                 spike.move();
 
                 if (collided)
@@ -288,7 +310,7 @@ public abstract class BasePattern
         }
     }
 
-    public final void drawGlow(SpriteBatch spriteBatch)
+    public final void drawGlow(Batch batch)
     {
         if (isActive)
         {
@@ -298,13 +320,13 @@ public abstract class BasePattern
             for (int i = 0; i < crystalCount; i++)
             {
                 Crystal crystal = localCrystals.get(i);
-                crystal.drawGlow(spriteBatch);
+                crystal.drawGlow(batch);
             }
 
             for (int i = 0; i < spikeCount; i++)
             {
                 Spike spike = localSpikes.get(i);
-                spike.drawGlow(spriteBatch);
+                spike.drawGlow(batch);
             }
         }
     }
@@ -330,7 +352,7 @@ public abstract class BasePattern
         }
     }
 
-    public final void drawEffets(SpriteBatch spriteBatch)
+    public final void drawEffets(Batch batch)
     {
         if (isActive)
         {
@@ -340,13 +362,13 @@ public abstract class BasePattern
             for (int i = 0; i < crystalCount; i++)
             {
                 Crystal crystal = localCrystals.get(i);
-                crystal.drawEffects(spriteBatch);
+                crystal.drawEffects(batch);
             }
 
             for (int i = 0; i < spikeCount; i++)
             {
                 Spike spike = localSpikes.get(i);
-                spike.drawEffects(spriteBatch);
+                spike.drawEffects(batch);
             }
         }
     }
@@ -373,7 +395,7 @@ public abstract class BasePattern
     }
 
     protected abstract void initializePositions(int startX, int startY);
-    protected abstract void onUpdateStart(GameTime gameTime);
-    protected abstract void updateCrystal(GameTime gameTime, Crystal crystal, int index);
-    protected abstract void updateSpike(GameTime gameTime, Spike spike, int index);
+    protected abstract void onStepStart(float elapsed, float delta);
+    protected abstract void stepCrystal(float elapsed, float delta, Crystal crystal, int index);
+    protected abstract void stepSpike(float elapsed, float delta, Spike spike, int index);
 }

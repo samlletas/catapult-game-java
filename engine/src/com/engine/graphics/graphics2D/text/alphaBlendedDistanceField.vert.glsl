@@ -15,7 +15,6 @@ varying vec2  v_texCoord;
 varying float v_thickness;
 varying float v_smoothing;
 varying vec4  v_foregroundColor;
-varying float v_renderShadows;
 varying vec2  v_shadowOffset;
 varying vec4  v_shadowColor;
 
@@ -27,7 +26,6 @@ void main()
     v_texCoord = a_texCoord0;
     v_thickness = u_thickness;
     v_smoothing = u_smoothing;
-    v_renderShadows = u_renderShadows;
     v_shadowOffset = u_shadowOffset;
 
     v_foregroundColor = u_foregroundColor;

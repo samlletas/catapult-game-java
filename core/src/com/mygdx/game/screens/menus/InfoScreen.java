@@ -2,6 +2,7 @@ package com.mygdx.game.screens.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -40,10 +41,10 @@ public class InfoScreen extends OverlayedScreen
     private InputMultiplexer inputMultiplexer;
 
     public InfoScreen(GraphicsSettings graphicsSettings, Viewport viewport2D,
-                          Viewport viewport3D, SpriteBatch spriteBatch, Common common)
+                          Viewport viewport3D, Batch batch, Common common)
     {
         super(Global.ScreenNames.INFO_SCREEN, graphicsSettings, viewport2D,
-                viewport3D, spriteBatch);
+                viewport3D, batch);
 
         this.common = common;
         this.textBlocks = new Array<TextBlock>(3);
@@ -55,7 +56,7 @@ public class InfoScreen extends OverlayedScreen
     @Override
     public void initialize()
     {
-        stage = new Stage(viewport2D, spriteBatch);
+        stage = new Stage(viewport2D, batch);
         overlay = new Overlay(graphicsSettings, Global.Colors.OVERLAY, Global.OVERLAY_ALPHA);
         header = new Header(common, graphicsSettings, "ABOUT");
 
@@ -177,25 +178,25 @@ public class InfoScreen extends OverlayedScreen
         // Reinicio del color ya que al parecer hay un bug en libgdx en el
         // que no se recupera el alpha original durante la ejecución de un
         // AlphaAction en un Actor
-        ColorUtilities.resetColor(spriteBatch);
+        ColorUtilities.resetColor(batch);
 
         common.shaders.defaultShader.setForegroundColor(getTransitionForeColor(overlay));
-        spriteBatch.begin();
-        common.background.draw(spriteBatch);
-        common.grass.draw(spriteBatch);
-        spriteBatch.end();
+        batch.begin();
+        common.background.draw(batch);
+        common.grass.draw(batch);
+        batch.end();
 
         common.shaders.defaultShader.setForegroundColor(getTransitionForeColor());
         stage.draw();
 
-        spriteBatch.begin();
-        header.drawTextures(spriteBatch);
+        batch.begin();
+        header.drawTextures(batch);
         Array<TextBlock> localTextBlocks = textBlocks;
         for (int i = 0, n = localTextBlocks.size; i < n; i++)
         {
-           localTextBlocks.get(i).drawTextures(spriteBatch);
+           localTextBlocks.get(i).drawTextures(batch);
         }
-        spriteBatch.end();
+        batch.end();
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
         distanceFieldRenderer.begin(distanceFieldFont, TextBlock.TEXT_FONT_SCALE);

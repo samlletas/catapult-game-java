@@ -1,9 +1,12 @@
 package com.mygdx.game.assets;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Array;
 import com.engine.assets.BaseAssetMaster;
 import com.engine.assets.IAsset;
+import com.engine.assets.loaders.BitmapFontAtlasLoader;
 
 public class GameAssetMaster extends BaseAssetMaster
 {
@@ -17,7 +20,6 @@ public class GameAssetMaster extends BaseAssetMaster
     @Override
     protected void addCustomLoaders(AssetManager manager)
     {
-
     }
 
     /*************************************************************************
@@ -29,6 +31,7 @@ public class GameAssetMaster extends BaseAssetMaster
     {
         queue.add(assets.textureAtlases.gameTextures);
 
+        queue.add(assets.atlasRegions.background);
         queue.add(assets.atlasRegions.pixel);
         queue.add(assets.atlasRegions.libGdx);
         queue.add(assets.atlasRegions.buttonGlow);
@@ -59,6 +62,7 @@ public class GameAssetMaster extends BaseAssetMaster
         queue.add(assets.animations.tulipan);
         queue.add(assets.animations.grassFlower);
         queue.add(assets.animations.flower);
+        queue.add(assets.animations.fireFly);
 
         queue.add(assets.particles.ballExplosion);
         queue.add(assets.particles.crystalBreakNormal);
@@ -69,7 +73,6 @@ public class GameAssetMaster extends BaseAssetMaster
         queue.add(assets.models.bomb);
 
         queue.add(assets.bitmapFonts.furore);
-
         queue.add(assets.distanceFieldFonts.furore);
 
         queue.add(assets.sounds.crystalBreak);

@@ -1,10 +1,11 @@
 package com.mygdx.game.gamelogic;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.engine.GameTime;
+import com.engine.collision2d.IPhysicsObject;
 import com.engine.events.DelayedEventHandler;
 import com.engine.events.Event;
 import com.engine.events.EventsArgs;
@@ -14,14 +15,15 @@ import com.mygdx.game.Common;
 import com.mygdx.game.gamelogic.targets.Crystal;
 import com.mygdx.game.gamelogic.targets.CrystalTypes;
 import com.mygdx.game.gamelogic.targets.Spike;
+import com.mygdx.game.gamelogic.targets.TargetBatch;
 import com.mygdx.game.gamelogic.targets.patterns.BasePattern;
 import com.mygdx.game.gamelogic.targets.patterns.TargetCollisionArgs;
 import com.mygdx.game.gamelogic.targets.patterns.ingame.CircularCrystalsPattern;
 import com.mygdx.game.gamelogic.targets.patterns.ingame.CircularSpikesPattern;
 
-public final class CrystalManager
+public final class CrystalManager implements IPhysicsObject
 {
-    public static final int MAX_CRYSTALS = 8;
+    public static final int MAX_CRYSTALS = 80;
     public static final int MAX_SPIKES = 3;
 
     private Common common;
@@ -29,6 +31,8 @@ public final class CrystalManager
     private FastArray<Spike> spikes;
     private FastArray<BasePattern> patterns;
     public BasePattern currentPattern;
+
+    private TargetBatch crystalBatch;
 
     private int index = 0;
     private boolean onSpecial = false;
@@ -43,6 +47,8 @@ public final class CrystalManager
         this.common = common;
         this.crystals = new FastArray<Crystal>();
         this.spikes = new FastArray<Spike>();
+
+        this.crystalBatch = new TargetBatch(common.assets.models.crystal.getInstance().meshes.get(0), MAX_CRYSTALS);
 
         this.onCrystalCollision = new Event<TargetCollisionArgs>();
         this.onSpikeCollision = new Event<TargetCollisionArgs>();
@@ -75,8 +81,8 @@ public final class CrystalManager
     private void initializePatterns()
     {
         patterns = new FastArray<BasePattern>();
-        patterns.add(new CircularCrystalsPattern(common, crystals, spikes, 8, 75f, 100f, false));
-        patterns.add(new CircularSpikesPattern(common, crystals, spikes, 2, 75f, 150f, false));
+        patterns.add(new CircularCrystalsPattern(common, crystals, spikes, 2, 155f, 100f, false));
+        patterns.add(new CircularSpikesPattern(common, crystals, spikes, 3, 75f, 200f, false));
 
         currentPattern = patterns.get(index);
         currentPattern.start(onSpecial);
@@ -147,15 +153,21 @@ public final class CrystalManager
         currentPattern.update(gameTime);
     }
 
+    @Override
+    public void step(float elapsed, float delta)
+    {
+        currentPattern.step(elapsed, delta);
+    }
+
     public void checkCollisions(Ball ball)
     {
         currentPattern.checkCrystalCollisions(ball);
         currentPattern.checkSpikeCollisions(ball);
     }
 
-    public void drawTextures(SpriteBatch spriteBatch)
+    public void drawTextures(Batch batch)
     {
-        currentPattern.drawGlow(spriteBatch);
+        currentPattern.drawGlow(batch);
     }
 
     public void drawModels(ModelBatch modelBatch)
@@ -163,9 +175,9 @@ public final class CrystalManager
         currentPattern.drawModels(modelBatch);
     }
 
-    public void drawEffects(SpriteBatch spriteBatch)
+    public void drawEffects(Batch batch)
     {
-        currentPattern.drawEffets(spriteBatch);
+        currentPattern.drawEffets(batch);
     }
 
     public void drawPolygons(ShapeRenderer shapeRenderer)

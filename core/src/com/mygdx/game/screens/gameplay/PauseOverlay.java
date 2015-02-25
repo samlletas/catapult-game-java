@@ -2,6 +2,7 @@ package com.mygdx.game.screens.gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -39,7 +40,7 @@ public class PauseOverlay
 
     public PauseOverlay(GameplayScreen gameplayScreen, Common common,
                         GraphicsSettings graphicsSettings, Viewport viewport2D,
-                        SpriteBatch spriteBatch)
+                        Batch batch)
     {
         this.gameplayScreen = gameplayScreen;
 
@@ -48,7 +49,7 @@ public class PauseOverlay
         howToPlayButton = new GameButton(common, GameButton.ButtonTypes.MEDIUM, Global.ButtonStyles.QUESTION);
         continueButton = new GameButton(common, GameButton.ButtonTypes.BIG, Global.ButtonStyles.PLAY);
         homeButton = new GameButton(common, GameButton.ButtonTypes.MEDIUM, Global.ButtonStyles.HOME);
-        stage = new Stage(viewport2D, spriteBatch);
+        stage = new Stage(viewport2D, batch);
 
         howToPlayButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 200f, 265f);
         continueButton.setOriginalPosition(graphicsSettings.virtualWidth / 2f, 285f);
@@ -175,9 +176,9 @@ public class PauseOverlay
         stage.act(gameTime.delta);
     }
 
-    public void drawTextures(SpriteBatch spriteBatch)
+    public void drawTextures(Batch batch)
     {
-        header.drawTextures(spriteBatch);
+        header.drawTextures(batch);
     }
 
     public void drawStage()

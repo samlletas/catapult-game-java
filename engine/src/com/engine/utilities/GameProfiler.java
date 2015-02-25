@@ -1,10 +1,12 @@
 package com.engine.utilities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.engine.GameSpriteBatch;
 import com.engine.text.IntegerSequence;
 import com.engine.text.LabelSequence;
 
@@ -65,10 +67,10 @@ public class GameProfiler
         GLProfiler.enable();
     }
 
-    public void profile(SpriteBatch spriteBatch)
+    public void profile(Batch batch)
     {
         drawY = 0f;
-        spriteBatch.begin();
+        batch.begin();
 
         if (profileFPS)
         {
@@ -78,7 +80,7 @@ public class GameProfiler
                 fpsStartTime = TimeUtils.millis();
             }
 
-            drawSequence(spriteBatch, fpsLabel);
+            drawSequence(batch, fpsLabel);
         }
 
         if (profileOpenGL)
@@ -93,14 +95,26 @@ public class GameProfiler
             drawCallsLabel.getValue().set(GLProfiler.drawCalls);
             textureBindsLabel.getValue().set(GLProfiler.textureBindings);
             shaderSwitchesLabel.getValue().set(GLProfiler.shaderSwitches);
-            maxSpritesLabel.getValue().set(spriteBatch.maxSpritesInBatch);
 
-            drawSequence(spriteBatch, glCallsLabel);
-            drawSequence(spriteBatch, drawCallsLabel);
-            drawSequence(spriteBatch, textureBindsLabel);
-            drawSequence(spriteBatch, shaderSwitchesLabel);
-            drawSequence(spriteBatch, vertexCountLabel);
-            drawSequence(spriteBatch, maxSpritesLabel);
+            boolean drawMaxSpritesInBatch = false;
+
+            if (batch instanceof SpriteBatch)
+            {
+                maxSpritesLabel.getValue().set(((SpriteBatch)batch).maxSpritesInBatch);
+                drawMaxSpritesInBatch = true;
+            }
+            else if (batch instanceof GameSpriteBatch)
+            {
+                maxSpritesLabel.getValue().set(((GameSpriteBatch)batch).maxSpritesInBatch);
+                drawMaxSpritesInBatch = true;
+            }
+
+            drawSequence(batch, glCallsLabel);
+            drawSequence(batch, drawCallsLabel);
+            drawSequence(batch, textureBindsLabel);
+            drawSequence(batch, shaderSwitchesLabel);
+            drawSequence(batch, vertexCountLabel);
+            if (drawMaxSpritesInBatch) drawSequence(batch, maxSpritesLabel);
         }
 
         if (profileMemory)
@@ -108,20 +122,17 @@ public class GameProfiler
             javaHeapLabel.getValue().set((int)((float)Gdx.app.getJavaHeap() / 1000000f));
             nativeHeapLabel.getValue().set((int)((float)Gdx.app.getNativeHeap() / 1000000f));
 
-            drawSequence(spriteBatch, javaHeapLabel);
-            drawSequence(spriteBatch, nativeHeapLabel);
+            drawSequence(batch, javaHeapLabel);
+            drawSequence(batch, nativeHeapLabel);
         }
 
-//        drawSequence(spriteBatch, String.format("Java %f", (float)Gdx.app.getJavaHeap() / 1000000f));
-//        drawSequence(spriteBatch, String.format("Native %f", (float)Gdx.app.getNativeHeap() / 1000000f));
-
-        spriteBatch.end();
+        batch.end();
         GLProfiler.reset();
     }
 
-    private void drawSequence(SpriteBatch spriteBatch, CharSequence sequence)
+    private void drawSequence(Batch batch, CharSequence sequence)
     {
-        font.draw(spriteBatch, sequence, x, y + drawY);
+        font.draw(batch, sequence, x, y + drawY);
         drawY += LINE_OFFSET;
     }
 }

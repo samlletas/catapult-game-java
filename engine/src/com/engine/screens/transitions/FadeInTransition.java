@@ -1,6 +1,7 @@
 package com.engine.screens.transitions;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
@@ -13,7 +14,7 @@ import com.engine.actors.Actions;
 
 public class FadeInTransition extends AlphaTransition
 {
-    private SpriteBatch spriteBatch;
+    private Batch batch;
     private TextureRegion pixelRegion;
     private float duration;
 
@@ -23,12 +24,12 @@ public class FadeInTransition extends AlphaTransition
 
     private FinishTransitionRunnable finishTransitionRunnable;
 
-    public FadeInTransition(GraphicsSettings settings, SpriteBatch spriteBatch,
+    public FadeInTransition(GraphicsSettings settings, Batch batch,
                             TextureRegion pixelRegion, float duration, Color color)
     {
         super(settings, new Overlay(settings, color, 0f));
 
-        this.spriteBatch = spriteBatch;
+        this.batch = batch;
         this.pixelRegion = pixelRegion;
         this.duration = duration;
 
@@ -72,9 +73,9 @@ public class FadeInTransition extends AlphaTransition
     @Override
     protected void onDraw(GameTime gameTime)
     {
-        spriteBatch.begin();
-        overlay.draw(spriteBatch, pixelRegion);
-        spriteBatch.end();
+        batch.begin();
+        overlay.draw(batch, pixelRegion);
+        batch.end();
     }
 
     @Override

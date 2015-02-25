@@ -2,7 +2,7 @@ package com.mygdx.game.gamelogic.targets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -14,11 +14,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
 import com.engine.collision2d.GamePolygon;
+import com.engine.collision2d.IPhysicsObject;
 import com.engine.graphics.graphics2D.animation.basic.BasicAnimation;
 import com.engine.graphics.graphics2D.animation.basic.BasicFrame;
 import com.engine.utilities.ColorUtilities;
 
-public class Target
+public class Target implements IPhysicsObject
 {
     private static final float FLOATING_SPEED = 3.5f;
     private static final float FLOATING_DIFFERENCE = 7.5f;
@@ -158,19 +159,26 @@ public class Target
 
     public void update(GameTime gameTime)
     {
+        updateParticles(gameTime);
+
+//        currentAnimation.update(gameTime.delta);
+//        setScale(currentAnimation.getScaleX());
+    }
+
+    @Override
+    public void step(float elapsed, float delta)
+    {
         if (isActive)
         {
             if (floating)
             {
-                polygon.speed.y = (FLOATING_DIFFERENCE * gameTime.delta) *
-                        MathUtils.sin(gameTime.elapsed * FLOATING_SPEED);
+                polygon.speed.y = (FLOATING_DIFFERENCE * delta) *
+                        MathUtils.sin(elapsed * FLOATING_SPEED);
             }
 
-            currentAnimation.update(gameTime);
+            currentAnimation.update(delta);
             setScale(currentAnimation.getScaleX());
         }
-
-        updateParticles(gameTime);
     }
 
     private void updateParticles(GameTime gameTime)
@@ -188,7 +196,7 @@ public class Target
         polygon.move();
     }
 
-    public void drawGlow(SpriteBatch spriteBatch)
+    public void drawGlow(Batch batch)
     {
         if (isActive)
         {
@@ -198,9 +206,9 @@ public class Target
             float x = polygon.getX() - (width / 2f);
             float y = polygon.getY() - (height / 2f);
 
-            ColorUtilities.setColor(spriteBatch, glowColor);
-            spriteBatch.draw(glowRegion, x, y, width, height);
-            ColorUtilities.resetColor(spriteBatch);
+            ColorUtilities.setColor(batch, glowColor);
+            batch.draw(glowRegion, x, y, width, height);
+            ColorUtilities.resetColor(batch);
         }
     }
 
@@ -222,7 +230,7 @@ public class Target
         }
     }
 
-    public void drawEffects(SpriteBatch spriteBatch)
+    public void drawEffects(Batch batch)
     {
         Array<ParticleEffect> localParticles = particleEffects;
         ParticleEffect effect;
@@ -233,7 +241,7 @@ public class Target
 
             if (!effect.isComplete())
             {
-                effect.draw(spriteBatch);
+                effect.draw(batch);
             }
         }
     }

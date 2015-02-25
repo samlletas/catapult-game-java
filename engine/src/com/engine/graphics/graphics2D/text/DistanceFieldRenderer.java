@@ -1,25 +1,26 @@
 package com.engine.graphics.graphics2D.text;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
 public class DistanceFieldRenderer implements Disposable
 {
-    private SpriteBatch spriteBatch;
+    private Batch batch;
     private DistanceFieldShader shader;
     private DistanceFieldFont distanceFieldFont; // Font usada para dibujar
     private float drawScale;
     private boolean drawing;
 
-    public DistanceFieldRenderer(SpriteBatch spriteBatch)
+    public DistanceFieldRenderer(Batch batch)
     {
-        this(spriteBatch, new DistanceFieldShader());
+        this(batch, new DistanceFieldShader());
     }
 
-    public DistanceFieldRenderer(SpriteBatch spriteBatch, DistanceFieldShader shader)
+    public DistanceFieldRenderer(Batch batch, DistanceFieldShader shader)
     {
-        this.spriteBatch = spriteBatch;
+        this.batch = batch;
         this.shader = shader;
         this.drawing = false;
     }
@@ -33,8 +34,8 @@ public class DistanceFieldRenderer implements Disposable
     {
         if (!drawing)
         {
-            spriteBatch.setShader(shader);
-            spriteBatch.begin();
+            batch.setShader(shader);
+            batch.begin();
 
             distanceFieldFont = font;
             drawScale = scale;
@@ -54,8 +55,8 @@ public class DistanceFieldRenderer implements Disposable
             shader.smoothing = distanceFieldFont.sharpness / (distanceFieldFont.spread * drawScale);
             shader.sendCustomUniforms();
 
-            spriteBatch.end();
-            spriteBatch.setShader(null);
+            batch.end();
+            batch.setShader(null);
 
             distanceFieldFont = null;
             drawing = false;
@@ -68,39 +69,39 @@ public class DistanceFieldRenderer implements Disposable
 
     public BitmapFont.TextBounds draw(CharSequence str, float x, float y)
     {
-        return distanceFieldFont.font.draw(spriteBatch, str, x, y);
+        return distanceFieldFont.font.draw(batch, str, x, y);
     }
 
     public BitmapFont.TextBounds draw(CharSequence str, float x, float y,
                                       int start, int end)
     {
-        return distanceFieldFont.font.draw(spriteBatch, str, x, y, start, end);
+        return distanceFieldFont.font.draw(batch, str, x, y, start, end);
     }
 
     public BitmapFont.TextBounds drawMultiLine(CharSequence str, float x, float y)
     {
-        return distanceFieldFont.font.drawMultiLine(spriteBatch, str, x, y);
+        return distanceFieldFont.font.drawMultiLine(batch, str, x, y);
     }
 
     public BitmapFont.TextBounds drawMultiLine(CharSequence str, float x, float y,
                                                float alignmentWidth,
                                                BitmapFont.HAlignment alignment)
     {
-        return distanceFieldFont.font.drawMultiLine(spriteBatch, str, x, y,
+        return distanceFieldFont.font.drawMultiLine(batch, str, x, y,
                 alignmentWidth, alignment);
     }
 
     public BitmapFont.TextBounds drawWrapped(CharSequence str, float x, float y,
                                              float wrapWidth)
     {
-        return distanceFieldFont.font.drawWrapped(spriteBatch, str, x, y, wrapWidth);
+        return distanceFieldFont.font.drawWrapped(batch, str, x, y, wrapWidth);
     }
 
     public BitmapFont.TextBounds drawWrapped(CharSequence str,float x, float y,
                                              float wrapWidth,
                                              BitmapFont.HAlignment alignment)
     {
-        return distanceFieldFont.font.drawWrapped(spriteBatch, str, x, y,
+        return distanceFieldFont.font.drawWrapped(batch, str, x, y,
                 wrapWidth, alignment);
     }
 

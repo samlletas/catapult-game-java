@@ -57,26 +57,26 @@ public class CircularSpikesPattern extends BasePattern
     }
 
     @Override
-    protected void onUpdateStart(GameTime gameTime)
+    protected void onStepStart(float elapsed, float delta)
     {
         if (clockwise)
         {
-            angle -= angularSpeed * gameTime.delta;
+            angle -= angularSpeed * delta;
         }
         else
         {
-            angle += angularSpeed * gameTime.delta;
+            angle += angularSpeed * delta;
         }
     }
 
     @Override
-    protected void updateCrystal(GameTime gameTime, Crystal crystal, int index)
+    protected void stepCrystal(float elapsed, float delta, Crystal crystal, int index)
     {
 
     }
 
     @Override
-    protected void updateSpike(GameTime gameTime, Spike spike, int index)
+    protected void stepSpike(float elapsed, float delta, Spike spike, int index)
     {
         Vector2 nextPosition = PatternHelper.travelFrom(this.crystal.getX(), this.crystal.getY(),
                 angle + (index * angleDifference), distance);

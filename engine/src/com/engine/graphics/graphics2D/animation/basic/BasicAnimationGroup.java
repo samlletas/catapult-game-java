@@ -1,5 +1,6 @@
 package com.engine.graphics.graphics2D.animation.basic;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
@@ -52,7 +53,7 @@ public abstract class BasicAnimationGroup
         isPaused = false;
     }
 
-    public final void update(GameTime gameTime)
+    public final void update(float delta)
     {
         if (isActive && !isPaused)
         {
@@ -60,7 +61,7 @@ public abstract class BasicAnimationGroup
 
             for (BasicAnimation animation : animations)
             {
-                animation.update(gameTime);
+                animation.update(delta);
 
                 if (!animation.isPlaying())
                 {
@@ -78,9 +79,9 @@ public abstract class BasicAnimationGroup
         }
     }
 
-    public final void draw(SpriteBatch spriteBatch, float x, float y)
+    public final void draw(Batch batch, float x, float y)
     {
-        onDraw(spriteBatch, x, y);
+        onDraw(batch, x, y);
     }
 
     /**
@@ -103,9 +104,9 @@ public abstract class BasicAnimationGroup
     /**
      * Aquí las clases derivadas deben de dibujar cada una de las animaciones
      *
-     * @param spriteBatch spriteBatch
+     * @param batch batch
      * @param x posición de dibujado en x
      * @param y posición de dibujado en y
      */
-    protected abstract void onDraw(SpriteBatch spriteBatch, float x, float y);
+    protected abstract void onDraw(Batch batch, float x, float y);
 }

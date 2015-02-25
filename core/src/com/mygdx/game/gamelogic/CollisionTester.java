@@ -134,7 +134,7 @@ public class CollisionTester
 
     public void draw(SpriteBatch spriteBatch)
     {
-//        a.draw(spriteBatch, drawColor);
-//        b.draw(spriteBatch, drawColor);
+//        a.draw(batch, drawColor);
+//        b.draw(batch, drawColor);
     }
 }

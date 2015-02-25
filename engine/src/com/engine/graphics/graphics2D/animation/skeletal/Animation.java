@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
 import com.engine.events.Event;
 import com.engine.events.EventsArgs;
+import com.engine.graphics.graphics2D.animation.skeletal.FrameInterpolation.IFrameInterpolator;
+import com.engine.graphics.graphics2D.animation.skeletal.FrameInterpolation.TimeInterpolator;
 
 public class Animation
 {
@@ -13,8 +15,10 @@ public class Animation
     private Array<Frame> frames;
     private int currentFramePosition;
     private int nextFramePosition;
-    private float totalFrameTime;
-    private float currentFrameTime;
+    private Frame currentFrame;
+    private Frame nextFrame;
+    private IFrameInterpolator frameInterpolator;
+
     private boolean isPlaying;
     private boolean isPaused;
 
@@ -27,11 +31,11 @@ public class Animation
         this.loop = loop;
 
         this.frames = new Array<Frame>();
-
         this.currentFramePosition = -1;
         this.nextFramePosition = -1;
-        this.totalFrameTime = 0.0f;
-        this.currentFrameTime = 0.0f;
+        this.currentFrame = null;
+        this.nextFrame = null;
+        this.frameInterpolator = new TimeInterpolator();
 
         this.isPlaying = false;
         this.isPaused = false;
@@ -41,12 +45,23 @@ public class Animation
     {
         currentFramePosition = 0;
         nextFramePosition = advanceFramePosition(currentFramePosition);
+        currentFrame = frames.get(currentFramePosition);
+        nextFrame = frames.get(nextFramePosition);
 
-        totalFrameTime = frames.get(currentFramePosition).duration;
-        currentFrameTime = Math.max(0f, totalFrameTime - timeOffset);
+        frameInterpolator.start(currentFrame, nextFrame, timeOffset);
 
         isPlaying = true;
         isPaused = false;
+    }
+
+    public IFrameInterpolator getFrameInterpolator()
+    {
+        return frameInterpolator;
+    }
+
+    public void setFrameInterpolator(IFrameInterpolator frameInterpolator)
+    {
+        this.frameInterpolator = frameInterpolator;
     }
 
     public void pause()
@@ -67,37 +82,33 @@ public class Animation
 
     public void update(GameTime gameTime, Bone root, float speed, float rotation, float scale)
     {
-        Frame currentFrame = frames.get(currentFramePosition);
-        Frame nextFrame = frames.get(nextFramePosition);
-        float factor = 1f - (currentFrameTime / totalFrameTime);
-
+        float factor = frameInterpolator.getFactor();
         root.update(currentFrame, nextFrame, factor, rotation, scale);
 
         if (isPlaying)
         {
             if (!isPaused)
             {
-                currentFrameTime -= (gameTime.delta * 1000f) * speed;
+                frameInterpolator.update(gameTime, speed);
 
-                if (currentFrameTime <= 0.0f)
+                if (factor >= 1f && frameInterpolator.autoAdvanceFrame())
                 {
                     currentFramePosition = advanceFramePosition(currentFramePosition);
                     nextFramePosition = advanceFramePosition(nextFramePosition);
+                    currentFrame = frames.get(currentFramePosition);
+                    nextFrame = frames.get(nextFramePosition);
 
                     if (!loop && currentFramePosition == frames.size - 1)
                     {
                         isPlaying = false;
                         isPaused = false;
 
-                        currentFrameTime = 0.0f;
-
                         onAnimationEndArgs.sender = this;
                         onAnimationEnd.invoke(onAnimationEndArgs);
                     }
                     else
                     {
-                        totalFrameTime = frames.get(currentFramePosition).duration;
-                        currentFrameTime = totalFrameTime;
+                        frameInterpolator.start(currentFrame, nextFrame, 0f);
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.engine.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -181,30 +182,30 @@ public final class CameraShaker2D
 
             if (!recovering)
             {
-                currentDisplacementX = Interpolation.linear.apply(0f,
+                currentDisplacementX = Interpolation.sine.apply(0f,
                         maxDisplacementX, elapsedTimePercentage);
 
-                currentDisplacementY = Interpolation.linear.apply(0f,
+                currentDisplacementY = Interpolation.sine.apply(0f,
                         maxDisplacementY, elapsedTimePercentage);
 
-                currentRotation = Interpolation.linear.apply(0f, maxRotation,
+                currentRotation = Interpolation.sine.apply(0f, maxRotation,
                         elapsedTimePercentage);
 
-                currentZoom = Interpolation.linear.apply(1f, maxZoom,
+                currentZoom = Interpolation.sine.apply(1f, maxZoom,
                         elapsedTimePercentage);
             }
             else
             {
-                currentDisplacementX = Interpolation.linear.apply(
+                currentDisplacementX = Interpolation.sine.apply(
                         maxDisplacementX, 0f, elapsedTimePercentage);
 
-                currentDisplacementY = Interpolation.linear.apply(
+                currentDisplacementY = Interpolation.sine.apply(
                         maxDisplacementY, 0f, elapsedTimePercentage);
 
-                currentRotation = Interpolation.linear.apply(maxRotation, 0f,
+                currentRotation = Interpolation.sine.apply(maxRotation, 0f,
                         elapsedTimePercentage);
 
-                currentZoom = Interpolation.linear.apply(maxZoom, 1f,
+                currentZoom = Interpolation.sine.apply(maxZoom, 1f,
                         elapsedTimePercentage);
             }
         }
@@ -215,9 +216,9 @@ public final class CameraShaker2D
     /**
      * Realiza transformaciones correspondients a la vibración en la cámara
      * para preparar el dibujado
-     * @param spriteBatch
+     * @param batch
      */
-    public void beginDraw(SpriteBatch spriteBatch)
+    public void beginDraw(Batch batch)
     {
         if (!beginCalled)
         {
@@ -228,10 +229,7 @@ public final class CameraShaker2D
             camera.translate(currentDisplacementX, currentDisplacementY, 0f);
             camera.update();
 
-            spriteBatch.setProjectionMatrix(camera.combined);
-//            spriteBatch.setProjectionMatrix(camera.projection);
-//            spriteBatch.setTransformMatrix(camera.view);
-
+            batch.setProjectionMatrix(camera.combined);
             beginCalled = true;
         }
         else
@@ -242,9 +240,9 @@ public final class CameraShaker2D
 
     /**
      * Realiza transformaciones para reiniciar la cámara a su estado original
-     * @param spriteBatch
+     * @param batch
      */
-    public void endDraw(SpriteBatch spriteBatch)
+    public void endDraw(Batch batch)
     {
         if (beginCalled)
         {
@@ -253,9 +251,7 @@ public final class CameraShaker2D
             camera.rotate(-currentRotation);
             camera.update();
 
-            spriteBatch.setProjectionMatrix(camera.projection);
-            spriteBatch.setTransformMatrix(camera.view);
-
+            batch.setProjectionMatrix(camera.combined);
             beginCalled = false;
         }
         else

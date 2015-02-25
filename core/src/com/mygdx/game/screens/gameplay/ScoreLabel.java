@@ -1,14 +1,16 @@
 package com.mygdx.game.screens.gameplay;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.*;
+import com.engine.actors.Actions;
 import com.engine.actors.ActorOrigin;
 import com.engine.actors.DistanceFieldFontActor;
 import com.engine.events.Event;
-import com.engine.events.EventsArgs;
 import com.engine.events.IEventHandler;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
+import com.engine.utilities.ActorUtilities;
 import com.mygdx.game.gamelogic.targets.Crystal;
 import com.mygdx.game.gamelogic.targets.CrystalTypes;
 import com.mygdx.game.gamelogic.targets.Spike;
@@ -24,6 +26,7 @@ public class ScoreLabel extends DistanceFieldFontActor
     private boolean isActive;
     public Event<TargetCollisionArgs> onFinish;
     private TargetCollisionArgs targetCollisionArgs;
+    private ActionContainer actionContainer;
     private Runnable onFinishRunnable;
 
     public ScoreLabel()
@@ -31,6 +34,7 @@ public class ScoreLabel extends DistanceFieldFontActor
         isActive = false;
         onFinish = new Event<TargetCollisionArgs>();
         targetCollisionArgs = new TargetCollisionArgs();
+        actionContainer = new ActionContainer();
 
         setActorOrigin(ActorOrigin.Center);
         setFontBaseScale(0.8f);
@@ -52,6 +56,8 @@ public class ScoreLabel extends DistanceFieldFontActor
                 onFinish.invoke(targetCollisionArgs);
             }
         };
+
+        ActorUtilities.growActionsArray(this, 1);
     }
 
     public boolean isActive()
@@ -87,18 +93,7 @@ public class ScoreLabel extends DistanceFieldFontActor
         targetCollisionArgs.score = args.score;
         targetCollisionArgs.special = args.special;
 
-        addAction(Actions.sequence(
-                Actions.parallel(
-                        Actions.moveTo(args.target.getX(), args.target.getY() - 10f, 0.5f, Interpolation.sine),
-                        Actions.sequence(
-                                Actions.parallel(
-                                        Actions.alpha(1f, 0.15f, Interpolation.linear),
-                                        Actions.scaleTo(1.3f, 1.3f, 0.15f, Interpolation.sine)),
-                                Actions.scaleTo(1f, 1f, 0.15f, Interpolation.sine))),
-                Actions.parallel(
-                        Actions.moveTo(destX, destY, 0.3f, Interpolation.sine),
-                        Actions.scaleTo(0.7f, 0.7f, 0.3f, Interpolation.exp10)),
-                Actions.run(onFinishRunnable)));
+        addAction(actionContainer.getAction(args.target, destX, destY));
     }
 
     @Override
@@ -115,6 +110,38 @@ public class ScoreLabel extends DistanceFieldFontActor
         if (isActive)
         {
             draw(renderer, font);
+        }
+    }
+
+    class ActionContainer
+    {
+        SequenceAction sequence = new SequenceAction();
+        ParallelAction showParallel = new ParallelAction();
+        MoveToAction showMoveTo = new MoveToAction();
+        SequenceAction showSequence = new SequenceAction();
+        ParallelAction showBloomParallel = new ParallelAction();
+        AlphaAction showBloomFadeIn = new AlphaAction();
+        ScaleToAction showBloomScaleTo = new ScaleToAction();
+        ScaleToAction showScaleTo = new ScaleToAction();
+        ParallelAction travelParallel = new ParallelAction();
+        MoveToAction travelMoveTo = new MoveToAction();
+        ScaleToAction travelScaleTo = new ScaleToAction();
+        RunnableAction runnable = new RunnableAction();
+
+        Action getAction(Target target, float destX, float destY)
+        {
+            return Actions.sequence(sequence,
+                    Actions.parallel(showParallel,
+                            Actions.moveTo(showMoveTo, target.getX(), target.getY() - 10f, 0.5f, Interpolation.sine),
+                            Actions.sequence(showSequence,
+                                    Actions.parallel(showBloomParallel,
+                                            Actions.alpha(showBloomFadeIn, 1f, 0.15f, Interpolation.linear),
+                                            Actions.scaleTo(showBloomScaleTo, 1.3f, 1.3f, 0.15f, Interpolation.sine)),
+                                    Actions.scaleTo(showScaleTo, 1f, 1f, 0.15f, Interpolation.sine))),
+                    Actions.parallel(travelParallel,
+                            Actions.moveTo(travelMoveTo, destX, destY, 0.3f, Interpolation.sine),
+                            Actions.scaleTo(travelScaleTo, 0.7f, 0.7f, 0.3f, Interpolation.exp10)),
+                    Actions.run(runnable, onFinishRunnable));
         }
     }
 }

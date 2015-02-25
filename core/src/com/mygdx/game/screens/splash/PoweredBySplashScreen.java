@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.splash;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -23,10 +24,10 @@ public class PoweredBySplashScreen extends OverlayedScreen
     private static final float SHOW_DELAY = 1.000f;
     private static final float SHOW_HIDE_DURATION = 0.500f;
     private static final float MIN_SPLASH_TIME = 2f;
-    private static final float TEXT_SCALE = 0.6f;
+    private static final float TEXT_SCALE = 0.55f;
 
-    private static final float TEXT_OFFSET_X = -80f;
-    private static final float TEXT_OFFSET_Y = -32f;
+    private static final float TEXT_OFFSET_X = -60f;
+    private static final float TEXT_OFFSET_Y = -30f;
 
     private static final float HIDDEN_OFFSET_X = 100f;
     private static final float HIDDEN_OFFSET_Y = 0f;
@@ -38,7 +39,6 @@ public class PoweredBySplashScreen extends OverlayedScreen
     private float x;
     private float y;
     private boolean finishedAnimation;
-    private boolean finishedAssetsLoading;
 
     private DistanceFieldFontActor textActor;
     private TextureRegionActor logoActor;
@@ -55,10 +55,10 @@ public class PoweredBySplashScreen extends OverlayedScreen
 
     public PoweredBySplashScreen(GraphicsSettings graphicsSettings,
                                  Viewport viewport2D, Viewport viewport3D,
-                                 SpriteBatch spriteBatch, Common common)
+                                 Batch batch, Common common)
     {
         super(Global.ScreenNames.POWERED_BY_SCREEN, graphicsSettings,
-                viewport2D, viewport3D, spriteBatch);
+                viewport2D, viewport3D, batch);
 
         this.common = common;
 
@@ -69,7 +69,6 @@ public class PoweredBySplashScreen extends OverlayedScreen
         y = graphicsSettings.virtualHeight / 2f;
 
         finishedAnimation = false;
-        finishedAssetsLoading = false;
     }
 
     @Override
@@ -109,7 +108,6 @@ public class PoweredBySplashScreen extends OverlayedScreen
                 ColorUtilities.intToFloat(150),
                 ColorUtilities.intToFloat(150),
                 ColorUtilities.intToFloat(255));
-        common.shaders.textShader.setRenderShadows(false);
 
         textActor.getColor().a = 0f;
         textActor.setPosition(x + TEXT_OFFSET_X - HIDDEN_OFFSET_X, y + TEXT_OFFSET_Y - HIDDEN_OFFSET_Y);
@@ -139,10 +137,7 @@ public class PoweredBySplashScreen extends OverlayedScreen
         {
             screenManager.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
             finishedAnimation = false;
-            finishedAssetsLoading = false;
         }
-
-        clearColor.set(getBackgroundForeColor(Global.Colors.SPLASH_BACKGROUND));
     }
 
     @Override
@@ -151,7 +146,7 @@ public class PoweredBySplashScreen extends OverlayedScreen
         // Reinicio del color ya que al parecer hay un bug en libgdx en el
         // que no se recupera el alpha original durante la ejecución de un
         // AlphaAction en un Actor
-        ColorUtilities.resetColor(spriteBatch);
+        ColorUtilities.resetColor(batch);
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
         distanceFieldRenderer.begin(distanceFieldFont, TEXT_SCALE);
@@ -159,8 +154,8 @@ public class PoweredBySplashScreen extends OverlayedScreen
         distanceFieldRenderer.end();
 
         common.shaders.defaultShader.setForegroundColor(getTransitionForeColor());
-        spriteBatch.begin();
-        logoActor.draw(spriteBatch, 1f);
-        spriteBatch.end();
+        batch.begin();
+        logoActor.draw(batch, 1f);
+        batch.end();
     }
 }

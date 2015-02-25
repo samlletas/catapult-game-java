@@ -1,6 +1,7 @@
 package com.mygdx.game.gamelogic.targets;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -112,18 +113,18 @@ public class Crystal extends Target
             rotationY += ROTATION_SPEED * gameTime.delta;
             rotationX = 15f;
 
-            waveAnimation.update(gameTime);
+            waveAnimation.update(gameTime.delta);
         }
     }
 
     @Override
-    public void drawEffects(SpriteBatch spriteBatch)
+    public void drawEffects(Batch batch)
     {
-        super.drawEffects(spriteBatch);
+        super.drawEffects(batch);
 
         if (isActive())
         {
-            waveAnimation.draw(spriteBatch, getX(), getY());
+            waveAnimation.draw(batch, getX(), getY());
         }
     }
 
@@ -173,26 +174,26 @@ public class Crystal extends Target
         }
 
         @Override
-        protected void onDraw(SpriteBatch spriteBatch, float x, float y)
+        protected void onDraw(Batch batch, float x, float y)
         {
             if (Crystal.this.type == CrystalTypes.Normal)
             {
-                ColorUtilities.setColor(spriteBatch, Crystal.COLOR_NORMAL_GLOW);
+                ColorUtilities.setColor(batch, Crystal.COLOR_NORMAL_GLOW);
             }
             else
             {
-                ColorUtilities.setColor(spriteBatch, Crystal.COLOR_SPECIAL_GLOW);
+                ColorUtilities.setColor(batch, Crystal.COLOR_SPECIAL_GLOW);
             }
 
-            borderBloomAnimation.draw(spriteBatch, borderRegion, x, y,
+            borderBloomAnimation.draw(batch, borderRegion, x, y,
                     borderRegion.getRegionWidth() / 2f,
                     borderRegion.getRegionHeight() / 2f);
 
-            fillBloomAnimation.draw(spriteBatch, fillRegion, x, y,
+            fillBloomAnimation.draw(batch, fillRegion, x, y,
                     fillRegion.getRegionWidth() / 2f,
                     fillRegion.getRegionHeight() / 2f);
 
-            ColorUtilities.resetColor(spriteBatch);
+            ColorUtilities.resetColor(batch);
         }
     }
 }

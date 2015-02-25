@@ -3,12 +3,14 @@ package com.mygdx.game.gamelogic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.engine.collision2d.IPhysicsObject;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.GameTime;
 import com.engine.camera.CameraShaker2D;
@@ -19,9 +21,11 @@ import com.mygdx.game.Common;
 import com.mygdx.game.gamelogic.scene.Grass;
 import com.mygdx.game.shaders.TrailShader;
 
-public final class Ball
+public final class Ball implements IPhysicsObject
 {
     public static final float GRAVITY = 2500f;
+    public static final float LAUNCH_X = 113f;
+    public static final float LAUNCH_Y = 272f;
 
     private Common common;
     private GraphicsSettings graphicsSettings;
@@ -77,15 +81,13 @@ public final class Ball
 
     public void launch(float power, float angle)
     {
-        Gdx.app.log("X: ", String.valueOf(polygon.getX()));
-        Gdx.app.log("Y: ", String.valueOf(polygon.getY()));
+        polygon.setPosition(LAUNCH_X, LAUNCH_Y);
+        ballTrail.reset(polygon.getX(), polygon.getY());
 
         speed.x = power * MathUtils.cosDeg(angle);
         speed.y = -(power * MathUtils.sinDeg(angle));
 
         flying = true;
-
-        ballTrail.reset(polygon.getX(), polygon.getY());
     }
 
     public void explode()
@@ -109,16 +111,23 @@ public final class Ball
 
     public void update(GameTime gameTime)
     {
+        ballExplosion.update(gameTime.delta);
+        ballTrail.update(gameTime);
+    }
+
+    @Override
+    public void step(float elapsed, float delta)
+    {
         if (flying)
         {
-            speed.y += GRAVITY * gameTime.delta;
+            speed.y += GRAVITY * delta;
 
-            polygon.speed.x = speed.x * gameTime.delta;
-            polygon.speed.y = speed.y * gameTime.delta;
+            polygon.speed.x = speed.x * delta;
+            polygon.speed.y = speed.y * delta;
         }
     }
 
-    public void checkCollisions(GameTime gameTime, Grass grass)
+    public void checkCollisions(Grass grass)
     {
         if (flying)
         {
@@ -141,20 +150,16 @@ public final class Ball
 
                     polygon.setPosition(onBoundsX, onBoundsY);
                 }
-
             }
 
             ballTrail.setPosition(polygon.getX(), polygon.getY());
 
             if (collided)
             {
-//                logMaxY();
+                logMaxY();
                 explode();
             }
         }
-
-        ballTrail.update(gameTime);
-        ballExplosion.update(gameTime.delta);
     }
 
     private boolean isOutsideBounds()
@@ -164,10 +169,10 @@ public final class Ball
                 (polygon.getY() + (region.getRegionHeight() / 2f) > graphicsSettings.virtualHeight);
     }
 
-//    private void logMaxY()
-//    {
-//        Gdx.app.log("", "CollisionY: " + polygon.getY());
-//    }
+    private void logMaxY()
+    {
+//        Gdx.app.log("CollisionY", "CollisionY: " + polygon.getY());
+    }
 
     public void setTrailForeColor(Color color)
     {
@@ -179,12 +184,12 @@ public final class Ball
         ballTrail.draw(orthographicCamera, false);
     }
 
-    public void drawTextures(SpriteBatch spriteBatch)
+    public void drawTextures(Batch batch)
     {
-        spriteBatch.draw(region, polygon.getX() - region.getRegionWidth() / 2,
+        batch.draw(region, polygon.getX() - region.getRegionWidth() / 2,
                 polygon.getY() - region.getRegionHeight() / 2);
 
-        ballExplosion.draw(spriteBatch);
+        ballExplosion.draw(batch);
     }
 
     public void drawPolygon(ShapeRenderer shapeRenderer)

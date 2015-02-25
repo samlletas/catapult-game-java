@@ -1,5 +1,6 @@
 package com.engine.graphics.graphics2D.animation.skeletal;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
@@ -176,9 +177,9 @@ public class Bone
         }
     }
 
-    public void draw(SpriteBatch spriteBatch)
+    public void draw(Batch batch)
     {
-        spriteBatch.draw(region, finalX, finalY, pivotX, pivotY,
+        batch.draw(region, finalX, finalY, pivotX, pivotY,
                 region.getRegionWidth(), region.getRegionHeight(),
                 finalScaleX, finalScaleY, finalRotation);
     }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -18,6 +18,7 @@ import com.engine.camera.CameraShaker2D;
 import com.engine.events.DelayedEventHandler;
 import com.engine.events.EventsArgs;
 import com.engine.events.IEventHandler;
+import com.engine.GameSpriteBatch;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.input.BackInputProcessor;
@@ -54,6 +55,7 @@ public final class GameplayScreen extends OverlayedScreen
     private final DistanceFieldRenderer distanceFieldRenderer;
     private final DistanceFieldFont distanceFieldFont;
 
+    private GameSpriteBatch spriteBatch;
     private ModelBatch modelBatch;
     private OrthographicCamera orthographicCamera;
     private CameraShaker2D cameraShaker;
@@ -85,11 +87,9 @@ public final class GameplayScreen extends OverlayedScreen
     //region Constructor e Inicialización
 
     public GameplayScreen(GraphicsSettings settings, Viewport viewport2D,
-                          Viewport viewport3D, SpriteBatch spriteBatch,
-                          Common common)
+                          Viewport viewport3D, Batch batch, Common common)
     {
-        super(Global.ScreenNames.GAMEPLAY_SCREEN, settings, viewport2D, viewport3D,
-                spriteBatch);
+        super(Global.ScreenNames.GAMEPLAY_SCREEN, settings, viewport2D, viewport3D, batch);
 
         this.common = common;
         this.distanceFieldRenderer = common.distanceFieldRenderer;
@@ -99,26 +99,27 @@ public final class GameplayScreen extends OverlayedScreen
     @Override
     public void initialize()
     {
+        spriteBatch = common.spriteBatch;
         modelBatch = common.modelBatch;
         orthographicCamera = (OrthographicCamera)viewport2D.getCamera();
         cameraShaker = new CameraShaker2D(orthographicCamera, 80, 0, 0, 0.75f, 0.99f);
         background = common.background;
         grass = common.grass;
         ball = new Ball(common, graphicsSettings);
-        ballPath = new BallPath(common);
-        catapult = new Catapult(common, ball, ballPath);
+        ballPath = new BallPath(common, graphicsSettings);
+        catapult = new Catapult(common, ball, ballPath, orthographicCamera);
         crystalManager = new CrystalManager(common);
 
         gameplayData = new GameplayData();
         gameHUD = new GameHUD(common, gameplayData);
         startCounter = new StartCounter(graphicsSettings);
-        pauseOverlay = new PauseOverlay(this, common, graphicsSettings, viewport2D, spriteBatch);
+        pauseOverlay = new PauseOverlay(this, common, graphicsSettings, viewport2D, batch);
         scoreLabelContainer = new ScoreLabelContainer();
 
         pauseButton = new GameButton(common, GameButton.ButtonTypes.TINY, Global.ButtonStyles.PAUSE);
         pauseButton.setPosition(790f, 10f);
 
-        pauseStage = new Stage(viewport2D, spriteBatch);
+        pauseStage = new Stage(viewport2D, batch);
         pauseStage.addActor(pauseButton);
 
         initializeInput();
@@ -351,21 +352,25 @@ public final class GameplayScreen extends OverlayedScreen
                 background.update(gameTime);
                 grass.update(gameTime);
                 catapult.update(gameTime);
-                ball.update(gameTime);
-                ballPath.update(gameTime);
                 gameplayData.updateSpecial(gameTime);
                 crystalManager.update(gameTime);
 
-//                while (accumulator >= gameTime.delta)
-//                {
-//                    ball.update(Global.TIME_STEP);
-//                    ballPath.update(Global.TIME_STEP);
-//                    crystalManager.update(gameTime);
-//
-                    crystalManager.checkCollisions(ball);
-                    ball.checkCollisions(gameTime, grass);
-//                }
+                accumulator += gameTime.delta;
 
+                while (accumulator >= gameTime.delta)
+                {
+                    ball.step(gameTime.elapsed, Global.TIME_STEP);
+                    ballPath.step(gameTime.elapsed, Global.TIME_STEP);
+                    crystalManager.step(gameTime.elapsed, Global.TIME_STEP);
+
+                    crystalManager.checkCollisions(ball);
+                    ball.checkCollisions(grass);
+
+                    accumulator -= Global.TIME_STEP;
+                }
+
+                ball.update(gameTime);
+                ballPath.update(gameTime);
                 scoreLabelContainer.update(gameTime);
                 gameHUD.update(gameTime);
 
@@ -403,14 +408,14 @@ public final class GameplayScreen extends OverlayedScreen
             ball.setTrailForeColor(getTransitionForeColor(pauseOverlay.getOverlay()));
             ball.drawTrail(orthographicCamera);
 
-            spriteBatch.begin();
-            ball.drawTextures(spriteBatch);
-            catapult.draw(spriteBatch);
-            crystalManager.drawTextures(spriteBatch);
-            grass.draw(spriteBatch);
-            gameHUD.drawTextures(spriteBatch);
-            pauseButton.draw(spriteBatch, 1f);
-            spriteBatch.end();
+            batch.begin();
+            ball.drawTextures(batch);
+            catapult.draw(batch);
+            crystalManager.drawTextures(batch);
+            grass.draw(batch);
+            gameHUD.drawTextures(batch);
+            pauseButton.draw(batch, 1f);
+            batch.end();
 
             common.crystalShaderProvider.setForegroundColor(getTransitionForeColor(pauseOverlay.getOverlay()));
             modelBatch.begin(orthographicCamera);
@@ -418,7 +423,9 @@ public final class GameplayScreen extends OverlayedScreen
             modelBatch.end();
 
             spriteBatch.begin();
+            spriteBatch.beginParticleDraw();
             crystalManager.drawEffects(spriteBatch);
+            spriteBatch.endParticleDraw();
             ballPath.draw(spriteBatch);
             spriteBatch.end();
 
@@ -434,8 +441,8 @@ public final class GameplayScreen extends OverlayedScreen
 
             if (Global.DEBUG_POLYGONS)
             {
-                common.shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-                common.shapeRenderer.setTransformMatrix(spriteBatch.getTransformMatrix());
+                common.shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+                common.shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
 
                 common.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 ball.drawPolygon(common.shapeRenderer);
@@ -446,13 +453,12 @@ public final class GameplayScreen extends OverlayedScreen
 
             cameraShaker.endDraw(spriteBatch);
 
-
             if (gameState == GameStates.Paused)
             {
                 common.shaders.defaultShader.setForegroundColor(getTransitionForeColor());
-                spriteBatch.begin();
-                pauseOverlay.drawTextures(spriteBatch);
-                spriteBatch.end();
+                batch.begin();
+                pauseOverlay.drawTextures(batch);
+                batch.end();
 
                 pauseOverlay.drawStage();
 

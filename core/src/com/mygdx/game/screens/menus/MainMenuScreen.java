@@ -2,6 +2,7 @@ package com.mygdx.game.screens.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -35,10 +36,10 @@ public final class MainMenuScreen extends OverlayedScreen
     private InputMultiplexer inputMultiplexer;
 
     public MainMenuScreen(GraphicsSettings graphicsSettings, Viewport viewport2D,
-                          Viewport viewport3D, SpriteBatch spriteBatch, Common common)
+                          Viewport viewport3D, Batch batch, Common common)
     {
         super(Global.ScreenNames.MAIN_MENU_SCREEN, graphicsSettings, viewport2D,
-                viewport3D, spriteBatch);
+                viewport3D, batch);
 
         this.common = common;
         this.distanceFieldRenderer = common.distanceFieldRenderer;
@@ -48,7 +49,7 @@ public final class MainMenuScreen extends OverlayedScreen
     @Override
     public void initialize()
     {
-        stage = new Stage(viewport2D, spriteBatch);
+        stage = new Stage(viewport2D, batch);
         gameTitle = new GameTitle(common, graphicsSettings);
 
         GameButton playButton = new GameButton(common, GameButton.ButtonTypes.BIG, Global.ButtonStyles.PLAY);
@@ -174,7 +175,6 @@ public final class MainMenuScreen extends OverlayedScreen
         stage.unfocusAll();
 
         common.assets.distanceFieldFonts.furore.getInstance().setColor(Global.Colors.DEFAULT_TEXT);
-        common.shaders.textShader.setRenderShadows(true);
     }
 
     @Override
@@ -233,20 +233,20 @@ public final class MainMenuScreen extends OverlayedScreen
         // Reinicio del color ya que al parecer hay un bug en libgdx en el
         // que no se recupera el alpha original durante la ejecución de un
         // AlphaAction en un Actor
-        ColorUtilities.resetColor(spriteBatch);
+        ColorUtilities.resetColor(batch);
 
         common.shaders.defaultShader.setForegroundColor(getTransitionForeColor());
-        spriteBatch.begin();
-        common.background.draw(spriteBatch);
-        common.grass.draw(spriteBatch);
-        gameTitle.drawTextures(spriteBatch);
-        spriteBatch.end();
+        batch.begin();
+        common.background.draw(batch);
+        common.grass.draw(batch);
+//        gameTitle.drawTextures(batch);
+        batch.end();
 
         stage.draw();
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
         distanceFieldRenderer.begin(distanceFieldFont, GameTitle.FONT_SCALE);
-        gameTitle.drawText(distanceFieldRenderer, distanceFieldFont);
+//        gameTitle.drawText(distanceFieldRenderer, distanceFieldFont);
         distanceFieldRenderer.end();
     }
 }

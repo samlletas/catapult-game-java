@@ -3,7 +3,7 @@ package com.engine.graphics.graphics2D.animation.basic;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Array;
@@ -179,13 +179,13 @@ public class BasicAnimation
         }
     }
 
-    public void update(GameTime gameTime)
+    public void update(float delta)
     {
         if (!isPaused)
         {
             if (startDelay > 0f)
             {
-                startDelay -= (gameTime.delta * 1000f) * speed;
+                startDelay -= (delta * 1000f) * speed;
 
                 if (startDelay <= 0f)
                 {
@@ -195,7 +195,7 @@ public class BasicAnimation
 
             if (isPlaying && startDelay == 0f)
             {
-                currentFrameTime -= (gameTime.delta * 1000f) * speed;
+                currentFrameTime -= (delta * 1000f) * speed;
 
                 if (currentFrameTime <= 0f)
                 {
@@ -287,52 +287,52 @@ public class BasicAnimation
     /**
      * Dibuja una textura con los valores del frame actual
      *
-     * @param spriteBatch spriteBatch
+     * @param batch batch
      * @param texture textura
      * @param x posición en x
      * @param y posición en y
      * @param originX origen de la textura en x
      * @param originY origen de la textura en y
      */
-    public void draw(SpriteBatch spriteBatch, Texture texture, float x, float y,
+    public void draw(Batch batch, Texture texture, float x, float y,
                      float originX, float originY)
     {
-        Color originalColor = spriteBatch.getColor();
+        Color originalColor = batch.getColor();
         float finalOpacity = originalColor.a * alpha;
         float drawX = (x - originX) + offsetX;
         float drawY = (y - originY) + offsetY;
 
-        ColorUtilities.setAlpha(spriteBatch, finalOpacity);
-        spriteBatch.draw(texture, drawX, drawY, originX, originY,
+        ColorUtilities.setAlpha(batch, finalOpacity);
+        batch.draw(texture, drawX, drawY, originX, originY,
                 texture.getWidth(), texture.getHeight(),
                 scaleX, scaleY, rotation, 0, 0, texture.getWidth(),
                 texture.getHeight(), false, false);
-        ColorUtilities.setColor(spriteBatch, originalColor);
+        ColorUtilities.setColor(batch, originalColor);
     }
 
     /**
      * Dibuja una región de textura con los valores del frame actual
      *
-     * @param spriteBatch spriteBatch
+     * @param batch batch
      * @param region region
      * @param x posición en x
      * @param y posición en y
      * @param originX origen de la textura en x
      * @param originY origen de la textura en y
      */
-    public void draw(SpriteBatch spriteBatch, TextureRegion region,
+    public void draw(Batch batch, TextureRegion region,
                      float x, float y, float originX, float originY)
     {
-        Color originalColor = spriteBatch.getColor();
+        Color originalColor = batch.getColor();
         float finalOpacity = originalColor.a * alpha;
         float drawX = (x - originX) + offsetX;
         float drawY = (y - originY) + offsetY;
 
-        ColorUtilities.setAlpha(spriteBatch, finalOpacity);
-        spriteBatch.draw(region, drawX, drawY, originX, originY,
+        ColorUtilities.setAlpha(batch, finalOpacity);
+        batch.draw(region, drawX, drawY, originX, originY,
                 region.getRegionWidth(), region.getRegionHeight(),
                 scaleX, scaleY, rotation);
-        ColorUtilities.setColor(spriteBatch, originalColor);
+        ColorUtilities.setColor(batch, originalColor);
     }
 
     /*************************************************************************

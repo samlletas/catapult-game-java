@@ -3,8 +3,12 @@ package com.engine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.viewport.*;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.graphics.shaders.shaders2d.Custom2DShader;
@@ -16,17 +20,15 @@ public abstract class GameAdapter extends ApplicationAdapter
 {
     protected GraphicsSettings graphicsSettings;
 
-    protected Custom2DShader defaultShader;
+    protected ShaderProgram defaultShader;
     protected OrthographicCamera orthographicCamera;
     protected PerspectiveCamera perspectiveCamera;
     protected Viewport viewport2D;
     protected Viewport viewport3D;
 
-    protected SpriteBatch spriteBatch;
+    protected Batch spriteBatch;
     protected ModelBatch modelBatch;
-
     private GameTime gameTime;
-    private Texture pixelTexture;
 
     public GameAdapter(GraphicsSettings graphicsSettings)
     {
@@ -42,20 +44,28 @@ public abstract class GameAdapter extends ApplicationAdapter
         viewport2D = create2DViewport();
         viewport3D = create3DViewport();
 
-        spriteBatch = new SpriteBatch(1000, defaultShader);
-        modelBatch = new ModelBatch();
-
+        spriteBatch = getSpriteBatch();
+        modelBatch = getModelBatch();
         gameTime = new GameTime();
-        pixelTexture = new Texture(Gdx.files.classpath("com/engine/dot.png"));
 
         initialize();
+    }
+
+    protected Batch getSpriteBatch()
+    {
+        return new SpriteBatch(1000, defaultShader);
+    }
+
+    protected ModelBatch getModelBatch()
+    {
+        return new ModelBatch();
     }
 
     /**
      * Crea el shader por default que utilizará el SpriteBatch. Esta función es
      * llamada en el GameAdapter.create().
      */
-    protected Custom2DShader createDefaultShader()
+    protected ShaderProgram createDefaultShader()
     {
         return new Default2DShader();
     }
@@ -64,7 +74,7 @@ public abstract class GameAdapter extends ApplicationAdapter
      * Crea la cámara ortográfica. Esta función es llamada en el
      * GameAdapter.create().
      */
-    private OrthographicCamera createOrthoGraphicCamera()
+    protected OrthographicCamera createOrthoGraphicCamera()
     {
         OrthographicCamera camera = new OrthographicCamera();
         camera.setToOrtho(true, graphicsSettings.virtualWidth,
@@ -78,7 +88,7 @@ public abstract class GameAdapter extends ApplicationAdapter
      * Crea la cámara de perspectiva. Esta función es llamada en el
      * GameAdapter.create().
      */
-    private PerspectiveCamera createPerspectiveCamera()
+    protected PerspectiveCamera createPerspectiveCamera()
     {
         PerspectiveCamera camera = new PerspectiveCamera(75,
                 graphicsSettings.virtualWidth, graphicsSettings.virtualHeight);
@@ -121,9 +131,6 @@ public abstract class GameAdapter extends ApplicationAdapter
 
         // Asignación de matrices para respetar el viewport
         spriteBatch.setProjectionMatrix(orthographicCamera.combined);
-        spriteBatch.getTransformMatrix().idt();
-//        spriteBatch.setProjectionMatrix(orthographicCamera.projection);
-//        spriteBatch.setTransformMatrix(orthographicCamera.view);
 
         // Limpieza de pantalla
         Gdx.gl.glClearColor(graphicsSettings.clearColor.r,
@@ -133,68 +140,6 @@ public abstract class GameAdapter extends ApplicationAdapter
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         draw(gameTime);
-        drawBlackBars();
-    }
-
-    private void drawBlackBars()
-    {
-        int leftBarWidth = viewport2D.getLeftGutterWidth();
-        int rightBarWidth = viewport2D.getRightGutterWidth();
-        int topBarHeight = viewport2D.getTopGutterHeight();
-        int bottomBarHeight = viewport2D.getBottomGutterHeight();
-
-        // Solo dibujar en caso de ser necesario
-        if (leftBarWidth > 0 || rightBarWidth > 0 || topBarHeight > 0 ||
-                bottomBarHeight > 0)
-        {
-            int screenWidth = Gdx.graphics.getWidth();
-            int screenHeight = Gdx.graphics.getHeight();
-
-            // Habilitación de dibujado en toda la pantalla
-            Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);
-
-            // Reseteo de matrices del spritebatch
-            spriteBatch.getProjectionMatrix().idt().setToOrtho2D(0, 0,
-                    screenWidth, screenHeight);
-            spriteBatch.getTransformMatrix().idt();
-
-            // Reinicio al default defaultShader
-            spriteBatch.setShader(null);
-
-            spriteBatch.disableBlending();
-            spriteBatch.begin();
-            ColorUtilities.setColor(spriteBatch, 255, 0, 0, 255);
-
-            // Barras horizontales
-            if (leftBarWidth > 0)
-            {
-                spriteBatch.draw(pixelTexture, 0, 0,
-                        leftBarWidth, screenHeight);
-            }
-            if (rightBarWidth > 0)
-            {
-                spriteBatch.draw(pixelTexture, viewport2D.getRightGutterX(), 0,
-                        rightBarWidth, screenHeight);
-            }
-
-            // Barras verticales
-            if (bottomBarHeight > 0)
-            {
-                spriteBatch.draw(pixelTexture, 0, 0, screenWidth, bottomBarHeight);
-            }
-            if (topBarHeight > 0)
-            {
-                spriteBatch.draw(pixelTexture, 0, viewport2D.getTopGutterY(),
-                        screenWidth, topBarHeight);
-            }
-
-            ColorUtilities.resetColor(spriteBatch);
-            spriteBatch.end();
-            spriteBatch.enableBlending();
-
-            // Reseteo del viewport
-            viewport2D.update(screenWidth, screenHeight, true);
-        }
     }
 
     @Override
@@ -207,10 +152,9 @@ public abstract class GameAdapter extends ApplicationAdapter
     @Override
     public void dispose()
     {
-        spriteBatch.dispose();
-        modelBatch.dispose();
-        defaultShader.dispose();
-        pixelTexture.dispose();
+        if (spriteBatch != null) spriteBatch.dispose();
+        if (modelBatch != null) modelBatch.dispose();
+        if (defaultShader != null) defaultShader.dispose();
     }
 
     protected abstract void initialize();

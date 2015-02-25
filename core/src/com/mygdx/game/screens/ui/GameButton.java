@@ -136,12 +136,11 @@ public final class GameButton extends ImageButton implements ICustomWidget
         float x = getCenterX() - (width / 2f) + (buttonType.distanceToCenter * MathUtils.cosDeg(glowAngle));
         float y = getCenterY() - (height / 2f) + (buttonType.distanceToCenter * MathUtils.sinDeg(glowAngle));
 
-        SpriteBatch spriteBatch = (SpriteBatch)batch;
-        float originalAlpha = spriteBatch.getColor().a;
+        float originalAlpha = batch.getColor().a;
         float alpha = this.getColor().a;
 
-        ColorUtilities.setAlpha(spriteBatch, alpha);
-        spriteBatch.draw(glowRegion, x, y, width / 2f, height / 2f, width, height, scale, scale, glowAngle);
-        ColorUtilities.setAlpha(spriteBatch, originalAlpha);
+        ColorUtilities.setAlpha(batch, alpha);
+        batch.draw(glowRegion, x, y, width / 2f, height / 2f, width, height, scale, scale, glowAngle);
+        ColorUtilities.setAlpha(batch, originalAlpha);
     }
 }

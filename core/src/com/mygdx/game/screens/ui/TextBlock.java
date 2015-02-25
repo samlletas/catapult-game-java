@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.ui;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.engine.GameTime;
@@ -193,9 +194,9 @@ public final class TextBlock implements ICustomWidget
         textActor.act(gameTime.delta);
     }
 
-    public void drawTextures(SpriteBatch spriteBatch)
+    public void drawTextures(Batch batch)
     {
-        lineActor.draw(spriteBatch, 1f);
+        lineActor.draw(batch, 1f);
     }
 
     public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)

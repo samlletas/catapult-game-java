@@ -1,30 +1,34 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.math.Vector2;
 import com.engine.utilities.ColorUtilities;
 
 public final class Global
 {
-    public static final boolean DEBUG_FPS = true;
-    public static final boolean DEBUG_OPENGL = false;
-    public static final boolean DEBUG_MEMORY = false;
+    public static final boolean DEBUG_FPS      = true;
+    public static final boolean DEBUG_OPENGL   = true;
+    public static final boolean DEBUG_MEMORY   = true;
     public static final boolean DEBUG_POLYGONS = false;
 
     public static final float TIME_STEP = 1f / 60f;
 
-    public static final float OVERLAY_ALPHA = 0.7f;
+    public static final float OVERLAY_ALPHA       = 0.7f;
     public static final float OVERLAY_PAUSE_ALPHA = 0.8f;
-    public static final Vector2 TEXT_SHADOW_OFFSET = new Vector2(-0.005f, -0.01f);
+
+    public static final float TEXT_SPREAD          = 4f;
+    public static final float TEXT_THICKNESS       = 0.55f;
+    public static final Vector2 TEXT_SHADOW_OFFSET = new Vector2(-0.005f, -0.010f);
 
     public static final class Colors
     {
-        public static final Color SPLASH_BACKGROUND = Color.WHITE;
-        public static final Color MAIN_BACKGROUND = ColorUtilities.createColor(36, 82, 130, 255);
-        public static final Color DEFAULT_TEXT = Color.WHITE;
-        public static final Color OVERLAY = Color.BLACK;
-        public static final Color NO_OVERLAY = ColorUtilities.createColor(0, 0, 0, 0);
-        public static final Color TEXT_SHADOW = ColorUtilities.createColor(0, 0, 0, 100);
+//        public static final Color MAIN_BACKGROUND   = ColorUtilities.createColor(36, 82, 130, 255);
+        public static final Color MAIN_BACKGROUND   = Color.BLACK;
+        public static final Color DEFAULT_TEXT      = Color.WHITE;
+        public static final Color OVERLAY           = Color.BLACK;
+        public static final Color NO_OVERLAY        = ColorUtilities.createColor(0, 0, 0, 0);
+        public static final Color TEXT_SHADOW       = ColorUtilities.createColor(0, 0, 0, 100);
     }
 
     public static final class ScreenNames

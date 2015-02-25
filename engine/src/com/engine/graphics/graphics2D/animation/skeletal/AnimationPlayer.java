@@ -1,6 +1,7 @@
 package com.engine.graphics.graphics2D.animation.skeletal;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
@@ -111,7 +112,7 @@ public class AnimationPlayer
         }
     }
 
-    public void draw(SpriteBatch spriteBatch)
+    public void draw(Batch batch)
     {
         if (currentAnimation != null)
         {
@@ -119,7 +120,7 @@ public class AnimationPlayer
 
             for (int i = 0, n = localBones.size; i < n; i++)
             {
-                localBones.get(i).draw(spriteBatch);
+                localBones.get(i).draw(batch);
             }
         }
     }

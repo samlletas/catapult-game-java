@@ -19,7 +19,7 @@ public class AndroidLauncher extends AndroidApplication
         // Deshabilitación para ahorro de batería
         config.useAccelerometer = false;
         config.useCompass = false;
-        config.touchSleepTime = 50;
+        config.touchSleepTime = 16;
 
         initialize(new Game(), config);
     }

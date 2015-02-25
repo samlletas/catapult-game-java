@@ -1,33 +1,29 @@
 package com.mygdx.game.gamelogic.scene;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.engine.GameTime;
 import com.engine.graphics.GraphicsSettings;
-import com.engine.graphics.graphics2D.GradientSprite;
-import com.engine.utilities.ColorUtilities;
+import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
 import com.engine.utilities.FastArray;
-import com.mygdx.game.Global;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Background
 {
-    private GradientSprite background;
+    private GraphicsSettings graphicsSettings;
+    private TextureRegion backgroundRegion;
     private FastArray<StarData> stars;
     private float elapsedTime = 0f;
 
+    AnimationPlayer firefly;
+
     public Background(GraphicsSettings settings, GameAssets assets)
     {
-        background = new GradientSprite(assets.atlasRegions.pixel.getInstance());
-        background.setBounds(0, 0, settings.virtualWidth, settings.virtualHeight);
-        background.setGradientColor(
-                ColorUtilities.createColor(35, 81, 128, 255),
-                ColorUtilities.createColor(43, 113, 155, 255), false);
-
-//        background.setGradientColor(
-//                Global.Colors.MAIN_BACKGROUND,
-//                ColorUtilities.createColor(44, 121, 161, 255), false);
+        graphicsSettings = settings;
+        backgroundRegion = assets.atlasRegions.background.getInstance();
 
         stars = new FastArray<StarData>(17);
         stars.add(new StarData(assets, 774f, 53f, 0f, 0.8f, 1000f, false));
@@ -47,6 +43,10 @@ public final class Background
         stars.add(new StarData(assets, 616f, 430f, 90f, 0.55f, 0f, false));
         stars.add(new StarData(assets, 387f, 419f, 180f, 0.4f, 100f, true));
         stars.add(new StarData(assets, 97f, 405f, 45f, 0.5f, 800f, false));
+
+        firefly = assets.animations.fireFly.getInstance();
+        firefly.position.set(630f, 350f);
+        firefly.play("fly");
     }
 
     public void update(GameTime gameTime)
@@ -57,18 +57,23 @@ public final class Background
         {
             star.update(gameTime, elapsedTime);
         }
+
+        firefly.update(gameTime);
     }
 
-    public void draw(SpriteBatch spriteBatch)
+    public void draw(Batch batch)
     {
-//        spriteBatch.disableBlending();
-//        background.draw(spriteBatch);
-//        spriteBatch.enableBlending();
+        batch.disableBlending();
+        batch.draw(backgroundRegion, 0f, 0f, graphicsSettings.virtualWidth,
+                graphicsSettings.virtualHeight);
+        batch.enableBlending();
 
         for (StarData star : stars)
         {
-            star.draw(spriteBatch);
+            star.draw(batch);
         }
+
+        firefly.draw(batch);
     }
 
     class StarData
@@ -115,9 +120,9 @@ public final class Background
             scale = initialScale + (initialScale * 0.3f) * MathUtils.sin((elapsedTime * 3f) + seed);
         }
 
-        void draw(SpriteBatch spriteBatch)
+        void draw(Batch batch)
         {
-            spriteBatch.draw(region, x, y, PIVOTX, PIVOTY,
+            batch.draw(region, x, y, PIVOTX, PIVOTY,
                     region.getRegionWidth(), region.getRegionHeight(),
                     scale, scale, rotation);
         }

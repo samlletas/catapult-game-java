@@ -1,6 +1,7 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.graphics.GraphicsSettings;
@@ -16,9 +17,9 @@ public class OverlayedScreen extends Screen
 
     public OverlayedScreen(String name, GraphicsSettings graphicsSettings,
                            Viewport viewport2D, Viewport viewport3D,
-                           SpriteBatch spriteBatch)
+                           Batch batch)
     {
-        super(name, graphicsSettings, viewport2D, viewport3D, spriteBatch);
+        super(name, graphicsSettings, viewport2D, viewport3D, batch);
 
         tempColor = ColorUtilities.createColor(0, 0, 0, 0);
     }

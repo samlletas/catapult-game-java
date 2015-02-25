@@ -33,16 +33,16 @@ public final class Overlay extends Actor
     @Override
     public void draw(Batch batch, float parentAlpha)
     {
-        throw new GdxRuntimeException("Please use the draw(SpriteBatch spriteBatch, TextureRegion pixelRegion) function.");
+        throw new GdxRuntimeException("Please use the draw(SpriteBatch batch, TextureRegion pixelRegion) function.");
     }
 
-    public void draw(SpriteBatch spriteBatch, TextureRegion pixelRegion)
+    public void draw(Batch batch, TextureRegion pixelRegion)
     {
-        Color originalColor = spriteBatch.getColor();
+        Color originalColor = batch.getColor();
 
-        ColorUtilities.setColor(spriteBatch, getColor());
-        spriteBatch.draw(pixelRegion, 0f, 0f, graphicsSettings.virtualWidth,
+        ColorUtilities.setColor(batch, getColor());
+        batch.draw(pixelRegion, 0f, 0f, graphicsSettings.virtualWidth,
                 graphicsSettings.virtualHeight);
-        ColorUtilities.setColor(spriteBatch, originalColor);
+        ColorUtilities.setColor(batch, originalColor);
     }
 }

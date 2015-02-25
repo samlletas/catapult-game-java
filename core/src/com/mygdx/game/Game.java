@@ -1,10 +1,12 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameAdapter;
+import com.engine.GameSpriteBatch;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.graphics.shaders.shaders2d.AlphaBlended2DShader;
 import com.engine.graphics.shaders.shaders2d.Custom2DShader;
@@ -25,7 +27,7 @@ public final class Game extends GameAdapter
 {
     private GameAssetMaster assetMaster;
     private Common common;
-    private GameProfiler profiler; // Para modo debug
+    private GameProfiler profiler;
     private ScreenManager screenManager;
 
     public Game()
@@ -37,6 +39,18 @@ public final class Game extends GameAdapter
     protected Custom2DShader createDefaultShader()
     {
         return new AlphaBlended2DShader();
+    }
+
+    @Override
+    protected Batch getSpriteBatch()
+    {
+        return new GameSpriteBatch(1000, defaultShader);
+    }
+
+    @Override
+    protected ModelBatch getModelBatch()
+    {
+        return null;
     }
 
     @Override
@@ -121,6 +135,8 @@ public final class Game extends GameAdapter
             common.shaders.defaultShader.setForegroundColor(Global.Colors.NO_OVERLAY);
             profiler.profile(spriteBatch);
         }
+
+        common.spriteBatch.clear();
     }
 
     @Override

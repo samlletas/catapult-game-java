@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.ui;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -166,11 +167,11 @@ public final class Header implements ICustomWidget
         textActor.act(gameTime.delta);
     }
 
-    public void drawTextures(SpriteBatch spriteBatch)
+    public void drawTextures(Batch batch)
     {
-        topLineActor.draw(spriteBatch, 1f);
-        bottomLineActor.draw(spriteBatch, 1f);
-        gradientActor.draw(spriteBatch, 1f);
+        topLineActor.draw(batch, 1f);
+        bottomLineActor.draw(batch, 1f);
+        gradientActor.draw(batch, 1f);
     }
 
     public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)

@@ -1,7 +1,9 @@
 package com.mygdx.game.screens.gameplay;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.*;
+import com.engine.actors.Actions;
 import com.engine.GameTime;
 import com.engine.actors.ActorOrigin;
 import com.engine.actors.DistanceFieldFontActor;
@@ -10,6 +12,7 @@ import com.engine.events.EventsArgs;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
+import com.engine.utilities.ActorUtilities;
 
 public class StartCounter
 {
@@ -20,6 +23,16 @@ public class StartCounter
             "1",
             "SMASH!"
     };
+
+    private TextActionContainer[] textActions =
+    {
+            new TextActionContainer(),
+            new TextActionContainer(),
+            new TextActionContainer()
+    };
+
+    SmashActionContainer smashAction = new SmashActionContainer();
+    SequenceAction sequence = new SequenceAction();
 
     private int currentSequence;
     private boolean isActive;
@@ -52,7 +65,7 @@ public class StartCounter
             @Override
             public void run()
             {
-                textActor.setPosition(drawX, drawY - 10f);
+                textActor.setPosition(drawX, drawY - 15f);
                 textActor.setScale(1f);
                 textActor.getColor().a = 0f;
                 textActor.setText(sequences[currentSequence]);
@@ -66,7 +79,7 @@ public class StartCounter
             public void run()
             {
                 textActor.setPosition(drawX, drawY);
-                textActor.setScale(0.5f);
+                textActor.setScale(2.5f);
                 textActor.getColor().a = 0f;
                 textActor.setText(sequences[currentSequence]);
                 currentSequence++;
@@ -84,6 +97,8 @@ public class StartCounter
         };
 
         onEnd = new Event<EventsArgs>();
+
+        ActorUtilities.growActionsArray(textActor, 1);
     }
 
     public void start()
@@ -93,40 +108,11 @@ public class StartCounter
             currentSequence = 0;
             isActive = true;
 
-            textActor.addAction(
-                    Actions.sequence(
-                            Actions.sequence(
-                                    Actions.run(resetTextRunnable),
-                                    Actions.delay(0.05f),
-                                    Actions.parallel(
-                                            Actions.alpha(1f, 0.15f, Interpolation.linear),
-                                            Actions.moveTo(drawX, drawY, 0.15f, Interpolation.linear)),
-                                    Actions.delay(0.2f),
-                                    Actions.alpha(0f, 0.2f)),
-                            Actions.sequence(
-                                    Actions.run(resetTextRunnable),
-                                    Actions.parallel(
-                                            Actions.alpha(1f, 0.15f, Interpolation.linear),
-                                            Actions.moveTo(drawX, drawY, 0.15f, Interpolation.linear)),
-                                    Actions.delay(0.2f),
-                                    Actions.alpha(0f, 0.2f)),
-                            Actions.sequence(
-                                    Actions.run(resetTextRunnable),
-                                    Actions.scaleTo(1f, 1f),
-                                    Actions.parallel(
-                                            Actions.alpha(1f, 0.15f, Interpolation.linear),
-                                            Actions.moveTo(drawX, drawY, 0.15f, Interpolation.linear)),
-                                    Actions.delay(0.2f),
-                                    Actions.alpha(0f, 0.2f)),
-                            Actions.sequence(
-                                    Actions.run(resetSmashTextRunnable),
-                                    Actions.sequence(
-                                            Actions.parallel(
-                                                    Actions.alpha(1f, 0.4f, Interpolation.pow4Out),
-                                                    Actions.scaleTo(1f, 1f, 0.4f, Interpolation.bounceOut)),
-                                            Actions.delay(0.3f),
-                                            Actions.alpha(0f, 0.3f)),
-                                    Actions.run(stopRunnable))));
+            textActor.addAction(Actions.sequence(sequence,
+                    textActions[0].getAction(),
+                    textActions[1].getAction(),
+                    textActions[2].getAction(),
+                    smashAction.getAction()));
         }
     }
 
@@ -138,5 +124,53 @@ public class StartCounter
     public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
     {
         textActor.draw(renderer, font);
+    }
+
+    class TextActionContainer
+    {
+        SequenceAction sequence = new SequenceAction();
+        RunnableAction runnable = new RunnableAction();
+        DelayAction delay = new DelayAction();
+        ParallelAction parallel = new ParallelAction();
+        AlphaAction fadeIn = new AlphaAction();
+        MoveToAction moveTo = new MoveToAction();
+        AlphaAction fadeOut = new AlphaAction();
+
+        Action getAction()
+        {
+            return Actions.sequence(sequence,
+                    Actions.run(runnable, resetTextRunnable),
+                    Actions.delay(delay, 0.05f),
+                    Actions.parallel(parallel,
+                            Actions.alpha(fadeIn, 1f, 0.15f, Interpolation.linear),
+                            Actions.moveTo(moveTo, drawX, drawY, 0.15f, Interpolation.sineOut)),
+                    Actions.alpha(fadeOut, 0f, 0.4f, Interpolation.pow4In));
+        }
+    }
+
+    class SmashActionContainer
+    {
+        SequenceAction sequence = new SequenceAction();
+        RunnableAction runnable = new RunnableAction();
+        ParallelAction showPararell = new ParallelAction();
+        AlphaAction fadeIn = new AlphaAction();
+        ScaleToAction scaleFadeIn = new ScaleToAction();
+        ParallelAction hidePararell = new ParallelAction();
+        AlphaAction fadeOut = new AlphaAction();
+        ScaleToAction scaleFadeOut = new ScaleToAction();
+        RunnableAction finishRunnable = new RunnableAction();
+
+        Action getAction()
+        {
+            return Actions.sequence(sequence,
+                    Actions.run(runnable, resetSmashTextRunnable),
+                    Actions.parallel(showPararell,
+                            Actions.alpha(fadeIn, 1f, 0.3f, Interpolation.pow4Out),
+                            Actions.scaleTo(scaleFadeIn, 0.9f, 0.9f, 0.3f, Interpolation.pow4Out)),
+                    Actions.parallel(hidePararell,
+                            Actions.alpha(fadeOut, 0f, 0.8f, Interpolation.pow4Out),
+                            Actions.scaleTo(scaleFadeOut, 1.2f, 1.2f, 0.8f, Interpolation.sineIn)),
+                    Actions.run(finishRunnable, stopRunnable));
+        }
     }
 }

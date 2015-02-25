@@ -1,6 +1,7 @@
 package com.mygdx.game.assets;
 
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
+import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,6 +15,7 @@ import com.engine.assets.custom.DistanceFieldFontAsset;
 import com.engine.assets.custom.SkinAsset;
 import com.engine.graphics.graphics2D.animation.skeletal.AnimationLoader;
 import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
+import com.mygdx.game.Global;
 
 public final class GameAssets
 {
@@ -55,6 +57,7 @@ public final class GameAssets
 
     public final class AtlasRegions
     {
+        public AtlasRegionAsset background;
         public AtlasRegionAsset pixel;
         public AtlasRegionAsset libGdx;
         public AtlasRegionAsset ground;
@@ -81,14 +84,15 @@ public final class GameAssets
 
         private AtlasRegions()
         {
+            background = new AtlasRegionAsset("background", atlas);
             pixel = new AtlasRegionAsset("pixel", atlas);
-            libGdx = new AtlasRegionAsset("libGdx", atlas);
+            libGdx = new AtlasRegionAsset("libGDX", atlas);
             buttonGlow = new AtlasRegionAsset("ui-button-glow", atlas);
             ground = new AtlasRegionAsset("ground", atlas);
             grass1 = new AtlasRegionAsset("grass1", atlas);
             grass2 = new AtlasRegionAsset("grass2", atlas);
             grass3 = new AtlasRegionAsset("grass3", atlas);
-            star = new AtlasRegionAsset("star", atlas);
+            star = new AtlasRegionAsset("backgroundStar", atlas);
             ball = new AtlasRegionAsset("ball", atlas);
             redDot = new AtlasRegionAsset("red-dot", atlas);
             rope = new AtlasRegionAsset("rope", atlas);
@@ -125,6 +129,7 @@ public final class GameAssets
         public Asset<AnimationPlayer> tulipan;
         public Asset<AnimationPlayer> grassFlower;
         public Asset<AnimationPlayer> flower;
+        public Asset<AnimationPlayer> fireFly;
 
         private Animations()
         {
@@ -134,11 +139,14 @@ public final class GameAssets
             tulipan = new Asset<AnimationPlayer>("animations/tulipan.xml", AnimationPlayer.class, parameters);
             grassFlower = new Asset<AnimationPlayer>("animations/grassflower.xml", AnimationPlayer.class, parameters);
             flower = new Asset<AnimationPlayer>("animations/flower.xml", AnimationPlayer.class, parameters);
+            fireFly = new Asset<AnimationPlayer>("animations/firefly.xml", AnimationPlayer.class, parameters);
         }
     }
 
     public final class Particles
     {
+        private ParticleEffectLoader.ParticleEffectParameter parameters;
+
         public Asset<ParticleEffect> ballExplosion;
         public Asset<ParticleEffect> crystalBreakNormal;
         public Asset<ParticleEffect> crystalBreakSpecial;
@@ -146,10 +154,13 @@ public final class GameAssets
 
         private Particles()
         {
-            ballExplosion = new Asset<ParticleEffect>("particles/ballExplosion.p", ParticleEffect.class);
-            crystalBreakNormal = new Asset<ParticleEffect>("particles/crystalBreakNormal.p", ParticleEffect.class);
-            crystalBreakSpecial = new Asset<ParticleEffect>("particles/crystalBreakSpecial.p", ParticleEffect.class);
-            spikeBreak = new Asset<ParticleEffect>("particles/spikeBreak.p", ParticleEffect.class);
+            parameters = new ParticleEffectLoader.ParticleEffectParameter();
+            parameters.atlasFile = atlas;
+
+            ballExplosion = new Asset<ParticleEffect>("particles/ballExplosion.p", ParticleEffect.class, parameters);
+            crystalBreakNormal = new Asset<ParticleEffect>("particles/crystalBreakNormal.p", ParticleEffect.class, parameters);
+            crystalBreakSpecial = new Asset<ParticleEffect>("particles/crystalBreakSpecial.p", ParticleEffect.class, parameters);
+            spikeBreak = new Asset<ParticleEffect>("particles/spikeBreak.p", ParticleEffect.class, parameters);
         }
     }
 
@@ -160,7 +171,7 @@ public final class GameAssets
 
         private Models()
         {
-            crystal = new Asset<Model>("models/crystal.g3db", Model.class);
+            crystal = new Asset<Model>("models/crystal.g3dj", Model.class);
             bomb = new Asset<Model>("models/bomb.g3db", Model.class);
         }
     }
@@ -174,9 +185,9 @@ public final class GameAssets
         private BitmapFonts()
         {
             parameters = new BitmapFontLoader.BitmapFontParameter();
-            parameters.flip = true;
             parameters.minFilter = Texture.TextureFilter.Linear;
             parameters.magFilter = Texture.TextureFilter.Linear;
+            parameters.flip = true;
 
             furore = new Asset<BitmapFont>("fonts/furore.fnt", BitmapFont.class, parameters);
         }
@@ -188,7 +199,7 @@ public final class GameAssets
 
         private DistanceFieldFonts()
         {
-            furore = new DistanceFieldFontAsset("fonts/furore.fnt", 4f, 0.55f);
+            furore = new DistanceFieldFontAsset("fonts/furore.fnt", Global.TEXT_SPREAD, Global.TEXT_THICKNESS);
         }
     }
 
@@ -199,8 +210,8 @@ public final class GameAssets
 
         private Sounds()
         {
-            crystalBreak = new Asset<Sound>("sounds/break.wav", Sound.class);
-            shoot = new Asset<Sound>("sounds/shoot.wav", Sound.class);
+            crystalBreak = new Asset<Sound>("sounds/break.ogg", Sound.class);
+            shoot = new Asset<Sound>("sounds/shoot.ogg", Sound.class);
         }
     }
 }

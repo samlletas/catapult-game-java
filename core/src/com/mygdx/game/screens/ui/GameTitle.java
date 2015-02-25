@@ -1,5 +1,6 @@
 package com.mygdx.game.screens.ui;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -141,9 +142,9 @@ public class GameTitle implements ICustomWidget
         textAnimationActor.act(gameTime.delta);
     }
 
-    public void drawTextures(SpriteBatch spriteBatch)
+    public void drawTextures(Batch batch)
     {
-        glowActor.draw(spriteBatch, 1f);
+        glowActor.draw(batch, 1f);
     }
 
     public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)

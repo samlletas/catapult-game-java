@@ -1,7 +1,7 @@
 package com.mygdx.game.gamelogic.scene;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -321,56 +321,56 @@ public final class Grass
         }
     }
 
-    public void draw(SpriteBatch spriteBatch)
+    public void draw(Batch batch)
     {
-        drawTulipans(spriteBatch);
-        drawGrassFlowers(spriteBatch);
-        drawFlowers(spriteBatch);
-        drawGrassDatas(spriteBatch);
-        drawGround(spriteBatch);
+        drawTulipans(batch);
+        drawGrassFlowers(batch);
+        drawFlowers(batch);
+        drawGrassDatas(batch);
+        drawGround(batch);
     }
 
-    private void drawTulipans(SpriteBatch spriteBatch)
+    private void drawTulipans(Batch batch)
     {
         Array<AnimationPlayer> localTulipans = tulipans;
 
         for (int i = 0, n = localTulipans.size; i < n; i++)
         {
-            localTulipans.get(i).draw(spriteBatch);
+            localTulipans.get(i).draw(batch);
         }
     }
 
-    private void drawGrassFlowers(SpriteBatch spriteBatch)
+    private void drawGrassFlowers(Batch batch)
     {
         Array<AnimationPlayer> localGrassFlowers = grassFlowers;
 
         for (int i = 0, n = localGrassFlowers.size; i < n; i++)
         {
-            localGrassFlowers.get(i).draw(spriteBatch);
+            localGrassFlowers.get(i).draw(batch);
         }
     }
 
-    private void drawFlowers(SpriteBatch spriteBatch)
+    private void drawFlowers(Batch batch)
     {
         Array<AnimationPlayer> localFlowers = flowers;
 
         for (int i = 0, n = localFlowers.size; i < n; i++)
         {
-            localFlowers.get(i).draw(spriteBatch);
+            localFlowers.get(i).draw(batch);
         }
     }
 
-    private void drawGrassDatas(SpriteBatch spriteBatch)
+    private void drawGrassDatas(Batch batch)
     {
         Array<GrassData> localGrassDatas = grassDatas;
 
         for (int i = 0, n = localGrassDatas.size; i < n; i++)
         {
-            localGrassDatas.get(i).draw(spriteBatch);
+            localGrassDatas.get(i).draw(batch);
         }
     }
 
-    private void drawGround(SpriteBatch spriteBatch)
+    private void drawGround(Batch batch)
     {
         float width = GROUND_TEXTURE_REGION_WIDTH * GROUND_TEXTURE_REGION_SCALE;
         float height = GROUND_TEXTURE_REGION_HEIGHT * GROUND_TEXTURE_REGION_SCALE;
@@ -382,7 +382,7 @@ public final class Grass
         for (int i = 0, n = regions.length; i < n; i++)
         {
             position = localGroundPositions.get(i);
-            spriteBatch.draw(regions[i], position.x, position.y, width, height);
+            batch.draw(regions[i], position.x, position.y, width, height);
         }
     }
 
@@ -435,9 +435,9 @@ public final class Grass
             scale = INITIAL_SCALE + (SCALE_DIFFERENCE * sin);
         }
 
-        void draw(SpriteBatch spriteBatch)
+        void draw(Batch batch)
         {
-            spriteBatch.draw(region, x, y, pivotX, pivotY,
+            batch.draw(region, x, y, pivotX, pivotY,
                     region.getRegionWidth(), region.getRegionHeight(),
                     scale, scale, rotation);
         }

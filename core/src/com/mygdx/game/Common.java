@@ -1,9 +1,11 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.engine.GameSpriteBatch;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.graphics.shaders.shaders2d.AlphaBlended2DShader;
 import com.engine.graphics.graphics2D.text.AlphaBlendedDistanceFieldShader;
@@ -22,6 +24,7 @@ public class Common
     public final GameAssets assets;
     public final Settings settings;
 
+    public final GameSpriteBatch spriteBatch;
     public final Background background;
     public final Grass grass;
     public final Shaders shaders;
@@ -36,11 +39,12 @@ public class Common
     public final FastModelBatch modelBatch;
 
     public Common(GameAssets assets, GraphicsSettings graphicsSettings,
-                  SpriteBatch spriteBatch, AlphaBlended2DShader defaultShader)
+                  Batch spriteBatch, AlphaBlended2DShader defaultShader)
     {
         this.assets = assets;
         this.settings = new Settings();
         this.settings.load();
+        this.spriteBatch = (GameSpriteBatch)spriteBatch;
         this.background = new Background(graphicsSettings, assets);
         this.grass = new Grass(assets, graphicsSettings);
 
