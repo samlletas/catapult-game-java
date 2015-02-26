@@ -3,7 +3,6 @@ package com.mygdx.game.gamelogic;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.engine.GameTime;
 import com.engine.collision2d.IPhysicsObject;
 import com.engine.events.DelayedEventHandler;
@@ -15,7 +14,6 @@ import com.mygdx.game.Common;
 import com.mygdx.game.gamelogic.targets.Crystal;
 import com.mygdx.game.gamelogic.targets.CrystalTypes;
 import com.mygdx.game.gamelogic.targets.Spike;
-import com.mygdx.game.gamelogic.targets.TargetBatch;
 import com.mygdx.game.gamelogic.targets.patterns.BasePattern;
 import com.mygdx.game.gamelogic.targets.patterns.TargetCollisionArgs;
 import com.mygdx.game.gamelogic.targets.patterns.ingame.CircularCrystalsPattern;
@@ -23,7 +21,7 @@ import com.mygdx.game.gamelogic.targets.patterns.ingame.CircularSpikesPattern;
 
 public final class CrystalManager implements IPhysicsObject
 {
-    public static final int MAX_CRYSTALS = 80;
+    public static final int MAX_CRYSTALS = 40;
     public static final int MAX_SPIKES = 3;
 
     private Common common;
@@ -31,8 +29,6 @@ public final class CrystalManager implements IPhysicsObject
     private FastArray<Spike> spikes;
     private FastArray<BasePattern> patterns;
     public BasePattern currentPattern;
-
-    private TargetBatch crystalBatch;
 
     private int index = 0;
     private boolean onSpecial = false;
@@ -47,8 +43,6 @@ public final class CrystalManager implements IPhysicsObject
         this.common = common;
         this.crystals = new FastArray<Crystal>();
         this.spikes = new FastArray<Spike>();
-
-        this.crystalBatch = new TargetBatch(common.assets.models.crystal.getInstance().meshes.get(0), MAX_CRYSTALS);
 
         this.onCrystalCollision = new Event<TargetCollisionArgs>();
         this.onSpikeCollision = new Event<TargetCollisionArgs>();
@@ -81,7 +75,7 @@ public final class CrystalManager implements IPhysicsObject
     private void initializePatterns()
     {
         patterns = new FastArray<BasePattern>();
-        patterns.add(new CircularCrystalsPattern(common, crystals, spikes, 2, 155f, 100f, false));
+        patterns.add(new CircularCrystalsPattern(common, crystals, spikes, MAX_CRYSTALS, 155f, 100f, false));
         patterns.add(new CircularSpikesPattern(common, crystals, spikes, 3, 75f, 200f, false));
 
         currentPattern = patterns.get(index);
