@@ -23,7 +23,7 @@ public final class Header implements ICustomWidget
     private static final float SHOW_HIDE_DURATION = 0.500f;
     private static final float GRADIENT_SCALE = 2f;
 
-    private static final float LINE_OFFSET_X = 100f;
+    private static final float LINE_OFFSET_X = 80f;
     private static final float LINE_OFFSET_Y = 23f;
     private static final float LINE_HIDDEN_OFFSET_X = 1000f;
     private static final float LINE_HIDDEN_OFFSET_Y = 0f;

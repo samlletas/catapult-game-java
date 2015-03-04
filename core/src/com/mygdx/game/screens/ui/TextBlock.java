@@ -23,8 +23,8 @@ public final class TextBlock implements ICustomWidget
     private static final float HIDDEN_OFFSET_Y = 0f;
 
     private static final float LINE_OFFSET_X = -15f;
-    private static final float LINE_OFFSET_Y =  26f;
-    private static final float LINE_SCALE_Y = 0.75f;
+    private static final float LINE_OFFSET_Y =  17f;
+    private static final float LINE_SCALE_Y = 0.5f;
 
     private static final float TEXT_OFFSET_X = 50f;
     private static final float TEXT_OFFSET_Y = 34f;
