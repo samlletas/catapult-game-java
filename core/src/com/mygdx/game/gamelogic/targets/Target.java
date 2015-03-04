@@ -24,6 +24,7 @@ public class Target implements IPhysicsObject
     private static final float FLOATING_SPEED = 3.5f;
     private static final float FLOATING_DIFFERENCE = 7.5f;
     private static final float POSITION_Z = 100f;
+    private static final float GLOW_SCALE = 2f;
 
     protected final ModelInstance modelInstance;
     protected final GamePolygon polygon;
@@ -200,8 +201,8 @@ public class Target implements IPhysicsObject
     {
         if (isActive)
         {
-            float width = glowRegion.getRegionWidth() * scale;
-            float height = glowRegion.getRegionHeight() * scale;
+            float width = glowRegion.getRegionWidth() * GLOW_SCALE * scale;
+            float height = glowRegion.getRegionHeight() * GLOW_SCALE * scale;
 
             float x = polygon.getX() - (width / 2f);
             float y = polygon.getY() - (height / 2f);
