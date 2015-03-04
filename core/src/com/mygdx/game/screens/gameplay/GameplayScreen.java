@@ -116,8 +116,8 @@ public final class GameplayScreen extends OverlayedScreen
         pauseOverlay = new PauseOverlay(this, common, graphicsSettings, viewport2D, batch);
         scoreLabelContainer = new ScoreLabelContainer();
 
-        pauseButton = new GameButton(common, GameButton.ButtonTypes.TINY, Global.ButtonStyles.PAUSE);
-        pauseButton.setPosition(790f, 10f);
+        pauseButton = new GameButton(common, Global.ButtonStyles.PAUSE);
+        pauseButton.setPosition(785f, 5f);
 
         pauseStage = new Stage(viewport2D, batch);
         pauseStage.addActor(pauseButton);

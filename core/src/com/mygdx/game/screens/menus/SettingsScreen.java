@@ -61,7 +61,7 @@ public class SettingsScreen extends OverlayedScreen
 
         musicSlider = new GameSlider(common, 0f, 100f, 1f, "MUSIC");
         soundSlider = new GameSlider(common, 0f, 100f, 1f, "SOUNDS");
-        backButton = new GameButton(common, GameButton.ButtonTypes.SMALL, Global.ButtonStyles.BACK);
+        backButton = new GameButton(common, Global.ButtonStyles.BACK);
 
         float x = (graphicsSettings.virtualWidth / 2f) - (musicSlider.getWidth() / 2f);
 

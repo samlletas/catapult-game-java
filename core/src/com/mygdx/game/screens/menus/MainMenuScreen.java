@@ -3,7 +3,6 @@ package com.mygdx.game.screens.menus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -52,23 +51,17 @@ public final class MainMenuScreen extends OverlayedScreen
         stage = new Stage(viewport2D, batch);
         gameTitle = new GameTitle(common, graphicsSettings);
 
-        GameButton playButton = new GameButton(common, GameButton.ButtonTypes.BIG, Global.ButtonStyles.PLAY);
-        GameButton settingsButton = new GameButton(common, GameButton.ButtonTypes.MEDIUM, Global.ButtonStyles.SETTINGS);
-        GameButton scoresButton = new GameButton(common, GameButton.ButtonTypes.MEDIUM, Global.ButtonStyles.SCORES);
-        GameButton powerButton = new GameButton(common, GameButton.ButtonTypes.SMALL, Global.ButtonStyles.POWER);
-        GameButton infoButton = new GameButton(common, GameButton.ButtonTypes.SMALL, Global.ButtonStyles.INFO);
+        GameButton playButton = new GameButton(common, Global.ButtonStyles.PLAY);
+        GameButton settingsButton = new GameButton(common, Global.ButtonStyles.SETTINGS);
+        GameButton scoresButton = new GameButton(common, Global.ButtonStyles.SCORES_MEDIUM);
+        GameButton powerButton = new GameButton(common, Global.ButtonStyles.POWER);
+        GameButton infoButton = new GameButton(common, Global.ButtonStyles.INFO);
 
-        playButton.setOriginalPosition(graphicsSettings.virtualWidth / 2f, 285f);
-        settingsButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) + 200f, 265f);
-        scoresButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 200f, 265f);
-        powerButton.setOriginalPosition(787f, 207f);
-        infoButton.setOriginalPosition(67f, 207f);
-
-        playButton.setGlowAngle(0f);
-        settingsButton.setGlowAngle(315f);
-        scoresButton.setGlowAngle(135f);
-        powerButton.setGlowAngle(45f);
-        infoButton.setGlowAngle(225);
+        playButton.setOriginalPosition(graphicsSettings.virtualWidth / 2f, 295f);
+        settingsButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) + 200f, 275f);
+        scoresButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 200f, 275f);
+        powerButton.setOriginalPosition(787f, 217f);
+        infoButton.setOriginalPosition(67f, 217f);
 
         gameTitle.setShowDelay(0f);
         playButton.setShowDelay(0f);

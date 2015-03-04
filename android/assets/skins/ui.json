@@ -17,20 +17,36 @@
             imageDown: ui-icon-settings
         },
 
-        scores:
+        scores-medium:
         {
             up:        ui-button-up-medium,
             down:      ui-button-down-medium,
-            imageUp:   ui-icon-scores,
-            imageDown: ui-icon-scores
+            imageUp:   ui-icon-scores-medium,
+            imageDown: ui-icon-scores-medium
         },
 
-        home:
+        scores-small:
+        {
+          up:        ui-button-up-small,
+          down:      ui-button-down-small,
+          imageUp:   ui-icon-scores-small,
+          imageDown: ui-icon-scores-small
+        },
+
+        home-medium:
         {
             up:        ui-button-up-medium,
             down:      ui-button-down-medium,
-            imageUp:   ui-icon-home,
-            imageDown: ui-icon-home
+            imageUp:   ui-icon-home-medium,
+            imageDown: ui-icon-home-medium
+        },
+
+        home-small:
+        {
+          up:        ui-button-up-small,
+          down:      ui-button-down-small,
+          imageUp:   ui-icon-home-small,
+          imageDown: ui-icon-home-small
         },
 
         question:

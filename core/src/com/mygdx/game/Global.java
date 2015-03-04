@@ -8,8 +8,8 @@ import com.engine.utilities.ColorUtilities;
 public final class Global
 {
     public static final boolean DEBUG_FPS      = true;
-    public static final boolean DEBUG_OPENGL   = true;
-    public static final boolean DEBUG_MEMORY   = true;
+    public static final boolean DEBUG_OPENGL   = false;
+    public static final boolean DEBUG_MEMORY   = false;
     public static final boolean DEBUG_POLYGONS = false;
 
     public static final float TIME_STEP = 1f / 60f;
@@ -42,14 +42,16 @@ public final class Global
 
     public static final class ButtonStyles
     {
-        public static final String PLAY     = "play";
-        public static final String SETTINGS = "settings";
-        public static final String SCORES   = "scores";
-        public static final String HOME     = "home";
-        public static final String QUESTION = "question";
-        public static final String POWER    = "power";
-        public static final String INFO     = "info";
-        public static final String BACK     = "back";
-        public static final String PAUSE    = "pause";
+        public static final String PLAY          = "play";
+        public static final String SETTINGS      = "settings";
+        public static final String SCORES_MEDIUM = "scores-medium";
+        public static final String SCORES_SMALL  = "scores-small";
+        public static final String HOME_MEDIUM   = "home-medium";
+        public static final String HOME_SMALL    = "home-small";
+        public static final String QUESTION      = "question";
+        public static final String POWER         = "power";
+        public static final String INFO          = "info";
+        public static final String BACK          = "back";
+        public static final String PAUSE         = "pause";
     }
 }

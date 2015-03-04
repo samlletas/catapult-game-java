@@ -3,7 +3,6 @@ package com.mygdx.game.screens.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -46,18 +45,14 @@ public class PauseOverlay
 
         overlay = new Overlay(graphicsSettings, Global.Colors.OVERLAY, 0f);
         header = new Header(common, graphicsSettings, HEADER_TEXT);
-        howToPlayButton = new GameButton(common, GameButton.ButtonTypes.MEDIUM, Global.ButtonStyles.QUESTION);
-        continueButton = new GameButton(common, GameButton.ButtonTypes.BIG, Global.ButtonStyles.PLAY);
-        homeButton = new GameButton(common, GameButton.ButtonTypes.MEDIUM, Global.ButtonStyles.HOME);
+        howToPlayButton = new GameButton(common, Global.ButtonStyles.QUESTION);
+        continueButton = new GameButton(common, Global.ButtonStyles.PLAY);
+        homeButton = new GameButton(common, Global.ButtonStyles.HOME_MEDIUM);
         stage = new Stage(viewport2D, batch);
 
         howToPlayButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 200f, 265f);
         continueButton.setOriginalPosition(graphicsSettings.virtualWidth / 2f, 285f);
         homeButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) + 200f, 265f);
-
-        howToPlayButton.setGlowAngle(90f);
-        continueButton.setGlowAngle(0f);
-        homeButton.setGlowAngle(225f);
 
         header.setShowDelay(0f);
         howToPlayButton.setShowDelay(0.100f);

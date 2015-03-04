@@ -65,7 +65,7 @@ public class InfoScreen extends OverlayedScreen
 
         String specialThanksText = "ALFREDO ALVAREZ\nCARLOS MELO\nERICK AGUAYO\nEVELYN MACEDO\nMARIA ESQUIVEL\nMARYSOL MACEDO\nMIGUEL MELO\nPEDRO SAAVEDRA";
         TextBlock specialThanksTextBlock = new TextBlock(common, "SPECIAL THANKS TO:", specialThanksText, 340f, true);
-        backButton = new GameButton(common, GameButton.ButtonTypes.SMALL, Global.ButtonStyles.BACK);
+        backButton = new GameButton(common, Global.ButtonStyles.BACK);
 
         gameByTextBlock.setOriginalPosition(120f, 165f);
         musicByTextBlock.setOriginalPosition(120f, 290f);
