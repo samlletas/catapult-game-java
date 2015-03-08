@@ -63,7 +63,7 @@ public final class MainMenuScreen extends OverlayedScreen
         powerButton.setOriginalPosition(787f, 217f);
         infoButton.setOriginalPosition(67f, 217f);
 
-        gameTitle.setShowDelay(0f);
+        gameTitle.setShowDelay(0.200f);
         playButton.setShowDelay(0f);
         settingsButton.setShowDelay(0.100f);
         scoresButton.setShowDelay(0.100f);
@@ -232,14 +232,9 @@ public final class MainMenuScreen extends OverlayedScreen
         batch.begin();
         common.background.draw(batch);
         common.grass.draw(batch);
-//        gameTitle.drawTextures(batch);
+        gameTitle.drawTextures(batch);
         batch.end();
 
         stage.draw();
-
-        common.shaders.textShader.setForegroundColor(getTransitionForeColor());
-        distanceFieldRenderer.begin(distanceFieldFont, GameTitle.FONT_SCALE);
-//        gameTitle.drawText(distanceFieldRenderer, distanceFieldFont);
-        distanceFieldRenderer.end();
     }
 }

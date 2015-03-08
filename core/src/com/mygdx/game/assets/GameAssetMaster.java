@@ -34,6 +34,8 @@ public class GameAssetMaster extends BaseAssetMaster
         queue.add(assets.atlasRegions.background);
         queue.add(assets.atlasRegions.pixel);
         queue.add(assets.atlasRegions.libGdx);
+        queue.add(assets.atlasRegions.titleSmashing);
+        queue.add(assets.atlasRegions.titleCrystals);
         queue.add(assets.atlasRegions.buttonGlow);
         queue.add(assets.atlasRegions.ground);
         queue.add(assets.atlasRegions.grass1);
@@ -54,7 +56,6 @@ public class GameAssetMaster extends BaseAssetMaster
         queue.add(assets.atlasRegions.hudChanceInactive);
         queue.add(assets.atlasRegions.uiHeaderBackground);
         queue.add(assets.atlasRegions.uiHeaderLine);
-        queue.add(assets.atlasRegions.titleGlow);
 
         queue.add(assets.skins.ui);
 

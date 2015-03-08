@@ -60,6 +60,8 @@ public final class GameAssets
         public AtlasRegionAsset background;
         public AtlasRegionAsset pixel;
         public AtlasRegionAsset libGdx;
+        public AtlasRegionAsset titleSmashing;
+        public AtlasRegionAsset titleCrystals;
         public AtlasRegionAsset ground;
         public AtlasRegionAsset buttonGlow;
         public AtlasRegionAsset grass1;
@@ -80,13 +82,14 @@ public final class GameAssets
         public AtlasRegionAsset hudChanceInactive;
         public AtlasRegionAsset uiHeaderBackground;
         public AtlasRegionAsset uiHeaderLine;
-        public AtlasRegionAsset titleGlow;
 
         private AtlasRegions()
         {
             background = new AtlasRegionAsset("background", atlas);
             pixel = new AtlasRegionAsset("pixel", atlas);
             libGdx = new AtlasRegionAsset("libGDX", atlas);
+            titleSmashing = new AtlasRegionAsset("title-smashing", atlas);
+            titleCrystals = new AtlasRegionAsset("title-crystals", atlas);
             buttonGlow = new AtlasRegionAsset("ui-button-glow", atlas);
             ground = new AtlasRegionAsset("ground", atlas);
             grass1 = new AtlasRegionAsset("grass1", atlas);
@@ -107,7 +110,6 @@ public final class GameAssets
             hudChanceInactive = new AtlasRegionAsset("hud-chance-inactive", atlas);
             uiHeaderBackground = new AtlasRegionAsset("ui-header-background", atlas);
             uiHeaderLine = new AtlasRegionAsset("ui-header-line", atlas);
-            titleGlow = new AtlasRegionAsset("titleGlow", atlas);
         }
     }
 
