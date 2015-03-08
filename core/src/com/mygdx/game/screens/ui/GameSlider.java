@@ -81,14 +81,14 @@ public final class GameSlider extends Slider implements ICustomWidget
         getColor().a = 0f;
 
         clearActions();
-        addAction(showHideAction.show(showDelay, SHOW_HIDE_DURATION, originalX, originalY));
+        addAction(showHideAction.showMovement(showDelay, SHOW_HIDE_DURATION, originalX, originalY));
     }
 
     @Override
     public void hide()
     {
         clearActions();
-        addAction(showHideAction.hide(hideDelay, SHOW_HIDE_DURATION, hiddenX, hiddenY));
+        addAction(showHideAction.hideMovement(hideDelay, SHOW_HIDE_DURATION, hiddenX, hiddenY));
     }
 
     @Override

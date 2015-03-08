@@ -1,7 +1,6 @@
 package com.mygdx.game.screens.splash;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameTime;
@@ -113,13 +112,13 @@ public class PoweredBySplashScreen extends OverlayedScreen
         textActor.setPosition(x + TEXT_OFFSET_X - HIDDEN_OFFSET_X, y + TEXT_OFFSET_Y - HIDDEN_OFFSET_Y);
 
         textActor.clearActions();
-        textActor.addAction(textConfiguredAction.show(SHOW_DELAY, SHOW_HIDE_DURATION, x + TEXT_OFFSET_X, y + TEXT_OFFSET_Y));
+        textActor.addAction(textConfiguredAction.showMovement(SHOW_DELAY, SHOW_HIDE_DURATION, x + TEXT_OFFSET_X, y + TEXT_OFFSET_Y));
 
         logoActor.getColor().a = 0f;
         logoActor.setPosition(x + HIDDEN_OFFSET_X, y + HIDDEN_OFFSET_Y);
 
         logoActor.clearActions();
-        logoActor.addAction(logoConfiguredAction.show(SHOW_DELAY, SHOW_HIDE_DURATION, x, y));
+        logoActor.addAction(logoConfiguredAction.showMovement(SHOW_DELAY, SHOW_HIDE_DURATION, x, y));
         logoActor.addAction(
                 Actions.after(after,
                         Actions.sequence(sequence,

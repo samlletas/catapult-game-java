@@ -1,73 +1,74 @@
 package com.mygdx.game.screens.ui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.*;
 import com.engine.GameTime;
+import com.engine.actors.Actions;
 import com.engine.actors.ActorOrigin;
-import com.engine.actors.DistanceFieldFontActor;
 import com.engine.actors.TextureRegionActor;
 import com.engine.graphics.GraphicsSettings;
-import com.engine.graphics.graphics2D.text.DistanceFieldFont;
-import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.utilities.ActorUtilities;
 import com.mygdx.game.Common;
+import com.mygdx.game.helpers.ConfiguredAction;
 
 public class GameTitle implements ICustomWidget
 {
-    private static final String GAME_TITLE = "CRYSTAL SMASH";
-    private static final float SHOW_HIDE_DURATION = 0.500f;
-
-    private static final float GLOW_SCALE_X = 2.3f;
-    private static final float GLOW_SCALE_Y = 2.4f;
-    public static final float FONT_SCALE = 1.6f;
-
-    private static final float GLOW_OFFSET_X = 5f;
-    private static final float GLOW_OFFSET_Y = 5f;
+    private static final float SHOW_DURATION = 0.450f;
+    private static final float HIDE_DURATION = 0.400f;
+    private static final float ACTION_DELAY  = 0.040f;
+    private static final float LINE_OFFSET   = 58f;
+    private static final float POSITION_Y    = 77f;
 
     private float x;
     private float y;
 
-    private TextureRegionActor glowActor;
-    private DistanceFieldFontActor textActor;
-    private DistanceFieldFontActor textAnimationActor;
+    private TextureRegionActor smashingActor;
+    private TextureRegionActor crystalsActor;
 
-    private GlowStartLoopRunnable glowStartLoopRunnable;
-    private TextAnimationLoopRunnable textAnimationLoopRunnable;
+    private ConfiguredAction smashingActions;
+    private ConfiguredAction crystalsActions;
+
+    private TextureRegionActor smashingLoopActor;
+    private TextureRegionActor crystalsLoopActor;
+
+    private AnimationLoopAction smashingLoopActions;
+    private AnimationLoopAction crystalsLoopActions;
 
     private float showDelay;
     private float hideDelay;
 
     public GameTitle(Common common, GraphicsSettings graphicsSettings)
     {
-        this.x = graphicsSettings.virtualWidth / 2f;
-        this.y = 105f;
+        x = graphicsSettings.virtualWidth / 2f;
+        y = POSITION_Y;
 
-        this.glowActor = new TextureRegionActor(common.assets.atlasRegions.titleGlow.getInstance());
-        this.textActor = new DistanceFieldFontActor(GAME_TITLE);
-        this.textAnimationActor = new DistanceFieldFontActor(GAME_TITLE);
+        smashingActor = new TextureRegionActor(common.assets.atlasRegions.titleSmashing.getInstance());
+        smashingLoopActor = new TextureRegionActor(common.assets.atlasRegions.titleSmashing.getInstance());
+        crystalsActor = new TextureRegionActor(common.assets.atlasRegions.titleCrystals.getInstance());
+        crystalsLoopActor = new TextureRegionActor(common.assets.atlasRegions.titleCrystals.getInstance());
 
-        this.glowActor.setActorOrigin(ActorOrigin.Center);
-        this.textActor.setActorOrigin(ActorOrigin.Center);
-        this.textAnimationActor.setActorOrigin(ActorOrigin.Center);
+        smashingActor.setActorOrigin(ActorOrigin.Center);
+        smashingLoopActor.setActorOrigin(ActorOrigin.Center);
+        crystalsActor.setActorOrigin(ActorOrigin.Center);
+        crystalsLoopActor.setActorOrigin(ActorOrigin.Center);
 
-        this.glowActor.setPosition(x + GLOW_OFFSET_X, y + GLOW_OFFSET_Y);
-        this.textActor.setPosition(x, y);
-        this.textAnimationActor.setPosition(x, y);
+        smashingActor.setPosition(x, y);
+        smashingLoopActor.setPosition(x, y);
+        crystalsActor.setPosition(x, y + LINE_OFFSET);
+        crystalsLoopActor.setPosition(x, y + LINE_OFFSET);
 
-        this.glowActor.setScale(GLOW_SCALE_X, GLOW_SCALE_Y);
-        this.textActor.setFontBaseScale(FONT_SCALE);
-        this.textAnimationActor.setFontBaseScale(FONT_SCALE);
+        ActorUtilities.growActionsArray(smashingActor, 2);
+        ActorUtilities.growActionsArray(smashingLoopActor, 1);
+        ActorUtilities.growActionsArray(crystalsActor, 2);
+        ActorUtilities.growActionsArray(crystalsLoopActor, 1);
 
-        this.glowStartLoopRunnable = new GlowStartLoopRunnable();
-        this.textAnimationLoopRunnable = new TextAnimationLoopRunnable();
-
-        ActorUtilities.growActionsArray(glowActor, 2);
-        ActorUtilities.growActionsArray(textActor, 1);
-        ActorUtilities.growActionsArray(textAnimationActor, 2);
+        smashingActions = new ConfiguredAction();
+        crystalsActions = new ConfiguredAction();
+        smashingLoopActions = new AnimationLoopAction(smashingLoopActor);
+        crystalsLoopActions = new AnimationLoopAction(crystalsLoopActor);
     }
 
     @Override
@@ -92,19 +93,18 @@ public class GameTitle implements ICustomWidget
     @Override
     public void show()
     {
-        glowActor.getColor().a = 0f;
-        glowActor.setScale(GLOW_SCALE_X * 0.3f, GLOW_SCALE_Y * 0.3f);
-        glowActor.addAction(getShowAction(showDelay, SHOW_HIDE_DURATION, GLOW_SCALE_X, GLOW_SCALE_Y));
-        glowActor.addAction(Actions.after(Actions.run(glowStartLoopRunnable)));
+        smashingLoopActor.getColor().a = 0f;
+        crystalsLoopActor.getColor().a = 0f;
 
-        textActor.getColor().a = 0f;
-        textAnimationActor.setScale(0.3f);
-        textActor.addAction(getShowAction(showDelay, SHOW_HIDE_DURATION, 1f, 1f));
+        smashingActor.getColor().a = 0f;
+        smashingActor.setScale(0.0f);
+        smashingActor.addAction(smashingActions.showScale(showDelay, SHOW_DURATION, 1f, 1f));
+        smashingActor.addAction(smashingLoopActions.getLoopStartAction());
 
-        textAnimationActor.getColor().a = 0f;
-        textActor.setScale(0.3f);
-        textAnimationActor.addAction(getShowAction(showDelay, SHOW_HIDE_DURATION, 1f, 1f));
-        textAnimationActor.addAction(Actions.after(Actions.run(textAnimationLoopRunnable)));
+        crystalsActor.getColor().a = 0f;
+        crystalsActor.setScale(0.0f);
+        crystalsActor.addAction(crystalsActions.showScale(showDelay + ACTION_DELAY, SHOW_DURATION, 1f, 1f));
+        crystalsActor.addAction(crystalsLoopActions.getLoopStartAction());
     }
 
     @Override
@@ -112,83 +112,75 @@ public class GameTitle implements ICustomWidget
     {
         clearActions();
 
-        glowActor.addAction(getHideAction(hideDelay, SHOW_HIDE_DURATION, GLOW_SCALE_X * 0.1f, GLOW_SCALE_Y * 0.1f));
-        textActor.addAction(getHideAction(hideDelay, SHOW_HIDE_DURATION, 0.1f, 0.1f));
-        textAnimationActor.addAction(getHideAction(hideDelay, SHOW_HIDE_DURATION, 0.1f, 0.1f));
-    }
-
-    private Action getShowAction(float delay, float duration, float scaleX, float scaleY)
-    {
-        return Actions.sequence(
-                    Actions.delay(delay),
-                    Actions.parallel(
-                            Actions.fadeIn(duration, Interpolation.sineOut),
-                            Actions.scaleTo(scaleX, scaleY, duration, Interpolation.swingOut)));
-    }
-
-    private Action getHideAction(float delay, float duration, float scaleX, float scaleY)
-    {
-        return Actions.sequence(
-                Actions.delay(delay),
-                Actions.parallel(
-                        Actions.fadeOut(duration, Interpolation.sineIn),
-                        Actions.scaleTo(scaleX, scaleY, duration, Interpolation.swingIn)));
+        smashingActor.addAction(smashingActions.hideScale(hideDelay + ACTION_DELAY, HIDE_DURATION, 0.1f, 0.1f));
+        crystalsActor.addAction(crystalsActions.hideScale(hideDelay, HIDE_DURATION, 0.1f, 0.1f));
     }
 
     public void update(GameTime gameTime)
     {
-        glowActor.act(gameTime.delta);
-        textActor.act(gameTime.delta);
-        textAnimationActor.act(gameTime.delta);
+        smashingActor.act(gameTime.delta);
+        smashingLoopActor.act(gameTime.delta);
+        crystalsActor.act(gameTime.delta);
+        crystalsLoopActor.act(gameTime.delta);
     }
 
     public void drawTextures(Batch batch)
     {
-        glowActor.draw(batch, 1f);
-    }
+        smashingActor.draw(batch, 1f);
+        smashingLoopActor.draw(batch, 1f);
+        crystalsActor.draw(batch, 1f);
+        crystalsLoopActor.draw(batch, 1f);
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
-    {
-        textActor.draw(renderer, font);
-        textAnimationActor.draw(renderer, font);
     }
 
     public void clearActions()
     {
-        glowActor.clearActions();
-        textActor.clearActions();
-        textAnimationActor.clearActions();
+        smashingActor.clearActions();
+        smashingLoopActor.clearActions();
+        crystalsActor.clearActions();
+        crystalsLoopActor.clearActions();
     }
 
-    private class GlowStartLoopRunnable implements Runnable
+    class AnimationLoopAction
     {
-        @Override
-        public void run()
+        Actor actor;
+        Runnable startLoopRunnable;
+
+        AfterAction after = new AfterAction();
+        RunnableAction runnable = new RunnableAction();
+        RepeatAction repeat = new RepeatAction();
+        SequenceAction sequence = new SequenceAction();
+        AlphaAction resetAlpha = new AlphaAction();
+        ScaleToAction resetScale = new ScaleToAction();
+        ParallelAction parallel = new ParallelAction();
+        AlphaAction fade = new AlphaAction();
+        ScaleToAction scaleTo = new ScaleToAction();
+        DelayAction delay = new DelayAction();
+
+        AnimationLoopAction(Actor actor)
         {
-            GameTitle.this.glowActor.clearActions();
-            GameTitle.this.glowActor.addAction(
-                    Actions.repeat(RepeatAction.FOREVER,
-                            Actions.sequence(
-                                    Actions.scaleTo(GameTitle.GLOW_SCALE_X + 0.05f, GameTitle.GLOW_SCALE_Y + 0.2f, 0.4f, Interpolation.sine),
-                                    Actions.scaleTo(GameTitle.GLOW_SCALE_X, GameTitle.GLOW_SCALE_Y, 0.4f, Interpolation.sine))));
+            this.actor = actor;
+
+            startLoopRunnable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    AnimationLoopAction.this.actor.addAction(Actions.repeat(repeat, RepeatAction.FOREVER,
+                                    Actions.sequence(sequence,
+                                            Actions.parallel(parallel,
+                                                    Actions.alpha(resetAlpha, 0.5f, 0f),
+                                                    Actions.fadeOut(fade, 0.5f, Interpolation.linear),
+                                                    Actions.scaleTo(resetScale, 1f, 1f, 0f),
+                                                    Actions.scaleTo(scaleTo, 1.2f, 1f, 0.5f, Interpolation.sine)),
+                                            Actions.delay(delay, 1.5f))));
+                }
+            };
         }
-    }
 
-    private class TextAnimationLoopRunnable implements Runnable
-    {
-        @Override
-        public void run()
+        Action getLoopStartAction()
         {
-            GameTitle.this.textAnimationActor.clearActions();
-            GameTitle.this.textAnimationActor.addAction(
-                    Actions.repeat(RepeatAction.FOREVER,
-                            Actions.sequence(
-                                    Actions.parallel(
-                                            Actions.alpha(0.4f, 0f),
-                                            Actions.fadeOut(0.5f, Interpolation.linear),
-                                            Actions.scaleTo(1f, 1f, 0f),
-                                            Actions.scaleTo(1.15f, 1f, 0.5f, Interpolation.sine)),
-                                    Actions.delay(1.5f))));
+            return Actions.after(after, Actions.run(runnable, startLoopRunnable));
         }
     }
 }

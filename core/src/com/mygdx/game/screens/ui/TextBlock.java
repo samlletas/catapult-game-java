@@ -1,7 +1,6 @@
 package com.mygdx.game.screens.ui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.engine.GameTime;
 import com.engine.actors.DistanceFieldFontActor;
@@ -148,7 +147,7 @@ public final class TextBlock implements ICustomWidget
         titleActor.getColor().a = 0f;
 
         titleActor.clearActions();
-        titleActor.addAction(titleShowHideAction.show(showDelay,
+        titleActor.addAction(titleShowHideAction.showMovement(showDelay,
                 SHOW_HIDE_DURATION, originalX, originalY));
 
         // Animación de la línea
@@ -156,7 +155,7 @@ public final class TextBlock implements ICustomWidget
         lineActor.getColor().a = 0f;
 
         lineActor.clearActions();
-        lineActor.addAction(lineShowHideAction.show(showDelay + 0.05f,
+        lineActor.addAction(lineShowHideAction.showMovement(showDelay + 0.05f,
                 SHOW_HIDE_DURATION, originalX + LINE_OFFSET_X, originalY + LINE_OFFSET_Y));
 
         // Animación del texto
@@ -164,7 +163,7 @@ public final class TextBlock implements ICustomWidget
         textActor.getColor().a = 0f;
 
         textActor.clearActions();
-        textActor.addAction(textShowHideAction.show(showDelay + 0.1f,
+        textActor.addAction(textShowHideAction.showMovement(showDelay + 0.1f,
                 SHOW_HIDE_DURATION, originalX + TEXT_OFFSET_X, originalY + TEXT_OFFSET_Y));
     }
 
@@ -173,17 +172,17 @@ public final class TextBlock implements ICustomWidget
     {
         // Animación del título
         titleActor.clearActions();
-        titleActor.addAction(titleShowHideAction.hide(hideDelay,
+        titleActor.addAction(titleShowHideAction.hideMovement(hideDelay,
                 SHOW_HIDE_DURATION, hiddenX, hiddenY));
 
         // Animación de la línea
         lineActor.clearActions();
-        lineActor.addAction(lineShowHideAction.hide(hideDelay + 0.05f,
+        lineActor.addAction(lineShowHideAction.hideMovement(hideDelay + 0.05f,
                 SHOW_HIDE_DURATION, hiddenX + LINE_OFFSET_X, hiddenY + LINE_OFFSET_Y));
 
         // Animación del texto
         textActor.clearActions();
-        textActor.addAction(textShowHideAction.hide(hideDelay + 0.05f,
+        textActor.addAction(textShowHideAction.hideMovement(hideDelay + 0.05f,
                 SHOW_HIDE_DURATION, hiddenX + TEXT_OFFSET_X, hiddenY + TEXT_OFFSET_Y));
     }
 

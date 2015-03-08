@@ -11,6 +11,7 @@ public class ConfiguredAction
     private DelayAction delay;
     private ParallelAction parallel;
     private MoveToAction moveTo;
+    private ScaleToAction scaleTo;
     private AlphaAction fade;
 
     public ConfiguredAction()
@@ -19,10 +20,11 @@ public class ConfiguredAction
         delay = new DelayAction();
         parallel = new ParallelAction();
         moveTo = new MoveToAction();
+        scaleTo = new ScaleToAction();
         fade = new AlphaAction();
     }
 
-    public Action show(float delay, float duration, float x, float y)
+    public Action showMovement(float delay, float duration, float x, float y)
     {
         return Actions.sequence(sequence,
                 Actions.delay(this.delay, delay),
@@ -31,12 +33,30 @@ public class ConfiguredAction
                         Actions.fadeIn(fade, duration, Interpolation.linear)));
     }
 
-    public Action hide(float delay, float duration, float x, float y)
+    public Action hideMovement(float delay, float duration, float x, float y)
     {
         return Actions.sequence(sequence,
                 Actions.delay(this.delay, delay),
                 Actions.parallel(parallel,
                         Actions.moveTo(moveTo, x, y, duration, Interpolation.exp5),
                         Actions.fadeOut(fade, duration, Interpolation.linear)));
+    }
+
+    public Action showScale(float delay, float duration, float scaleX, float scaleY)
+    {
+        return Actions.sequence(sequence,
+                Actions.delay(this.delay, delay),
+                Actions.parallel(parallel,
+                        Actions.fadeIn(fade, 0.5f, Interpolation.sineOut),
+                        Actions.scaleTo(scaleTo, scaleX, scaleY, duration, Interpolation.swingOut)));
+    }
+
+    public Action hideScale(float delay, float duration, float scaleX, float scaleY)
+    {
+        return Actions.sequence(sequence,
+                Actions.delay(this.delay, delay),
+                Actions.parallel(parallel,
+                        Actions.fadeOut(fade, 0.5f, Interpolation.sineIn),
+                        Actions.scaleTo(scaleTo, scaleX, scaleY, duration, Interpolation.swingIn)));
     }
 }
