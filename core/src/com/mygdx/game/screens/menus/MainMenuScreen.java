@@ -25,8 +25,6 @@ import com.mygdx.game.screens.ui.GameTitle;
 public final class MainMenuScreen extends OverlayedScreen
 {
     private final Common common;
-    private final DistanceFieldRenderer distanceFieldRenderer;
-    private final DistanceFieldFont distanceFieldFont;
 
     private Stage stage;
     private GameTitle gameTitle;
@@ -41,8 +39,6 @@ public final class MainMenuScreen extends OverlayedScreen
                 viewport3D, batch);
 
         this.common = common;
-        this.distanceFieldRenderer = common.distanceFieldRenderer;
-        this.distanceFieldFont = common.assets.distanceFieldFonts.furore.getInstance();
     }
 
     @Override
