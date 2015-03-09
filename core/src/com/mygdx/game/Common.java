@@ -33,11 +33,6 @@ public class Common
     public final SoundPlayer soundPlayer;
     public final ShapeRenderer shapeRenderer; // Para modo debug
 
-    public final Crystal crystal;
-    public final Spike spike;
-    public final CrystalShaderProvider crystalShaderProvider;
-    public final FastModelBatch modelBatch;
-
     public Common(GameAssets assets, GraphicsSettings graphicsSettings,
                   Batch spriteBatch, AlphaBlended2DShader defaultShader)
     {
@@ -65,22 +60,6 @@ public class Common
         {
             this.shapeRenderer = null;
         }
-
-        this.crystal = new Crystal(assets);
-        this.spike = new Spike(assets);
-
-        crystalShaderProvider = new CrystalShaderProvider();
-        ModelInstance crystalInstance = crystal.getModelInstance();
-        ModelInstance spikeInstance = spike.getModelInstance();
-
-        // Creación de un shader por default para evitar crearlo al entrar
-        // al GameplayScreen por primera vez
-        crystalShaderProvider.getShader(crystalInstance.getRenderable(new Renderable(),
-                crystalInstance.getNode("default")));
-        modelBatch = new FastModelBatch(crystalShaderProvider);
-
-        modelBatch.initializeRenderable(crystalInstance);
-        modelBatch.initializeRenderable(spikeInstance);
     }
 
     public void dispose()
@@ -91,8 +70,6 @@ public class Common
         {
             shapeRenderer.dispose();
         }
-
-        modelBatch.dispose();
     }
 
     public class Shaders

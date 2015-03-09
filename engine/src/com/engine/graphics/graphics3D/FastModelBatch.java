@@ -27,6 +27,12 @@ public class FastModelBatch extends ModelBatch
         super(shaderProvider, sorter);
     }
 
+    /**
+     * Obtiene los renderables de una instnacia (evitando allocations al momento
+     * de dibujar por primera vez
+     *
+     * @param instance instance
+     */
     public void initializeRenderable(ModelInstance instance)
     {
         instance.getRenderables(renderables, renderablesPool);

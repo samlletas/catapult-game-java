@@ -56,7 +56,6 @@ public final class GameplayScreen extends OverlayedScreen
     private final DistanceFieldFont distanceFieldFont;
 
     private GameSpriteBatch spriteBatch;
-    private ModelBatch modelBatch;
     private OrthographicCamera orthographicCamera;
     private CameraShaker2D cameraShaker;
     private Background background;
@@ -100,7 +99,6 @@ public final class GameplayScreen extends OverlayedScreen
     public void initialize()
     {
         spriteBatch = common.spriteBatch;
-        modelBatch = common.modelBatch;
         orthographicCamera = (OrthographicCamera)viewport2D.getCamera();
         cameraShaker = new CameraShaker2D(orthographicCamera, 80, 0, 0, 0.75f, 0.99f);
         background = common.background;
@@ -417,10 +415,8 @@ public final class GameplayScreen extends OverlayedScreen
             pauseButton.draw(batch, 1f);
             batch.end();
 
-            common.crystalShaderProvider.setForegroundColor(getTransitionForeColor(pauseOverlay.getOverlay()));
-            modelBatch.begin(orthographicCamera);
-            crystalManager.drawModels(modelBatch);
-            modelBatch.end();
+            crystalManager.setForegoundColor(getTransitionForeColor(pauseOverlay.getOverlay()));
+            crystalManager.drawModels(orthographicCamera);
 
             spriteBatch.begin();
             spriteBatch.beginParticleDraw();
