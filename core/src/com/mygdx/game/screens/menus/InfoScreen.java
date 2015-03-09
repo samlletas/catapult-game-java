@@ -207,4 +207,10 @@ public class InfoScreen extends OverlayedScreen
         }
         distanceFieldRenderer.end();
     }
+
+    @Override
+    public void dispose()
+    {
+        stage.dispose();
+    }
 }

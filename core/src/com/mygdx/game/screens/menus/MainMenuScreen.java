@@ -233,4 +233,10 @@ public final class MainMenuScreen extends OverlayedScreen
 
         stage.draw();
     }
+
+    @Override
+    public void dispose()
+    {
+        stage.dispose();
+    }
 }

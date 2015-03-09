@@ -483,6 +483,7 @@ public final class GameplayScreen extends OverlayedScreen
     public void dispose()
     {
         pauseStage.dispose();
+        pauseOverlay.dispose();
         ball.dispose();
     }
 

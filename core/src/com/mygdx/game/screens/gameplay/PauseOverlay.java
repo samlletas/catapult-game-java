@@ -185,4 +185,9 @@ public class PauseOverlay
     {
         header.drawText(renderer, font);
     }
+
+    public void dispose()
+    {
+        stage.dispose();
+    }
 }

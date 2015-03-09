@@ -203,4 +203,10 @@ public class SettingsScreen extends OverlayedScreen
         soundSlider.drawText(distanceFieldRenderer, distanceFieldFont);
         distanceFieldRenderer.end();
     }
+
+    @Override
+    public void dispose()
+    {
+        stage.dispose();
+    }
 }
