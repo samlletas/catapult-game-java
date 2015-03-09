@@ -1,11 +1,9 @@
 package com.mygdx.game.gamelogic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -13,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.engine.collision2d.IPhysicsObject;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.GameTime;
-import com.engine.camera.CameraShaker2D;
 import com.engine.collision2d.GamePolygon;
 import com.engine.graphics.graphics2D.effects.TrailEffect;
 import com.engine.utilities.ParticleUtilities;
@@ -27,7 +24,6 @@ public final class Ball implements IPhysicsObject
     public static final float LAUNCH_X = 113f;
     public static final float LAUNCH_Y = 272f;
 
-    private Common common;
     private GraphicsSettings graphicsSettings;
 
     public GamePolygon polygon;
@@ -43,7 +39,6 @@ public final class Ball implements IPhysicsObject
 
     public Ball(Common common, GraphicsSettings graphicsSettings)
     {
-        this.common = common;
         this.graphicsSettings = graphicsSettings;
 
         this.polygon = GamePolygon.createConvex(6, 14);
@@ -156,7 +151,6 @@ public final class Ball implements IPhysicsObject
 
             if (collided)
             {
-                logMaxY();
                 explode();
             }
         }
@@ -167,11 +161,6 @@ public final class Ball implements IPhysicsObject
         return (polygon.getX() < 0) ||  (polygon.getY() < 0) ||
                 (polygon.getX() + (region.getRegionWidth() / 2f) > graphicsSettings.virtualWidth) ||
                 (polygon.getY() + (region.getRegionHeight() / 2f) > graphicsSettings.virtualHeight);
-    }
-
-    private void logMaxY()
-    {
-//        Gdx.app.log("CollisionY", "CollisionY: " + polygon.getY());
     }
 
     public void setTrailForeColor(Color color)
