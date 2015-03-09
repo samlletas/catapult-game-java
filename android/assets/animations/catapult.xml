@@ -1,7 +1,7 @@
 <root atlasFile="textures.atlas">
     <bones>
         <bone id="0" region="ropeHolder" parent="1" pivotX="7" pivotY="8" offsetX="71" offsetY="18" />
-        <bone id="1" region="spoon" parent="4" pivotX="14" pivotY="20" offsetX="127" offsetY="45" />
+        <bone id="1" region="spoon" parent="4" pivotX="20" pivotY="25" offsetX="127" offsetY="45" />
         <bone id="2" region="handle" parent="3" pivotX="4" pivotY="10" offsetX="20" offsetY="20" />
         <bone id="3" region="handleGear" parent="4" pivotX="20" pivotY="20" offsetX="47" offsetY="73" />
         <bone id="4" region="body" parent="-1" pivotX="106" pivotY="100" offsetX="0" offsetY="0" />

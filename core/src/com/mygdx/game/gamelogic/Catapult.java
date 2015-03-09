@@ -62,6 +62,7 @@ public final class Catapult
 
     // Input
     private boolean inputEnabled = false;
+    private CatapultGestureListener gestureListener;
     private InputProcessor inputProcessor;
 
     public Catapult(Common common, Ball ball, BallPath ballPath, OrthographicCamera camera)
@@ -72,7 +73,8 @@ public final class Catapult
 
         this.ropeRegion = this.common.assets.atlasRegions.rope.getInstance();
         this.pullAnimationInterpolator = new FixedFrameInterpolator();
-        this.inputProcessor = new GestureDetector(new CatapultGestureListener(camera));
+        this.gestureListener = new CatapultGestureListener(camera);
+        this.inputProcessor = new GestureDetector(gestureListener);
 
         initializeAnimation();
         getBones();
@@ -127,6 +129,17 @@ public final class Catapult
         pullAnimationInterpolator.factor = 0f;
     }
 
+    private void BeginLaunch()
+    {
+        if (this.inputEnabled && this.pulling)
+        {
+            this.pullAngle = this.spoon.getFinalRotation();
+            this.player.play(Catapult.ANIMATION_LAUNCH);
+            this.pullAnimationInterpolator.factor = 0f;
+            this.ballPath.hide();
+        }
+    }
+
     private void launch()
     {
         float power = getCurrentPower(pullAngle);
@@ -146,6 +159,7 @@ public final class Catapult
     public void update(GameTime gameTime)
     {
         player.update(gameTime);
+        gestureListener.update(gameTime.delta);
 
         setBallPosition();
         updateBallPath();
@@ -156,7 +170,7 @@ public final class Catapult
     {
         if (!ball.isFlying())
         {
-            ball.setPosition(spoon.getTransformedPosition(98f, 25f));
+            ball.setPosition(spoon.getTransformedPosition(104f, 30f));
         }
     }
 
@@ -196,41 +210,13 @@ public final class Catapult
                 ropeLength, 1f, ropeRotation);
     }
 
-//    public class CatapultInputProcessor extends InputAdapter
-//    {
-//        @Override
-//        public boolean touchDown(int screenX, int screenY, int pointer, int button)
-//        {
-//            if (Catapult.this.inputEnabled && !Catapult.this.ball.isFlying())
-//            {
-//                Catapult.this.player.play(Catapult.ANIMATION_PULL);
-//                Catapult.this.ballPath.show();
-//                Catapult.this.pulling = true;
-//
-//            }
-//
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean touchUp(int screenX, int screenY, int pointer, int button)
-//        {
-//            if (Catapult.this.inputEnabled && Catapult.this.pulling)
-//            {
-//                Catapult.this.pullAngle = Catapult.this.spoon.getFinalRotation();
-//                Catapult.this.player.play(Catapult.ANIMATION_LAUNCH);
-//                Catapult.this.ballPath.hide();
-//            }
-//
-//            Catapult.this.pulling = false;
-//
-//            return false;
-//        }
-//    }
-
+    /***************************************************************************
+     *                                 Input
+     * ************************************************************************/
     public class CatapultGestureListener extends GestureDetector.GestureAdapter
     {
-        private static final float MIN_PAN_LENGTH = 0.5f;
+        private static final float MIN_PAN_LENGTH = 1.5f;
+        private static final float MIN_PAN_TIME = 0.1f;
         private static final float MIN_ADD_FORCE_ANGLE = 135f;
         private static final float MAX_ADD_FORCE_ANGLE = 315f;
         private static final float FACTOR_INCREMENT = 0.0085f;
@@ -239,11 +225,52 @@ public final class Catapult
         private Vector3 previousTouchPosition;
         private Vector3 currentTouchPosition;
 
+        private float factor;
+        private float panTime;
+        private boolean onPan;
+
         CatapultGestureListener(OrthographicCamera camera)
         {
             this.camera = camera;
             this.previousTouchPosition = new Vector3();
             this.currentTouchPosition = new Vector3();
+
+            this.factor = 0f;
+            this.panTime = 0f;
+            this.onPan = false;
+        }
+
+        void update(float delta)
+        {
+            if (onPan)
+            {
+                panTime += delta;
+
+                if (panTime > MIN_PAN_TIME)
+                {
+                    applyPan();
+                    cancelPan();
+                }
+            }
+        }
+
+        void applyPan()
+        {
+            if (onPan)
+            {
+                Catapult.this.player.play(Catapult.ANIMATION_PULL);
+                Catapult.this.pullAnimationInterpolator.factor =
+                        MathUtils.clamp(Catapult.this.pullAnimationInterpolator.factor + factor, 0f, 1f);
+                Catapult.this.ballPath.show();
+                Catapult.this.pulling = true;
+            }
+        }
+
+        void cancelPan()
+        {
+            factor = 0f;
+            panTime = 0f;
+            onPan = false;
         }
 
         @Override
@@ -251,6 +278,8 @@ public final class Catapult
         {
             if (Catapult.this.inputEnabled && !Catapult.this.ball.isFlying())
             {
+                onPan = true;
+
                 previousTouchPosition.set(x - deltaX, y - deltaY, 0f);
                 currentTouchPosition.set(x, y, 0f);
 
@@ -260,35 +289,44 @@ public final class Catapult
                 deltaX = currentTouchPosition.x - previousTouchPosition.x;
                 deltaY = currentTouchPosition.y - previousTouchPosition.y;
 
-                float length = (float)Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)) - MIN_PAN_LENGTH;
+                float length = (float)Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+                float angle = normalizeAngle(MathUtils.atan2(-deltaY, deltaX));
 
-                if (length >= 0f)
+                if (onAddForceAngle(angle))
                 {
-                    float factor = Catapult.this.pullAnimationInterpolator.factor;
-                    float angle = normalizeAngle(MathUtils.atan2(-deltaY, deltaX));
+                    factor += length * FACTOR_INCREMENT;
+                }
+                else
+                {
+                    factor -= length * FACTOR_INCREMENT;
+                }
 
-                    if (onAddForceAngle(angle))
-                    {
-                        factor = Math.min(1f, factor + (length * FACTOR_INCREMENT));
-                    }
-                    else
-                    {
-                        factor = Math.max(0f, factor - (length * FACTOR_INCREMENT));
-                    }
+                if (length >= MIN_PAN_LENGTH)
+                {
+                    applyPan();
+                    cancelPan();
+                }
 
 //                    Gdx.app.log("Pan", "x: " + currentTouchPosition.x);
 //                    Gdx.app.log("Pan", "y: " + currentTouchPosition.y);
 //                    Gdx.app.log("Pan", "length: " + length);
 //                    Gdx.app.log("Pan", "angle: " + angle);
-
-                    Catapult.this.player.play(Catapult.ANIMATION_PULL);
-                    Catapult.this.pullAnimationInterpolator.factor = factor;
-                    Catapult.this.ballPath.show();
-                    Catapult.this.pulling = true;
-                }
             }
 
-            return false;
+            return true;
+        }
+
+        @Override
+        public boolean panStop(float x, float y, int pointer, int button)
+        {
+            if (Catapult.this.pulling)
+            {
+                BeginLaunch();
+                cancelPan();
+                Catapult.this.pulling = false;
+            }
+
+            return true;
         }
 
         private float normalizeAngle(float angle)
@@ -306,22 +344,6 @@ public final class Catapult
         private boolean onAddForceAngle(float angle)
         {
             return angle >= MIN_ADD_FORCE_ANGLE && angle <= MAX_ADD_FORCE_ANGLE;
-        }
-
-        @Override
-        public boolean panStop(float x, float y, int pointer, int button)
-        {
-            if (Catapult.this.inputEnabled && Catapult.this.pulling)
-            {
-                Catapult.this.pullAngle = Catapult.this.spoon.getFinalRotation();
-                Catapult.this.player.play(Catapult.ANIMATION_LAUNCH);
-                Catapult.this.pullAnimationInterpolator.factor = 0f;
-                Catapult.this.ballPath.hide();
-            }
-
-            Catapult.this.pulling = false;
-
-            return false;
         }
     }
 }
