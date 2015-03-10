@@ -5,13 +5,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.engine.GameTime;
 import com.engine.collision2d.GamePolygon;
+import com.engine.events.EventsArgs;
+import com.engine.events.IEventHandler;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
+import com.engine.utilities.ColorUtilities;
+import com.engine.utilities.Timer;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Grass
@@ -19,6 +24,7 @@ public final class Grass
     private static final int GROUND_TEXTURE_REGION_WIDTH = 27;
     private static final int GROUND_TEXTURE_REGION_HEIGHT = 35;
     private static final float GROUND_TEXTURE_REGION_SCALE = 2f;
+    private static final String ANIMATION_BLOW = "blow";
 
     private GraphicsSettings settings;
 
@@ -29,6 +35,7 @@ public final class Grass
     private Array<AnimationPlayer> tulipans;
     private Array<AnimationPlayer> flowers;
     private Array<AnimationPlayer> grassFlowers;
+    private Array<Firefly> fireflies;
 
     private GamePolygon leftSidePolygon;
     private GamePolygon rightSidePolygon;
@@ -47,12 +54,14 @@ public final class Grass
         this.tulipans = new Array<AnimationPlayer>(3);
         this.flowers = new Array<AnimationPlayer>(2);
         this.grassFlowers = new Array<AnimationPlayer>(6);
+        this.fireflies = new Array<Firefly>(4);
 
         initializeGround();
         initializeGrassDatas(assets);
         initializeTulipans(assets);
         initializeFlowers(assets);
         initializeGrassFlowers(assets);
+        initializeFireflies(assets);
     }
 
     private void initializeGround()
@@ -183,17 +192,17 @@ public final class Grass
         tulipan1.position.x = 634;
         tulipan1.position.y = 445;
         tulipan1.rotation = 10f;
-        tulipan1.play("blow", 100);
+        tulipan1.play(ANIMATION_BLOW, 100);
 
         tulipan2.position.x = 644;
         tulipan2.position.y = 441;
         tulipan2.rotation = 350f;
-        tulipan2.play("blow", 400);
+        tulipan2.play(ANIMATION_BLOW, 400);
 
         tulipan3.position.x = 652;
         tulipan3.position.y = 444;
         tulipan3.rotation = 330f;
-        tulipan3.play("blow", 700);
+        tulipan3.play(ANIMATION_BLOW, 700);
 
         tulipans.add(tulipan1);
         tulipans.add(tulipan2);
@@ -207,12 +216,12 @@ public final class Grass
 
         flower1.position.x = 310;
         flower1.position.y = 405;
-        flower1.play("blow");
+        flower1.play(ANIMATION_BLOW);
 
         flower2.position.x = 347;
         flower2.position.y = 408;
         flower2.rotation = 345f;
-        flower2.play("blow", 500);
+        flower2.play(ANIMATION_BLOW, 500);
 
         flowers.add(flower1);
         flowers.add(flower2);
@@ -230,32 +239,32 @@ public final class Grass
         grassFlower1.position.x = 240f;
         grassFlower1.position.y = 427f;
         grassFlower1.rotation = 0f;
-        grassFlower1.play("blow");
+        grassFlower1.play(ANIMATION_BLOW);
 
         grassFlower2.position.x = 271;
         grassFlower2.position.y = 429;
         grassFlower2.rotation = 0f;
-        grassFlower2.play("blow", 200);
+        grassFlower2.play(ANIMATION_BLOW, 200);
 
         grassFlower3.position.x = 276;
         grassFlower3.position.y = 428;
         grassFlower3.rotation = 350f;
-        grassFlower3.play("blow", 600);
+        grassFlower3.play(ANIMATION_BLOW, 600);
 
         grassFlower4.position.x = 309;
         grassFlower4.position.y = 427;
         grassFlower4.rotation = 350f;
-        grassFlower4.play("blow", 400);
+        grassFlower4.play(ANIMATION_BLOW, 400);
 
         grassFlower5.position.x = 337;
         grassFlower5.position.y = 435;
         grassFlower5.rotation = 345f;
-        grassFlower5.play("blow", 1000);
+        grassFlower5.play(ANIMATION_BLOW, 1000);
 
         grassFlower6.position.x = 367;
         grassFlower6.position.y = 442;
         grassFlower6.rotation = 340f;
-        grassFlower6.play("blow", 800);
+        grassFlower6.play(ANIMATION_BLOW, 800);
 
         grassFlowers.add(grassFlower1);
         grassFlowers.add(grassFlower2);
@@ -263,6 +272,14 @@ public final class Grass
         grassFlowers.add(grassFlower4);
         grassFlowers.add(grassFlower5);
         grassFlowers.add(grassFlower6);
+    }
+
+    private void initializeFireflies(GameAssets assets)
+    {
+        fireflies.add(new Firefly(assets, 556f, 412f, 50f, 70f, 500f));
+        fireflies.add(new Firefly(assets, 492f, 404f, 120f, 50f, 2500f));
+        fireflies.add(new Firefly(assets, 521f, 415f, 80f, 60f, 4000f));
+        fireflies.add(new Firefly(assets, 447f, 398f, 128f, 40f, 5000f));
     }
 
     public boolean onCollision(GamePolygon polygon)
@@ -279,6 +296,7 @@ public final class Grass
         updateTulipans(gameTime);
         updateGrassFlowers(gameTime);
         updateFlowers(gameTime);
+        updateFireflies(gameTime);
     }
 
     private void updateGrassDatas()
@@ -321,13 +339,34 @@ public final class Grass
         }
     }
 
+    private void updateFireflies(GameTime gameTime)
+    {
+        Array<Firefly> localFireflies = fireflies;
+
+        for (int i = 0, n = localFireflies.size; i < n; i++)
+        {
+            localFireflies.get(i).update(gameTime);
+        }
+    }
+
     public void draw(Batch batch)
     {
+        drawFireflies(batch);
         drawTulipans(batch);
         drawGrassFlowers(batch);
         drawFlowers(batch);
         drawGrassDatas(batch);
         drawGround(batch);
+    }
+
+    private void drawFireflies(Batch batch)
+    {
+        Array<Firefly> localFireflies = fireflies;
+
+        for (int i = 0, n = localFireflies.size; i < n; i++)
+        {
+            localFireflies.get(i).draw(batch);
+        }
     }
 
     private void drawTulipans(Batch batch)
@@ -440,6 +479,145 @@ public final class Grass
             batch.draw(region, x, y, pivotX, pivotY,
                     region.getRegionWidth(), region.getRegionHeight(),
                     scale, scale, rotation);
+        }
+    }
+
+    class Firefly
+    {
+        private static final String ANIMATION_PLAY    = "fly";
+        private static final float  MIN_SCALE         = 0.5f;
+        private static final float  SCALE_TIME_OFFSET = 1000f;
+        private static final float  MOVEMENT_DURATION = 5000f;
+        private static final float  RESPAWN_DURATION  = 1000f;
+
+        private float x;
+        private float y;
+        private float scale;
+        private float alpha;
+        private float delay;
+
+        private final float startX;
+        private final float startY;
+        private final float direction;
+        private final float distance;
+        private final AnimationPlayer player;
+
+
+        private final Timer movementTimer;
+        private final Timer respawnTimer;
+
+        public Firefly(GameAssets assets, float startX, float startY, float direction,
+                       float distance, float delay)
+        {
+            this.startX = startX;
+            this.startY = startY;
+            this.direction = direction;
+            this.distance = distance;
+            this.delay = delay;
+
+            this.player = assets.animations.fireFly.getInstance().copy();
+            this.player.play(ANIMATION_PLAY);
+
+            movementTimer = new Timer(MOVEMENT_DURATION);
+            movementTimer.timerReachedZero.subscribe(new IEventHandler<EventsArgs>()
+            {
+                @Override
+                public void onAction(EventsArgs args)
+                {
+                    respawnTimer.restart();
+                }
+            });
+
+            respawnTimer = new Timer(RESPAWN_DURATION);
+            respawnTimer.timerReachedZero.subscribe(new IEventHandler<EventsArgs>()
+            {
+                @Override
+                public void onAction(EventsArgs args)
+                {
+                    movementTimer.restart();
+                }
+            });
+
+            movementTimer.start();
+        }
+
+        void update(GameTime gameTime)
+        {
+            if (delay > 0f)
+            {
+                delay = MathUtils.clamp(delay - gameTime.delta * 1000f, 0f, delay);
+            }
+
+            if (delay == 0f)
+            {
+                player.update(gameTime);
+                movementTimer.update(gameTime);
+                respawnTimer.update(gameTime);
+
+                if (movementTimer.isRunning())
+                {
+                    float currentDistance = Interpolation.sine.apply(0, distance,
+                            movementTimer.elapsedTimePercentage());
+
+                    x = startX + currentDistance * MathUtils.cosDeg(direction);
+                    y = startY - currentDistance * MathUtils.sinDeg(direction);
+
+                    y += 1.5f * MathUtils.sin(movementTimer.elapsedTimePercentage() * 90f);
+
+                    applyScale();
+                    applyAlpha();
+                }
+            }
+        }
+
+        void applyScale()
+        {
+            // Inferior
+            if (movementTimer.elapsedTime() - SCALE_TIME_OFFSET < 0f)
+            {
+                float factor = movementTimer.elapsedTime() / SCALE_TIME_OFFSET;
+                scale = Interpolation.sine.apply(factor);
+            }
+            else
+            {
+                float factor = (movementTimer.elapsedTime() - SCALE_TIME_OFFSET) /
+                        (MOVEMENT_DURATION - SCALE_TIME_OFFSET);
+                scale = Interpolation.pow2In.apply(1f, MIN_SCALE, factor);
+            }
+        }
+
+        void applyAlpha()
+        {
+            // Inferior
+            if (movementTimer.elapsedTime() - SCALE_TIME_OFFSET < 0f)
+            {
+                float factor = movementTimer.elapsedTime() / SCALE_TIME_OFFSET;
+                alpha = Interpolation.sine.apply(factor);
+            }
+            // Superior
+            else if (movementTimer.elapsedTime() + SCALE_TIME_OFFSET > MOVEMENT_DURATION)
+            {
+                float factor = (MOVEMENT_DURATION - movementTimer.elapsedTime()) / SCALE_TIME_OFFSET;
+                alpha = Interpolation.sine.apply(factor);
+            }
+            else
+            {
+                alpha = 1f;
+            }
+        }
+
+        void draw(Batch batch)
+        {
+            if (movementTimer.isRunning() && alpha > 0f)
+            {
+                player.position.x = x;
+                player.position.y = y;
+                player.scale = scale;
+
+                ColorUtilities.setAlpha(batch, alpha);
+                player.draw(batch);
+                ColorUtilities.resetColor(batch);
+            }
         }
     }
 }
