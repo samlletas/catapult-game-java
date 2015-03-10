@@ -96,6 +96,8 @@ public class GameTitle implements ICustomWidget
         smashingLoopActor.getColor().a = 0f;
         crystalsLoopActor.getColor().a = 0f;
 
+        clearActions();
+
         smashingActor.getColor().a = 0f;
         smashingActor.setScale(0.0f);
         smashingActor.addAction(smashingActions.showScale(showDelay, SHOW_DURATION, 1f, 1f));
@@ -133,7 +135,7 @@ public class GameTitle implements ICustomWidget
 
     }
 
-    public void clearActions()
+    private void clearActions()
     {
         smashingActor.clearActions();
         smashingLoopActor.clearActions();
