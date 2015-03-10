@@ -132,6 +132,8 @@ public final class GameplayScreen extends OverlayedScreen
     public void onEnter(Screen from)
     {
         reset();
+
+        common.background.setMode(Background.Mode.Gameplay);
     }
 
     @Override

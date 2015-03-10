@@ -21,6 +21,7 @@ import com.engine.utilities.ColorUtilities;
 import com.engine.utilities.StageUtilities;
 import com.mygdx.game.Common;
 import com.mygdx.game.Global;
+import com.mygdx.game.gamelogic.scene.Background;
 import com.mygdx.game.screens.OverlayedScreen;
 import com.mygdx.game.screens.ui.GameButton;
 import com.mygdx.game.screens.ui.GameSlider;
@@ -132,6 +133,8 @@ public class SettingsScreen extends OverlayedScreen
         backButton.show();
 
         stage.unfocusAll();
+
+        common.background.setMode(Background.Mode.Menus);
 
         common.settings.load();
         musicSlider.setValue(common.settings.getMusicVolume());

@@ -18,6 +18,7 @@ import com.engine.utilities.ColorUtilities;
 import com.engine.utilities.StageUtilities;
 import com.mygdx.game.Common;
 import com.mygdx.game.Global;
+import com.mygdx.game.gamelogic.scene.Background;
 import com.mygdx.game.screens.OverlayedScreen;
 import com.mygdx.game.screens.ui.GameButton;
 import com.mygdx.game.screens.ui.GameTitle;
@@ -164,6 +165,7 @@ public final class MainMenuScreen extends OverlayedScreen
         stage.unfocusAll();
 
         common.assets.distanceFieldFonts.furore.getInstance().setColor(Global.Colors.DEFAULT_TEXT);
+        common.background.setMode(Background.Mode.Main);
     }
 
     @Override
@@ -193,10 +195,6 @@ public final class MainMenuScreen extends OverlayedScreen
     @Override
     public void onLeave(Screen to)
     {
-        // Limpieza de las acciones para regresarlas a la Pool y poder
-        // reutilizarlas
-        gameTitle.clearActions();
-
         Array<GameButton> localButtons = buttons;
 
         for (int i = 0, n = localButtons.size; i < n; i++)
