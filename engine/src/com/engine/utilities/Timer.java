@@ -28,6 +28,22 @@ public final class Timer
 
     /**
      *
+     * @return El tiempo transcurrido en milisegundos
+     */
+    public float elapsedTime()
+    {
+        if (!isRunning)
+        {
+            return 0f;
+        }
+        else
+        {
+            return counter;
+        }
+    }
+
+    /**
+     *
      * @return El porcentaje de tiempo transcurrido del contador, entre más
      * cercano a 1 indica que ha transcurrudo más tiempo y que está a punto de
      * terminar el conteo
