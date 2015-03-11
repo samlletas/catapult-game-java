@@ -3,16 +3,10 @@ package com.mygdx.game.gamelogic.scene;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.engine.GameTime;
-import com.engine.events.EventsArgs;
-import com.engine.events.IEventHandler;
 import com.engine.graphics.GraphicsSettings;
-import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
-import com.engine.utilities.ColorUtilities;
 import com.engine.utilities.FastArray;
-import com.engine.utilities.Timer;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Background
