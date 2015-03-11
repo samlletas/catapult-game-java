@@ -1,8 +1,8 @@
 <root atlasFile="textures.atlas">
     <bones>
         <bone id="0" region="firefly-glow" parent="3" pivotX="10" pivotY="10" offsetX="7" offsetY="7" />
-        <bone id="1" region="firefly-wing" parent="3" pivotX="2" pivotY="5" offsetX="5" offsetY="7" />
-        <bone id="2" region="firefly-wing" parent="3" pivotX="2" pivotY="5" offsetX="8" offsetY="6" />
+        <bone id="1" region="firefly-wing" parent="3" pivotX="4" pivotY="5" offsetX="5" offsetY="7" />
+        <bone id="2" region="firefly-wing" parent="3" pivotX="4" pivotY="5" offsetX="8" offsetY="6" />
         <bone id="3" region="firefly-body" parent="-1" pivotX="6" pivotY="6" offsetX="0" offsetY="0" />
     </bones>
     <animations>
