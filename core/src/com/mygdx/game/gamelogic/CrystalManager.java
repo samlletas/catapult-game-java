@@ -206,7 +206,7 @@ public final class CrystalManager implements IPhysicsObject
     {
         currentPattern.drawPolygons(shapeRenderer);
     }
-    
+
     public void setForegoundColor(Color color)
     {
         crystalShaderProvider.setForegroundColor(color);
