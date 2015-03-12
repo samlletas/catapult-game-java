@@ -202,15 +202,15 @@ handleGear
   index: -1
 hud-bar
   rotate: false
-  xy: 302, 649
-  size: 3, 31
+  xy: 303, 649
+  size: 1, 31
   orig: 3, 31
   offset: 0, 0
   index: -1
 hud-bar-corner
   rotate: false
   xy: 1012, 954
-  size: 10, 31
+  size: 9, 31
   orig: 10, 31
   offset: 0, 0
   index: -1
@@ -244,8 +244,8 @@ libGDX
   index: -1
 pixel
   rotate: false
-  xy: 267, 632
-  size: 3, 3
+  xy: 268, 633
+  size: 1, 1
   orig: 3, 3
   offset: 0, 0
   index: -1
