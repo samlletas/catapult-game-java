@@ -123,6 +123,7 @@ public final class GameplayScreen extends OverlayedScreen
 
         initializeInput();
         initializeEvents();
+        reset();
     }
 
     //endregion
