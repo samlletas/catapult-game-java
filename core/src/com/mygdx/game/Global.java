@@ -43,6 +43,7 @@ public final class Global
     public static final class ButtonStyles
     {
         public static final String PLAY          = "play";
+        public static final String REPLAY        = "replay";
         public static final String SETTINGS      = "settings";
         public static final String SCORES_MEDIUM = "scores-medium";
         public static final String SCORES_SMALL  = "scores-small";
