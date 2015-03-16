@@ -70,7 +70,6 @@ public final class Game extends GameAdapter
     @Override
     public void initialize()
     {
-
         GameAssets assets = new GameAssets();
         assetMaster = new GameAssetMaster(assets);
         assetMaster.loadSync();
