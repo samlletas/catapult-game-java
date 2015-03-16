@@ -1,7 +1,6 @@
 package com.mygdx.game.gamelogic;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -22,6 +21,7 @@ public final class Catapult
     private static final float MAX_PULL_ANGLE = 179f;
     private static final float MIN_LAUNCH_POWER = 450f;
     private static final float MAX_LAUNCH_POWER = 1600f;
+    private static final float MAX_PULL_DISTANCE = 200f;
 
     // Constantes para el dibujado de la cuerda
     private static final float ROPE_PIVOT_X = 1f;
@@ -35,6 +35,7 @@ public final class Catapult
     private Common common;
     private Ball ball;
     private BallPath ballPath;
+    private OrthographicCamera camera;
 
     private Bone spoon;
     private Bone handleGear;
@@ -47,7 +48,6 @@ public final class Catapult
     private float ropeLength;
 
     // Variables para lanzamiento de bola
-    private boolean pulling = false;
     private float pullAngle = 0f;
     private FixedFrameInterpolator pullAnimationInterpolator;
 
@@ -57,7 +57,10 @@ public final class Catapult
 
     // Input
     private boolean inputEnabled = false;
-    private InputProcessor inputProcessor;
+    private boolean pulling = false;
+    private Vector3 originTouchPosition = new Vector3();
+    private Vector3 currentTouchPosition = new Vector3();
+    private Rectangle forbidenBounds = new Rectangle(754f, 0f, 100f, 100f);
 
     public Catapult(Common common, Ball ball, BallPath ballPath, OrthographicCamera camera)
     {
@@ -177,7 +180,7 @@ public final class Catapult
                     float length = Vector2.len(deltaX, deltaY);
 
                     player.play(Catapult.ANIMATION_PULL);
-                    pullAnimationInterpolator.factor = MathUtils.clamp(length / 200f, 0f, 1f);
+                    pullAnimationInterpolator.factor = MathUtils.clamp(length / MAX_PULL_DISTANCE, 0f, 1f);
                     ballPath.show();
                 }
             }
@@ -195,11 +198,6 @@ public final class Catapult
             }
         }
     }
-
-    private OrthographicCamera camera;
-    private Vector3 originTouchPosition = new Vector3();
-    private Vector3 currentTouchPosition = new Vector3();
-    private Rectangle forbidenBounds = new Rectangle(754f, 0f, 100f, 100f);
 
     private void setBallPosition()
     {
