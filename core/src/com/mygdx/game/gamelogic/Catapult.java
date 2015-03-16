@@ -5,12 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.math.*;
 import com.engine.GameTime;
 import com.engine.events.EventsArgs;
 import com.engine.events.IEventHandler;
@@ -69,10 +64,10 @@ public final class Catapult
         this.common = common;
         this.ball = ball;
         this.ballPath = ballPath;
+        this.camera = camera;
 
         this.ropeRegion = this.common.assets.atlasRegions.rope.getInstance();
         this.pullAnimationInterpolator = new FixedFrameInterpolator();
-        this.inputProcessor = new GestureDetector(new CatapultGestureListener(camera));
 
         initializeAnimation();
         getBones();
@@ -116,28 +111,15 @@ public final class Catapult
         inputEnabled = false;
     }
 
-    public InputProcessor getInputProcessor()
+    public boolean isPulling()
     {
-        return inputProcessor;
+        return pulling;
     }
 
     public void reset()
     {
         player.play(ANIMATION_DEFAULT);
         pullAnimationInterpolator.factor = 0f;
-    }
-
-    private void BeginLaunch()
-    {
-        if (inputEnabled && pulling)
-        {
-            pullAngle = spoon.getFinalRotation();
-            player.play(Catapult.ANIMATION_LAUNCH);
-            pullAnimationInterpolator.factor = 0f;
-            ballPath.hide();
-
-            pulling = false;
-        }
     }
 
     private void launch()
@@ -158,12 +140,66 @@ public final class Catapult
 
     public void update(GameTime gameTime)
     {
+        handleInput();
         player.update(gameTime);
 
         setBallPosition();
         updateBallPath();
         calculateRopePosition();
     }
+
+    private void handleInput()
+    {
+        if (inputEnabled && !ball.isFlying())
+        {
+            if (Gdx.input.isTouched(0))
+            {
+                if (!pulling)
+                {
+                    originTouchPosition.set(Gdx.input.getX(0), Gdx.input.getY(0), 0f);
+                    camera.unproject(originTouchPosition);
+
+                    if (!forbidenBounds.contains(originTouchPosition.x, originTouchPosition.y))
+                    {
+                        pulling = true;
+                    }
+                }
+                else
+                {
+                    float x = Gdx.input.getX(0);
+                    float y = Gdx.input.getY(0);
+
+                    currentTouchPosition.set(x, y, 0f);
+                    camera.unproject(currentTouchPosition);
+
+                    float deltaX = currentTouchPosition.x - originTouchPosition.x;
+                    float deltaY = currentTouchPosition.y - originTouchPosition.y;
+                    float length = Vector2.len(deltaX, deltaY);
+
+                    player.play(Catapult.ANIMATION_PULL);
+                    pullAnimationInterpolator.factor = MathUtils.clamp(length / 200f, 0f, 1f);
+                    ballPath.show();
+                }
+            }
+            else
+            {
+                if (pulling)
+                {
+                    pullAngle = spoon.getFinalRotation();
+                    player.play(Catapult.ANIMATION_LAUNCH);
+                    pullAnimationInterpolator.factor = 0f;
+                    ballPath.hide();
+
+                    pulling = false;
+                }
+            }
+        }
+    }
+
+    private OrthographicCamera camera;
+    private Vector3 originTouchPosition = new Vector3();
+    private Vector3 currentTouchPosition = new Vector3();
+    private Rectangle forbidenBounds = new Rectangle(754f, 0f, 100f, 100f);
 
     private void setBallPosition()
     {
@@ -207,175 +243,5 @@ public final class Catapult
         batch.draw(ropeRegion, ropeX, ropeY, ROPE_PIVOT_X, ROPE_PIVOT_Y,
                 ropeRegion.getRegionWidth(), ropeRegion.getRegionHeight(),
                 ropeLength, 1f, ropeRotation);
-    }
-
-    /***************************************************************************
-     *                                 Input
-     * ************************************************************************/
-    public class CatapultGestureListener extends GestureDetector.GestureAdapter
-    {
-        private static final float MIN_ADD_FORCE_ANGLE = 135f;
-        private static final float MAX_ADD_FORCE_ANGLE = 315f;
-        private static final float FACTOR_INCREMENT = 0.0085f;
-
-        private OrthographicCamera camera;
-        private Vector3 previousTouchPosition;
-        private Vector3 currentTouchPosition;
-
-        CatapultGestureListener(OrthographicCamera camera)
-        {
-            this.camera = camera;
-            this.previousTouchPosition = new Vector3();
-            this.currentTouchPosition = new Vector3();
-        }
-
-        @Override
-        public boolean pan(float x, float y, float deltaX, float deltaY)
-        {
-            if (Catapult.this.inputEnabled && !Catapult.this.ball.isFlying())
-            {
-                previousTouchPosition.set(x - deltaX, y - deltaY, 0f);
-                currentTouchPosition.set(x, y, 0f);
-
-                camera.unproject(previousTouchPosition);
-                camera.unproject(currentTouchPosition);
-
-                deltaX = currentTouchPosition.x - previousTouchPosition.x;
-                deltaY = currentTouchPosition.y - previousTouchPosition.y;
-
-                float length = Vector2.len(deltaX, deltaY);
-                float angle = normalizeAngle(MathUtils.atan2(-deltaY, deltaX));
-                float factor = 0f;
-
-                if (onAddForceAngle(angle))
-                {
-                    factor += length * FACTOR_INCREMENT;
-                    Gdx.app.log("Pan", "length: " + length);
-                }
-                else
-                {
-                    factor -= length * FACTOR_INCREMENT;
-                    length = -length;
-                    Gdx.app.log("Pan", "length: " + -length);
-                }
-
-                float duration = getCurrentTime();
-                acummmulatedDistance += length;
-
-                if (Math.abs(acummmulatedDistance) < POSSIBLE_SHOT_MAX_DISTANCE)
-                {
-                    if (onPossibleShot)
-                    {
-                        acummulatedTime += duration;
-                    }
-
-                    onPossibleShot = true;
-                }
-                else
-                {
-                    onPossibleShot = false;
-                    acummulatedFactor = 0f;
-                    acummulatedTime = 0f;
-                    acummmulatedDistance = 0f;
-                }
-
-                if (onPossibleShot)
-                {
-                    acummulatedFactor += factor;
-
-                    if (acummulatedTime > POSSIBLE_SHOT_WAIT_TIME)
-                    {
-                        factor = acummulatedFactor;
-                        Catapult.this.pullAnimationInterpolator.factor = MathUtils.clamp(Catapult.this.pullAnimationInterpolator.factor + factor, 0f, 1f);
-
-                        onPossibleShot = false;
-                        acummulatedFactor = 0f;
-                        acummulatedTime = 0f;
-                        acummmulatedDistance = 0f;
-                    }
-                }
-                else
-                {
-                    Catapult.this.player.play(Catapult.ANIMATION_PULL);
-                    Catapult.this.pullAnimationInterpolator.factor = MathUtils.clamp(Catapult.this.pullAnimationInterpolator.factor + factor, 0f, 1f);
-                    Catapult.this.ballPath.show();
-                    Catapult.this.pulling = true;
-                }
-
-                Gdx.app.log("Time", "Time: " + duration);
-
-                onPan = true;
-            }
-
-            return true;
-        }
-
-//        final static long POSSIBLE_SHOT_WAIT_TIME = 100l;
-//        final static float POSSIBLE_SHOT_MAX_DISTANCE = 2f;
-        final static long POSSIBLE_SHOT_WAIT_TIME = 1000l;
-        final static float POSSIBLE_SHOT_MAX_DISTANCE = 3f;
-
-        boolean onPossibleShot = false;
-        float acummulatedFactor = 0f;
-        float acummulatedTime = 0f;
-        float acummmulatedDistance = 0f;
-
-        long prevTime = 0l;
-        boolean onPan = false;
-
-        long getCurrentTime()
-        {
-            long result = 0l;
-            long current = TimeUtils.millis();
-
-            if (onPan)
-            {
-                result = current - prevTime;
-            }
-
-            prevTime = current;
-
-            return result;
-        }
-
-        @Override
-        public boolean panStop(float x, float y, int pointer, int button)
-        {
-            if (Catapult.this.pulling)
-            {
-                BeginLaunch();
-
-                onPan = false;
-                onPossibleShot = false;
-                acummulatedFactor = 0f;
-                acummulatedTime = 0f;
-                acummmulatedDistance = 0f;
-            }
-
-            return true;
-        }
-
-        /**
-         * Convierte un ángulo en radianes a grados y lo normaliza para que
-         * se encuentre dentro del rango (0, 360)
-         * @param angle ángulo en radianes
-         * @return Angulo en grados
-         */
-        private float normalizeAngle(float angle)
-        {
-            angle *= MathUtils.radiansToDegrees;
-
-            if (angle < 0f)
-            {
-                angle = 360f + angle;
-            }
-
-            return angle;
-        }
-
-        private boolean onAddForceAngle(float angle)
-        {
-            return angle >= MIN_ADD_FORCE_ANGLE && angle <= MAX_ADD_FORCE_ANGLE;
-        }
     }
 }
