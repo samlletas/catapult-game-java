@@ -20,10 +20,16 @@ public class StageUtilities
     public static void setTouchable(Stage stage, Touchable touchable)
     {
         Array<Actor> actors = stage.getActors();
+        Actor actor;
 
         for(int i = 0, n = actors.size; i < n; i++)
         {
-            actors.get(i).setTouchable(touchable);
+            actor = actors.get(i);
+
+            if (actor.getTouchable() != touchable)
+            {
+                actor.setTouchable(touchable);
+            }
         }
     }
 }
