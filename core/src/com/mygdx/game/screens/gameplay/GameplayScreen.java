@@ -24,6 +24,7 @@ import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.input.BackInputProcessor;
 import com.engine.screens.Screen;
 import com.engine.utilities.ColorUtilities;
+import com.engine.utilities.StageUtilities;
 import com.mygdx.game.Common;
 import com.mygdx.game.Global;
 import com.mygdx.game.gamelogic.*;
@@ -161,7 +162,10 @@ public final class GameplayScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                pauseGame();
+                if (!catapult.isPulling())
+                {
+                    pauseGame();
+                }
             }
         });
 
@@ -272,7 +276,6 @@ public final class GameplayScreen extends OverlayedScreen
                 pauseGame();
             }
         });
-        inputMultiplexer.addProcessor(catapult.getInputProcessor());
     }
 
     private void enableInput()
@@ -334,7 +337,6 @@ public final class GameplayScreen extends OverlayedScreen
         for (int i = 0; i < updates; i++)
         {
             outOfLivesDelayedHandler.resolve();
-
             pauseStage.act(gameTime.delta);
 
             if (gameState == GameStates.Paused)
@@ -373,6 +375,15 @@ public final class GameplayScreen extends OverlayedScreen
                 ballPath.update(gameTime);
                 scoreLabelContainer.update(gameTime);
                 gameHUD.update(gameTime);
+
+                if (catapult.isPulling())
+                {
+                    StageUtilities.disableTouch(pauseStage);
+                }
+                else
+                {
+                    StageUtilities.enableTouch(pauseStage);
+                }
 
                 if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
                 {
