@@ -192,10 +192,13 @@ public class GameHUD
 
     public void bloomScore()
     {
-        scoreActor.clearActions();
-        scoreActor.addAction(Actions.sequence(
-                Actions.scaleTo(1.3f, 1.3f, 0.025f, Interpolation.sine),
-                Actions.scaleTo(1.0f, 1.0f, 0.025f, Interpolation.sine)));
+        if (scoreActor.getActions().size == 0)
+        {
+            scoreActor.clearActions();
+            scoreActor.addAction(Actions.sequence(
+                    Actions.scaleTo(1.4f, 1.4f, 0.04f, Interpolation.sine),
+                    Actions.scaleTo(1.0f, 1.0f, 0.05f, Interpolation.sine)));
+        }
     }
 
     public void update(GameTime gameTime)
