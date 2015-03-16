@@ -5,10 +5,13 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameTime;
+import com.engine.actors.Actions;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
@@ -27,14 +30,21 @@ public class PauseOverlay
     private GameplayScreen gameplayScreen;
     private Overlay overlay;
     private Header header;
-    private GameButton howToPlayButton;
-    private GameButton continueButton;
+
     private GameButton homeButton;
+    private GameButton replayButton;
+    private GameButton continueButton;
+    private GameButton settingsButton;
+    private GameButton howToPlayButton;
+
     private Stage stage;
 
     private InputMultiplexer inputMultiplexer;
     private Runnable enableInputRunnable;
 
+    private SequenceAction sequence;
+    private AlphaAction alpha;
+    private RunnableAction runnableAction;
     private Runnable unpausedRunnable;
 
     public PauseOverlay(GameplayScreen gameplayScreen, Common common,
@@ -45,40 +55,34 @@ public class PauseOverlay
 
         overlay = new Overlay(graphicsSettings, Global.Colors.OVERLAY, 0f);
         header = new Header(common, graphicsSettings, HEADER_TEXT);
-        howToPlayButton = new GameButton(common, Global.ButtonStyles.QUESTION);
+        homeButton = new GameButton(common, Global.ButtonStyles.HOME_SMALL);
+        replayButton = new GameButton(common, Global.ButtonStyles.REPLAY);
         continueButton = new GameButton(common, Global.ButtonStyles.PLAY);
-        homeButton = new GameButton(common, Global.ButtonStyles.HOME_MEDIUM);
+        settingsButton = new GameButton(common, Global.ButtonStyles.SETTINGS);
+        howToPlayButton = new GameButton(common, Global.ButtonStyles.QUESTION);
+
         stage = new Stage(viewport2D, batch);
 
-        howToPlayButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 200f, 265f);
-        continueButton.setOriginalPosition(graphicsSettings.virtualWidth / 2f, 285f);
-        homeButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) + 200f, 265f);
+        homeButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 300f, 200f);
+        replayButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 170f, 260f);
+        continueButton.setOriginalPosition(graphicsSettings.virtualWidth / 2f, 300f);
+        settingsButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) + 170f, 260f);
+        howToPlayButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) + 300f, 200f);
 
         header.setShowDelay(0f);
-        howToPlayButton.setShowDelay(0.100f);
+
+        homeButton.setShowDelay(0.150f);
+        replayButton.setShowDelay(0.075f);
         continueButton.setShowDelay(0f);
-        homeButton.setShowDelay(0.100f);
+        settingsButton.setShowDelay(0.075f);
+        howToPlayButton.setShowDelay(0.150f);
 
         header.setHideDelay(0f);
-        howToPlayButton.setHideDelay(0.100f);
+        homeButton.setHideDelay(0.150f);
+        replayButton.setHideDelay(0.075f);
         continueButton.setHideDelay(0f);
-        homeButton.setHideDelay(0.100f);
-
-        howToPlayButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                super.clicked(event, x, y);
-            }
-        });
-
-        continueButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                hide();
-            }
-        });
+        settingsButton.setHideDelay(0.075f);
+        howToPlayButton.setHideDelay(0.150f);
 
         homeButton.addListener(new ClickListener() {
             @Override
@@ -88,9 +92,46 @@ public class PauseOverlay
             }
         });
 
-        stage.addActor(howToPlayButton);
-        stage.addActor(continueButton);
+        replayButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                super.clicked(event, x, y);
+            }
+        });
+
+        continueButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                hide();
+            }
+        });
+
+        settingsButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                super.clicked(event, x, y);
+            }
+        });
+
+        howToPlayButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                super.clicked(event, x, y);
+            }
+        });
+
         stage.addActor(homeButton);
+        stage.addActor(replayButton);
+        stage.addActor(continueButton);
+        stage.addActor(settingsButton);
+        stage.addActor(howToPlayButton);
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new BackInputProcessor()
@@ -104,6 +145,9 @@ public class PauseOverlay
         });
         inputMultiplexer.addProcessor(stage);
 
+        sequence = new SequenceAction();
+        alpha = new AlphaAction();
+        runnableAction = new RunnableAction();
         enableInputRunnable = new Runnable()
         {
             @Override
@@ -130,14 +174,16 @@ public class PauseOverlay
     {
         overlay.getColor().a = 0f;
         overlay.addAction(
-                Actions.sequence(
-                        Actions.alpha(Global.OVERLAY_PAUSE_ALPHA, 0.500f),
-                        Actions.run(enableInputRunnable)));
+                Actions.sequence(sequence,
+                        Actions.alpha(alpha, Global.OVERLAY_PAUSE_ALPHA, 0.500f),
+                        Actions.run(runnableAction, enableInputRunnable)));
 
         header.show();
-        howToPlayButton.show();
-        continueButton.show();
         homeButton.show();
+        replayButton.show();
+        continueButton.show();
+        settingsButton.show();
+        howToPlayButton.show();
 
         stage.unfocusAll();
     }
@@ -149,14 +195,16 @@ public class PauseOverlay
 
         overlay.clearActions();
         overlay.addAction(
-                Actions.sequence(
-                        Actions.fadeOut(0.500f),
-                        Actions.run(unpausedRunnable)));
+                Actions.sequence(sequence,
+                        Actions.fadeOut(alpha, 0.500f),
+                        Actions.run(runnableAction, unpausedRunnable)));
 
         header.hide();
-        howToPlayButton.hide();
-        continueButton.hide();
         homeButton.hide();
+        replayButton.hide();
+        continueButton.hide();
+        settingsButton.hide();
+        howToPlayButton.hide();
     }
 
     public Overlay getOverlay()
