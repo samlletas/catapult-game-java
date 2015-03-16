@@ -1,11 +1,10 @@
 package com.engine.graphics.graphics2D.animation.basic;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.engine.GameTime;
 import com.engine.events.Event;
 import com.engine.events.EventsArgs;
+import com.engine.utilities.FastArray;
 
 /**
  * Representa un conjunto de animacines básicas, las clases derivadas se deben
@@ -13,7 +12,7 @@ import com.engine.events.EventsArgs;
  */
 public abstract class BasicAnimationGroup
 {
-    private Array<BasicAnimation> animations;
+    private FastArray<BasicAnimation> animations;
     private boolean isActive;
     private boolean isPaused;
 
@@ -23,7 +22,7 @@ public abstract class BasicAnimationGroup
 
     public BasicAnimationGroup()
     {
-        animations = new Array<BasicAnimation>();
+        animations = new FastArray<BasicAnimation>();
         isActive = false;
         isPaused = false;
 

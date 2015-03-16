@@ -6,18 +6,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.engine.GameTime;
 import com.engine.events.Event;
 import com.engine.events.EventsArgs;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.utilities.ColorUtilities;
+import com.engine.utilities.FastArray;
 
 public class BasicAnimation
 {
-    private Array<BasicFrame> frames;
+    private FastArray<BasicFrame> frames;
     private boolean loop;
     private boolean isPlaying;
     private boolean isPaused;
@@ -69,7 +68,7 @@ public class BasicAnimation
     {
         if (frames.length > 0)
         {
-            this.frames = new Array<BasicFrame>();
+            this.frames = new FastArray<BasicFrame>();
 
             for (BasicFrame frame : frames)
             {
