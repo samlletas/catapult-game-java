@@ -19,6 +19,7 @@ public class AndroidLauncher extends AndroidApplication
         // Deshabilitación para ahorro de batería
         config.useAccelerometer = false;
         config.useCompass = false;
+        config.useImmersiveMode = true;
 
         initialize(new Game(), config);
     }
