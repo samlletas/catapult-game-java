@@ -9,6 +9,14 @@
             imageDown: ui-icon-play
         },
 
+        replay:
+        {
+          up:        ui-button-up-medium,
+          down:      ui-button-down-medium,
+          imageUp:   ui-icon-replay,
+          imageDown: ui-icon-replay
+        },
+
         settings:
         {
             up:        ui-button-up-medium,
@@ -51,8 +59,8 @@
 
         question:
         {
-            up:        ui-button-up-medium,
-            down:      ui-button-down-medium,
+            up:        ui-button-up-small,
+            down:      ui-button-down-small,
             imageUp:   ui-icon-question,
             imageDown: ui-icon-question
         },
