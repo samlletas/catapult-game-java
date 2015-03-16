@@ -17,6 +17,7 @@ import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.input.BackInputProcessor;
 import com.engine.screens.Overlay;
+import com.engine.utilities.ActorUtilities;
 import com.engine.utilities.StageUtilities;
 import com.mygdx.game.Common;
 import com.mygdx.game.Global;
@@ -62,6 +63,7 @@ public class PauseOverlay
         howToPlayButton = new GameButton(common, Global.ButtonStyles.QUESTION);
 
         stage = new Stage(viewport2D, batch);
+        ActorUtilities.growActionsArray(overlay, 1);
 
         homeButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 300f, 200f);
         replayButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 170f, 260f);
@@ -88,6 +90,9 @@ public class PauseOverlay
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Gdx.input.setInputProcessor(null);
+                hideUiActors();
+
                 PauseOverlay.this.gameplayScreen.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
             }
         });
@@ -199,6 +204,11 @@ public class PauseOverlay
                         Actions.fadeOut(alpha, 0.500f),
                         Actions.run(runnableAction, unpausedRunnable)));
 
+        hideUiActors();
+    }
+
+    private void hideUiActors()
+    {
         header.hide();
         homeButton.hide();
         replayButton.hide();
