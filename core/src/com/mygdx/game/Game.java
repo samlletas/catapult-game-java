@@ -19,6 +19,7 @@ import com.mygdx.game.assets.GameAssetMaster;
 import com.mygdx.game.assets.GameAssets;
 import com.mygdx.game.screens.menus.InfoScreen;
 import com.mygdx.game.screens.menus.MainMenuScreen;
+import com.mygdx.game.screens.menus.ModeSelectScreen;
 import com.mygdx.game.screens.menus.SettingsScreen;
 import com.mygdx.game.screens.splash.PoweredBySplashScreen;
 import com.mygdx.game.screens.gameplay.GameplayScreen;
@@ -103,6 +104,8 @@ public final class Game extends GameAdapter
         screenManager.addScreen(new SettingsScreen(graphicsSettings, viewport2D,
                 viewport3D, spriteBatch, common));
         screenManager.addScreen(new InfoScreen(graphicsSettings, viewport2D,
+                viewport3D, spriteBatch, common));
+        screenManager.addScreen(new ModeSelectScreen(graphicsSettings, viewport2D,
                 viewport3D, spriteBatch, common));
         screenManager.addScreen(new GameplayScreen(graphicsSettings, viewport2D,
                 viewport3D, spriteBatch, common));

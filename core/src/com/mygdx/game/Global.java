@@ -23,7 +23,6 @@ public final class Global
 
     public static final class Colors
     {
-//        public static final Color MAIN_BACKGROUND   = ColorUtilities.createColor(36, 82, 130, 255);
         public static final Color MAIN_BACKGROUND   = Color.BLACK;
         public static final Color DEFAULT_TEXT      = Color.WHITE;
         public static final Color OVERLAY           = Color.BLACK;
@@ -33,11 +32,12 @@ public final class Global
 
     public static final class ScreenNames
     {
-        public static final String POWERED_BY_SCREEN = "Powered By";
-        public static final String MAIN_MENU_SCREEN  = "Main Menu";
-        public static final String GAMEPLAY_SCREEN   = "Game";
-        public static final String SETTINGS_SCREEN   = "Settings";
-        public static final String INFO_SCREEN       = "Info";
+        public static final String POWERED_BY_SCREEN  = "Powered By";
+        public static final String MAIN_MENU_SCREEN   = "Main Menu";
+        public static final String MODE_SELECT_SCREEN = "Mode Select";
+        public static final String GAMEPLAY_SCREEN    = "Game";
+        public static final String SETTINGS_SCREEN    = "Settings";
+        public static final String INFO_SCREEN        = "Info";
     }
 
     public static final class ButtonStyles
@@ -54,5 +54,6 @@ public final class Global
         public static final String INFO          = "info";
         public static final String BACK          = "back";
         public static final String PAUSE         = "pause";
+        public static final String MODE          = "mode";
     }
 }

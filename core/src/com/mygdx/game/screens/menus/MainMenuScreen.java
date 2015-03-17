@@ -96,7 +96,7 @@ public final class MainMenuScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.GAMEPLAY_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.MODE_SELECT_SCREEN);
             }
         });
 

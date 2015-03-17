@@ -95,6 +95,15 @@
             down:      ui-button-down-tiny,
             imageUp:   ui-icon-pause,
             imageDown: ui-icon-pause
+        },
+    },
+
+    com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle:
+    {
+        mode:
+        {
+            up:        ui-mode-up,
+            down:      ui-mode-down
         }
     },
 
