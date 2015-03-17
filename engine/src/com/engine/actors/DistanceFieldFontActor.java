@@ -160,6 +160,22 @@ public class DistanceFieldFontActor extends CustomActor
     public BitmapFont.TextBounds drawMultiline(DistanceFieldRenderer renderer,
                                       DistanceFieldFont font)
     {
+        return drawMultiline(renderer, font, BitmapFont.HAlignment.LEFT);
+    }
+
+    /**
+     * Dibuja una fuente DistanceField con los valores del frame actual
+     * Nota: La rotación no se toma en cuenta (para evitar un drawCall extra)
+     *
+     * @param renderer renderer
+     * @param font font
+     * @param alignment alignment
+     * @return los bounds de la fuente al ser dibujada
+     */
+    public BitmapFont.TextBounds drawMultiline(DistanceFieldRenderer renderer,
+                                               DistanceFieldFont font,
+                                               BitmapFont.HAlignment alignment)
+    {
         if (text != null)
         {
             float originalScaleX = font.getScaleX();
@@ -215,7 +231,7 @@ public class DistanceFieldFontActor extends CustomActor
                     break;
             }
 
-            bounds = renderer.drawMultiLine(text, drawX, drawY);
+            bounds = renderer.drawMultiLine(text, drawX, drawY, bounds.width, alignment);
 
             font.setScale(originalScaleX, originalScaleY);
             font.setAlpha(originalAlpha);
