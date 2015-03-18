@@ -39,6 +39,8 @@ public final class Global
         public static final String CRYSTAL_FRENZY_SCREEN = "Crystal Frenzy";
         public static final String SETTINGS_SCREEN       = "Settings";
         public static final String INFO_SCREEN           = "Info";
+        public static final String HOW_TO_TIME_ATTACK    = "How to Time Attack";
+        public static final String HOW_TO_CYRSTAL_FRENZY = "How to Crystal Frenzy";
     }
 
     public static final class ButtonStyles
