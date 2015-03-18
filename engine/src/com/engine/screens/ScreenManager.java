@@ -119,28 +119,43 @@ public final class ScreenManager implements Disposable
     {
         if (!onTransition)
         {
-            nextScreen = getScreen(name);
+            Screen screen = getScreen(name);
 
-            if (nextScreen != null)
+            if (screen != null)
             {
-                if (currentScreen != null)
-                {
-                    currentScreen.onTransitionToStart(nextScreen);
-                }
-
-                nextScreen.onTransitionFromStart(currentScreen);
-
-                currentTransition = transition;
-                currentTransition.start();
-
-                previousScreen = currentScreen;
-                onTransition = true;
-                swappedScreens = false;
+                transitionTo(screen, transition);
             }
             else
             {
                 throw new GdxRuntimeException("Screen with name '" + name + "' was not found");
             }
+        }
+    }
+
+    public void transitionTo(Screen screen)
+    {
+        transitionTo(screen, defaultTransition);
+    }
+
+    public void transitionTo(Screen screen, Transition transition)
+    {
+        if (!onTransition)
+        {
+            nextScreen = screen;
+
+            if (currentScreen != null)
+            {
+                currentScreen.onTransitionToStart(nextScreen);
+            }
+
+            nextScreen.onTransitionFromStart(currentScreen);
+
+            currentTransition = transition;
+            currentTransition.start();
+
+            previousScreen = currentScreen;
+            onTransition = true;
+            swappedScreens = false;
         }
     }
 
