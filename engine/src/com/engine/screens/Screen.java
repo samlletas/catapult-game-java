@@ -49,6 +49,11 @@ public abstract class Screen implements Disposable
         this.screenManager = screenManager;
     }
 
+    public final ScreenManager getScreenManager()
+    {
+        return screenManager;
+    }
+
     /**
      * Aquí las clases derivadas implementan su propia lógica de inicialización
      */
