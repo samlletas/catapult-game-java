@@ -105,7 +105,9 @@ public final class MainMenuScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.SETTINGS_SCREEN);
+                SettingsScreen screen = (SettingsScreen)screenManager.getScreen(Global.ScreenNames.SETTINGS_SCREEN);
+                screen.setBackScreen(MainMenuScreen.this);
+                screenManager.transitionTo(screen);
             }
         });
 

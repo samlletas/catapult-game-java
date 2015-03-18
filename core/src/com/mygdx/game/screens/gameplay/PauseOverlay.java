@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -17,16 +18,19 @@ import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.input.BackInputProcessor;
 import com.engine.screens.Overlay;
+import com.engine.screens.ScreenManager;
 import com.engine.utilities.ActorUtilities;
 import com.engine.utilities.StageUtilities;
 import com.mygdx.game.Common;
 import com.mygdx.game.Global;
+import com.mygdx.game.screens.menus.SettingsScreen;
 import com.mygdx.game.screens.ui.GameButton;
 import com.mygdx.game.screens.ui.Header;
 
 public class PauseOverlay
 {
     private static final String HEADER_TEXT = "PAUSED";
+    private static final float SHOW_HIDE_DURATION = 0.500f;
 
     private BaseGameplayScreen gameplayScreen;
     private Overlay overlay;
@@ -45,6 +49,7 @@ public class PauseOverlay
 
     private SequenceAction sequence;
     private AlphaAction alpha;
+    private DelayAction delay;
     private RunnableAction runnableAction;
     private Runnable unpausedRunnable;
 
@@ -60,7 +65,7 @@ public class PauseOverlay
         howToPlayButton = new GameButton(common, Global.ButtonStyles.QUESTION);
 
         stage = new Stage(viewport2D, batch);
-        ActorUtilities.growActionsArray(overlay, 1);
+        ActorUtilities.growActionsArray(overlay, 2);
 
         homeButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 300f, 200f);
         replayButton.setOriginalPosition((graphicsSettings.virtualWidth / 2f) - 170f, 260f);
@@ -87,10 +92,10 @@ public class PauseOverlay
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                Gdx.input.setInputProcessor(null);
+                disableInput();
                 hideUiActors();
 
-                PauseOverlay.this.gameplayScreen.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
+                gameplayScreen.getScreenManager().transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
             }
         });
 
@@ -99,7 +104,10 @@ public class PauseOverlay
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                super.clicked(event, x, y);
+                disableInput();
+                hideUiActors();
+
+                gameplayScreen.getScreenManager().transitionTo(gameplayScreen);
             }
         });
 
@@ -117,7 +125,13 @@ public class PauseOverlay
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                super.clicked(event, x, y);
+                disableInput();
+                hideUiActors();
+
+                ScreenManager screenManager = gameplayScreen.getScreenManager();
+                SettingsScreen screen = (SettingsScreen)screenManager.getScreen(Global.ScreenNames.SETTINGS_SCREEN);
+                screen.setBackScreen(gameplayScreen);
+                screenManager.transitionTo(screen);
             }
         });
 
@@ -128,6 +142,15 @@ public class PauseOverlay
                 super.clicked(event, x, y);
             }
         });
+
+        unpausedRunnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                gameplayScreen.resumeGame();
+            }
+        };
 
         stage.addActor(homeButton);
         stage.addActor(replayButton);
@@ -149,21 +172,17 @@ public class PauseOverlay
 
         sequence = new SequenceAction();
         alpha = new AlphaAction();
+        delay = new DelayAction();
         runnableAction = new RunnableAction();
+
         enableInputRunnable = new Runnable()
         {
             @Override
             public void run()
             {
-                Gdx.input.setInputProcessor(PauseOverlay.this.inputMultiplexer);
-                StageUtilities.enableTouch(PauseOverlay.this.stage);
+                enableInput();
             }
         };
-    }
-
-    public void setUnpausedRunnable(Runnable unpausedRunnable)
-    {
-        this.unpausedRunnable = unpausedRunnable;
     }
 
     public void setGameplayScreen(BaseGameplayScreen gameplayScreen)
@@ -177,14 +196,31 @@ public class PauseOverlay
         overlay.getColor().a = 0f;
     }
 
+    public void enableInput()
+    {
+        Gdx.input.setInputProcessor(PauseOverlay.this.inputMultiplexer);
+        StageUtilities.enableTouch(PauseOverlay.this.stage);
+    }
+
+    public void disableInput()
+    {
+        Gdx.input.setInputProcessor(null);
+    }
+
     public void show()
     {
         overlay.getColor().a = 0f;
+        overlay.clearActions();
         overlay.addAction(
                 Actions.sequence(sequence,
-                        Actions.alpha(alpha, Global.OVERLAY_PAUSE_ALPHA, 0.500f),
+                        Actions.alpha(alpha, Global.OVERLAY_PAUSE_ALPHA, SHOW_HIDE_DURATION),
                         Actions.run(runnableAction, enableInputRunnable)));
 
+        showUiActors();
+    }
+
+    private void showUiActors()
+    {
         header.show();
         homeButton.show();
         replayButton.show();
@@ -195,15 +231,22 @@ public class PauseOverlay
         stage.unfocusAll();
     }
 
+    public void resumePause()
+    {
+        overlay.clearActions();
+        overlay.addAction(Actions.delay(delay, SHOW_HIDE_DURATION, Actions.run(runnableAction, enableInputRunnable)));
+        
+        showUiActors();
+    }
+
     public void hide()
     {
-        // Deshabilitación del input
-        Gdx.input.setInputProcessor(null);
+        disableInput();
 
         overlay.clearActions();
         overlay.addAction(
                 Actions.sequence(sequence,
-                        Actions.fadeOut(alpha, 0.500f),
+                        Actions.fadeOut(alpha, SHOW_HIDE_DURATION),
                         Actions.run(runnableAction, unpausedRunnable)));
 
         hideUiActors();

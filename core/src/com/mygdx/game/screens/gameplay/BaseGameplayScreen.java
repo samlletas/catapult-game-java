@@ -73,6 +73,8 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
 
         this.distanceFieldRenderer = common.distanceFieldRenderer;
         this.distanceFieldFont = common.assets.distanceFieldFonts.furore.getInstance();
+
+        this.gameState = GameStates.None;
     }
 
     @Override
@@ -80,9 +82,7 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
     {
         initializeInput();
         initializeEvents();
-
         onInitialize();
-        reset();
     }
 
     //endregion
@@ -92,16 +92,42 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
     @Override
     public void onEnter(Screen from)
     {
-        reset();
+        if (isSubmenu(from))
+        {
+            gameInstances.pauseOverlay.resumePause();
+        }
+        else
+        {
+            reset();
 
-        common.background.setMode(Background.Mode.Gameplay);
-        gameInstances.pauseOverlay.setGameplayScreen(this);
+            common.background.setMode(Background.Mode.Gameplay);
+            gameInstances.pauseOverlay.setGameplayScreen(this);
+        }
     }
 
     @Override
     public void onTransitionFromFinish(Screen from)
     {
-        gameInstances.startCounter.start();
+        if (!isSubmenu(from))
+        {
+            gameInstances.startCounter.start();
+        }
+    }
+
+    @Override
+    public void onLeave(Screen to)
+    {
+        if (!isSubmenu(to))
+        {
+            gameState = GameStates.None;
+        }
+    }
+
+    private boolean isSubmenu(Screen screen)
+    {
+        return screen.getName().equals(Global.ScreenNames.SETTINGS_SCREEN) ||
+                screen.getName().equals(Global.ScreenNames.HOW_TO_TIME_ATTACK) ||
+                screen.getName().equals(Global.ScreenNames.HOW_TO_CYRSTAL_FRENZY);
     }
 
     //endregion
@@ -115,7 +141,10 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
             @Override
             public void onAction(EventsArgs args)
             {
-                startGame();
+                if (gameState != GameStates.None)
+                {
+                    startGame();
+                }
             }
         });
 
@@ -124,19 +153,10 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                if (!gameInstances.catapult.isPulling())
+                if (gameState != GameStates.None && !gameInstances.catapult.isPulling())
                 {
                     pauseGame();
                 }
-            }
-        });
-
-        gameInstances.pauseOverlay.setUnpausedRunnable(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                resumeGame();
             }
         });
 
@@ -145,7 +165,10 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
             @Override
             public void onAction(TargetCollisionArgs args)
             {
-                onTargetCollision(args);
+                if (gameState != GameStates.None)
+                {
+                    onTargetCollision(args);
+                }
             }
         });
     }
@@ -163,8 +186,11 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
             @Override
             protected void onBackDown()
             {
-                disableInput();
-                pauseGame();
+                if (!gameInstances.catapult.isPulling())
+                {
+                    disableInput();
+                    pauseGame();
+                }
             }
         });
     }
@@ -216,7 +242,7 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
         gameInstances.pauseOverlay.show();
     }
 
-    private void resumeGame()
+    public void resumeGame()
     {
         enableInput();
         gameState = GameStates.Playing;
@@ -401,12 +427,7 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
 
     //endregion
 
-    //region Helpers
-
-    public void transitionTo(String name)
-    {
-        screenManager.transitionTo(name);
-    }
+    //region Disposing
 
     @Override
     public void dispose()

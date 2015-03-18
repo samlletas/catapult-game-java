@@ -41,6 +41,7 @@ public class SettingsScreen extends OverlayedScreen
     private GameButton backButton;
 
     private InputMultiplexer inputMultiplexer;
+    private Screen backScreen;
 
     public SettingsScreen(GraphicsSettings graphicsSettings, Viewport viewport2D,
                           Viewport viewport3D, Batch batch, Common common)
@@ -103,7 +104,7 @@ public class SettingsScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
+                screenManager.transitionTo(backScreen);
             }
         });
 
@@ -122,6 +123,11 @@ public class SettingsScreen extends OverlayedScreen
             }
         });
         inputMultiplexer.addProcessor(stage);
+    }
+
+    public void setBackScreen(Screen backScreen)
+    {
+        this.backScreen = backScreen;
     }
 
     @Override
