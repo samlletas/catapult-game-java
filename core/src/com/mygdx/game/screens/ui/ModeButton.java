@@ -17,8 +17,8 @@ public final class ModeButton extends Button implements ICustomWidget
     public static final float TEXT_FONT_SCALE  = 0.65f;
 
     private static final float SHOW_HIDE_DURATION = 0.500f;
-    private static final float HIDDEN_OFFSET_X = 500f;
-    private static final float HIDDEN_OFFSET_Y = 500f;
+    private static final float HIDDEN_OFFSET_X = 300f;
+    private static final float HIDDEN_OFFSET_Y = 300f;
 
     private static final float TITLE_OFFSET_X = 185f;
     private static final float TITLE_OFFSET_Y = 35f;
