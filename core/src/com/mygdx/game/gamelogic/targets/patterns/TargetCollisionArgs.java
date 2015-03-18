@@ -6,6 +6,4 @@ import com.mygdx.game.gamelogic.targets.Target;
 public class TargetCollisionArgs extends EventsArgs
 {
     public Target target;
-    public int score;
-    public float special;
 }

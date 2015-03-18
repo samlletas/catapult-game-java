@@ -2,9 +2,7 @@ package com.mygdx.game.gamelogic;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -44,8 +42,7 @@ public final class CrystalManager implements IPhysicsObject
     private boolean onSpecial = false;
 
     // Eventos
-    public Event<TargetCollisionArgs> onCrystalCollision;
-    public Event<TargetCollisionArgs> onSpikeCollision;
+    public Event<TargetCollisionArgs> onTargetCollision;
     private DisappearTimerReachedZeroDelayedHandler disappearTimerReachedZeroDelayedHandler;
 
     public CrystalManager(Common common)
@@ -54,8 +51,7 @@ public final class CrystalManager implements IPhysicsObject
         this.crystals = new FastArray<Crystal>();
         this.spikes = new FastArray<Spike>();
 
-        this.onCrystalCollision = new Event<TargetCollisionArgs>();
-        this.onSpikeCollision = new Event<TargetCollisionArgs>();
+        this.onTargetCollision = new Event<TargetCollisionArgs>();
         this.disappearTimerReachedZeroDelayedHandler = new DisappearTimerReachedZeroDelayedHandler();
 
         initializeTargets();
@@ -113,8 +109,7 @@ public final class CrystalManager implements IPhysicsObject
         for (BasePattern pattern : patterns)
         {
             pattern.onDissapearTimerReachedZero.subscribe(disappearTimerReachedZeroDelayedHandler);
-            pattern.onCrystalCollision.subscribe(new CrystalCollisionHandler());
-            pattern.onSpikeCollision.subscribe(new SpikeCollisionHandler());
+            pattern.onTargetCollision.subscribe(new TargetCollisionHandler());
         }
     }
 
@@ -123,6 +118,16 @@ public final class CrystalManager implements IPhysicsObject
         for(BasePattern pattern : patterns)
         {
             pattern.reset();
+        }
+
+        for (Crystal crystal : crystals)
+        {
+            crystal.reset();
+        }
+
+        for (Spike spike : spikes)
+        {
+            spike.reset();
         }
 
         onSpecial = false;
@@ -231,21 +236,12 @@ public final class CrystalManager implements IPhysicsObject
         }
     }
 
-    class CrystalCollisionHandler implements IEventHandler<TargetCollisionArgs>
+    class TargetCollisionHandler implements IEventHandler<TargetCollisionArgs>
     {
         @Override
         public void onAction(TargetCollisionArgs args)
         {
-            onCrystalCollision.invoke(args);
-        }
-    }
-
-    class SpikeCollisionHandler implements IEventHandler<TargetCollisionArgs>
-    {
-        @Override
-        public void onAction(TargetCollisionArgs args)
-        {
-            onSpikeCollision.invoke(args);
+            onTargetCollision.invoke(args);
         }
     }
 }

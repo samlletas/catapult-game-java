@@ -69,11 +69,11 @@ public final class ModeSelectScreen extends OverlayedScreen
 
         header.setShowDelay(0.100f);
         timeAttackButton.setShowDelay(0.200f);
-        crystalFrenzyButton.setShowDelay(0.200f);
+        crystalFrenzyButton.setShowDelay(0.275f);
         backButton.setShowDelay(0.300f);
 
         header.setHideDelay(0f);
-        timeAttackButton.setHideDelay(0.100f);
+        timeAttackButton.setHideDelay(0.050f);
         crystalFrenzyButton.setHideDelay(0.100f);
         backButton.setHideDelay(0.100f);
 
@@ -82,7 +82,7 @@ public final class ModeSelectScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-
+                screenManager.transitionTo(Global.ScreenNames.TIME_ATTACK_SCREEN);
             }
         });
 
@@ -91,7 +91,7 @@ public final class ModeSelectScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-
+                screenManager.transitionTo(Global.ScreenNames.CRYSTAL_FRENZY_SCREEN);
             }
         });
 

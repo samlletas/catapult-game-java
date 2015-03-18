@@ -20,9 +20,6 @@ import com.mygdx.game.helpers.SoundPlayer;
 
 public abstract class BasePattern implements IPhysicsObject
 {
-    private static final int CRYSTAL_NORMAL_SCORE = 1;
-    private static final int CRYSTAL_SPECIAL_SCORE = 3;
-    private static final float MAX_PATTERN_SPECIAL = 50f;
     private static final float TIMER_DISAPPEAR_DURATION = 900f;
     private static final RandomXS128 random = new RandomXS128();
 
@@ -43,13 +40,9 @@ public abstract class BasePattern implements IPhysicsObject
     protected boolean isActive;
     protected Timer disappearTimer;
 
-    private int scorePerCrystal;
-    private float specialPerCrystal;
-
     // Eventos
     public Event<EventsArgs> onDissapearTimerReachedZero;
-    public Event<TargetCollisionArgs> onCrystalCollision;
-    public Event<TargetCollisionArgs> onSpikeCollision;
+    public Event<TargetCollisionArgs> onTargetCollision;
     public TargetCollisionArgs targetCollisionArgs;
 
     public BasePattern(Common common, FastArray<Crystal> crystals, FastArray<Spike> spikes,
@@ -86,8 +79,7 @@ public abstract class BasePattern implements IPhysicsObject
             }
         });
 
-        this.onCrystalCollision = new Event<TargetCollisionArgs>();
-        this.onSpikeCollision = new Event<TargetCollisionArgs>();
+        this.onTargetCollision = new Event<TargetCollisionArgs>();
         this.targetCollisionArgs = new TargetCollisionArgs();
     }
 
@@ -146,9 +138,6 @@ public abstract class BasePattern implements IPhysicsObject
         int startY = minStartY + random.nextInt(diffY);
 
         initializePositions(startX, startY);
-        setCrystalsScore(crystalType);
-
-        specialPerCrystal = MAX_PATTERN_SPECIAL / crystalCount;
         isActive = true;
     }
 
@@ -160,20 +149,6 @@ public abstract class BasePattern implements IPhysicsObject
         {
             Crystal crystal = localCrystals.get(i);
             crystal.setType(type);
-        }
-
-        setCrystalsScore(type);
-    }
-
-    private void setCrystalsScore(CrystalTypes type)
-    {
-        if (type == CrystalTypes.Normal)
-        {
-            scorePerCrystal = CRYSTAL_NORMAL_SCORE;
-        }
-        else
-        {
-            scorePerCrystal = CRYSTAL_SPECIAL_SCORE;
         }
     }
 
@@ -263,9 +238,7 @@ public abstract class BasePattern implements IPhysicsObject
 
                     targetCollisionArgs.sender = this;
                     targetCollisionArgs.target = crystal;
-                    targetCollisionArgs.score = scorePerCrystal;
-                    targetCollisionArgs.special = specialPerCrystal;
-                    onCrystalCollision.invoke(targetCollisionArgs);
+                    onTargetCollision.invoke(targetCollisionArgs);
                 }
             }
         }
@@ -291,9 +264,7 @@ public abstract class BasePattern implements IPhysicsObject
 
                     targetCollisionArgs.sender = this;
                     targetCollisionArgs.target = spike;
-                    targetCollisionArgs.score = 0;
-                    targetCollisionArgs.special = 0f;
-                    onSpikeCollision.invoke(targetCollisionArgs);
+                    onTargetCollision.invoke(targetCollisionArgs);
                 }
             }
         }

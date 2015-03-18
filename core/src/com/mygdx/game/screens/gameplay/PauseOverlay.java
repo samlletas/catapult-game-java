@@ -28,7 +28,7 @@ public class PauseOverlay
 {
     private static final String HEADER_TEXT = "PAUSED";
 
-    private GameplayScreen gameplayScreen;
+    private BaseGameplayScreen gameplayScreen;
     private Overlay overlay;
     private Header header;
 
@@ -48,12 +48,9 @@ public class PauseOverlay
     private RunnableAction runnableAction;
     private Runnable unpausedRunnable;
 
-    public PauseOverlay(GameplayScreen gameplayScreen, Common common,
-                        GraphicsSettings graphicsSettings, Viewport viewport2D,
-                        Batch batch)
+    public PauseOverlay(Common common, GraphicsSettings graphicsSettings,
+                        Viewport viewport2D, Batch batch)
     {
-        this.gameplayScreen = gameplayScreen;
-
         overlay = new Overlay(graphicsSettings, Global.Colors.OVERLAY, 0f);
         header = new Header(common, graphicsSettings, HEADER_TEXT);
         homeButton = new GameButton(common, Global.ButtonStyles.HOME_SMALL);
@@ -167,6 +164,11 @@ public class PauseOverlay
     public void setUnpausedRunnable(Runnable unpausedRunnable)
     {
         this.unpausedRunnable = unpausedRunnable;
+    }
+
+    public void setGameplayScreen(BaseGameplayScreen gameplayScreen)
+    {
+        this.gameplayScreen = gameplayScreen;
     }
 
     public void reset()

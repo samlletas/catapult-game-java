@@ -1,8 +1,7 @@
-package com.mygdx.game.screens.gameplay;
+package com.mygdx.game.screens.gameplay.modes.crystalfrenzy;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -10,26 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.engine.GameTime;
 import com.engine.actors.ActorOrigin;
-import com.engine.actors.DistanceFieldFontActor;
 import com.engine.actors.TextureRegionActor;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
-import com.engine.text.IntegerSequence;
 import com.engine.utilities.ActorUtilities;
 import com.engine.utilities.ColorUtilities;
 import com.engine.utilities.FastArray;
 import com.mygdx.game.Common;
-import com.mygdx.game.gamelogic.GameplayData;
+import com.mygdx.game.screens.gameplay.BaseGameHUD;
 
-public class GameHUD
+public class CrystalFrenzyHUD extends BaseGameHUD
 {
-    public final static float SCORE_TEXT_X = 74f;
-    public final static float SCORE_TEXT_Y = 35f;
-    private final static float SCORE_TEXT_SCALE = 0.9f;
-
-    private final static float SCORE_CRYSTAL_X = 50f;
-    private final static float SCORE_CRYSTAL_Y = 38f;
-
     private final static float SPECIAL_BAR_X = 200f;
     private final static float SPECIAL_BAR_Y = 30f;
     private final static float SPECIAL_BAR_WIDTH = 340f;
@@ -43,14 +33,11 @@ public class GameHUD
     private final static float CHANCES_INACTIVE_START_Y = 22f;
     private final static float CHANCES_INACTIVE_OFFSET_X = 55f;
 
-    private final static int   MAX_LIVES = 3;
-
     private final static Color SPECIAL_BAR_BACK_COLOR = ColorUtilities.createColor(0, 0, 0, 76);
     private final static Color SPECIAL_BAR_NORMAL_COLOR = ColorUtilities.createColor(0, 204, 255, 255);
     private final static Color SPECIAL_BAR_ACTIVE_COLOR = ColorUtilities.createColor(12, 231, 0, 255);
 
-    private Common common;
-    private GameplayData gameplayData;
+    private CrystalFrenzyData crystalFrenzyData;
     private Color specialBarColor;
     private int activeChances;
 
@@ -58,49 +45,30 @@ public class GameHUD
     private TextureAtlas.AtlasRegion specialBarRegion;
     private TextureAtlas.AtlasRegion specialBarCornerRegion;
     private TextureRegion chanceInactiveRegion;
-
-    private TextureRegionActor crystalActor;
-    private IntegerSequence integerSequence;
-    private DistanceFieldFontActor scoreActor;
     private FastArray<TextureRegionActor> chanceActors;
 
-    public GameHUD(Common common, GameplayData gameplayData)
+    public CrystalFrenzyHUD(Common common, CrystalFrenzyData crystalFrenzyData)
     {
-        this.common = common;
-        this.gameplayData = gameplayData;
+        super(common, crystalFrenzyData);
+        this.crystalFrenzyData = crystalFrenzyData;
 
-        initializeScoreActors();
-        initializeSpecialBar();
-        initializeChances();
+        initializeSpecialBar(common);
+        initializeChances(common);
     }
 
-    private void initializeScoreActors()
-    {
-        crystalActor = new TextureRegionActor(common.assets.atlasRegions.hudCrystal.getInstance());
-        crystalActor.setActorOrigin(ActorOrigin.Center);
-        crystalActor.setPosition(SCORE_CRYSTAL_X, SCORE_CRYSTAL_Y);
-
-        integerSequence = new IntegerSequence();
-        scoreActor = new DistanceFieldFontActor(integerSequence);
-        scoreActor.setFontBaseScale(SCORE_TEXT_SCALE);
-        scoreActor.setActorOrigin(ActorOrigin.CenterLeft);
-        scoreActor.setPosition(SCORE_TEXT_X, SCORE_TEXT_Y);
-        ActorUtilities.growActionsArray(scoreActor, 1);
-    }
-
-    private void initializeSpecialBar()
+    private void initializeSpecialBar(Common common)
     {
         pixelRegion = common.assets.atlasRegions.pixel.getInstance();
         specialBarRegion = common.assets.atlasRegions.hudBar.getInstance();
         specialBarCornerRegion = common.assets.atlasRegions.hudBarCorner.getInstance();
     }
 
-    private void initializeChances()
+    private void initializeChances(Common common)
     {
-        chanceActors = new FastArray<TextureRegionActor>(MAX_LIVES);
+        chanceActors = new FastArray<TextureRegionActor>(CrystalFrenzyData.MAX_LIVES);
         TextureRegionActor actor;
 
-        for (int i = 0; i < MAX_LIVES; i++)
+        for (int i = 0; i < CrystalFrenzyData.MAX_LIVES; i++)
         {
             actor = new TextureRegionActor(common.assets.atlasRegions.hudChanceActive.getInstance());
             actor.setActorOrigin(ActorOrigin.Center);
@@ -111,7 +79,8 @@ public class GameHUD
         chanceInactiveRegion = common.assets.atlasRegions.hudChanceInactive.getInstance();
     }
 
-    public void reset()
+    @Override
+    protected void onReset()
     {
         specialBarColor = SPECIAL_BAR_NORMAL_COLOR;
         resetChances();
@@ -121,7 +90,7 @@ public class GameHUD
     {
         TextureRegionActor actor;
 
-        for (int i = 0; i < MAX_LIVES; i++)
+        for (int i = 0; i < CrystalFrenzyData.MAX_LIVES; i++)
         {
             actor = chanceActors.get(i);
 
@@ -133,7 +102,7 @@ public class GameHUD
             actor.clearActions();
         }
 
-        activeChances = GameplayData.MAX_LIVES;
+        activeChances = CrystalFrenzyData.MAX_LIVES;
         animateCurrentChance();
     }
 
@@ -190,45 +159,26 @@ public class GameHUD
         specialBarColor = SPECIAL_BAR_NORMAL_COLOR;
     }
 
-    public void bloomScore()
+    @Override
+    protected void onUpdate(GameTime gameTime)
     {
-        if (scoreActor.getActions().size == 0)
-        {
-            scoreActor.clearActions();
-            scoreActor.addAction(Actions.sequence(
-                    Actions.scaleTo(1.4f, 1.4f, 0.04f, Interpolation.sine),
-                    Actions.scaleTo(1.0f, 1.0f, 0.05f, Interpolation.sine)));
-        }
-    }
-
-    public void update(GameTime gameTime)
-    {
-        crystalActor.act(gameTime.delta);
-        scoreActor.act(gameTime.delta);
-
         for (TextureRegionActor chance : chanceActors)
         {
             chance.act(gameTime.delta);
         }
     }
 
-    public void drawTextures(Batch batch)
+    @Override
+    protected void onDrawTextures(Batch batch)
     {
-        crystalActor.draw(batch, 1f);
         drawChances(batch);
         drawSpecialBar(batch);
-    }
-
-    public void drawScore(DistanceFieldRenderer renderer, DistanceFieldFont font)
-    {
-        integerSequence.set(gameplayData.getScore());
-        scoreActor.draw(renderer, font);
     }
 
     private void drawChances(Batch batch)
     {
         // Chances inactivas
-        for (int i = 0; i < MAX_LIVES; i++)
+        for (int i = 0; i < CrystalFrenzyData.MAX_LIVES; i++)
         {
             batch.draw(chanceInactiveRegion,
                     CHANCES_INACTIVE_START_X + CHANCES_INACTIVE_OFFSET_X * i,
@@ -248,7 +198,7 @@ public class GameHUD
         batch.draw(pixelRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y, SPECIAL_BAR_WIDTH, SPECIAL_BAR_HEIGHT);
 
         ColorUtilities.setColor(batch, specialBarColor);
-        float special = gameplayData.getSpecial();
+        float special = crystalFrenzyData.getSpecial();
         float barWidth = special * SPECIAL_BAR_WIDTH / 100f;
 
         batch.draw(specialBarRegion, SPECIAL_BAR_X, SPECIAL_BAR_Y - 9f,
@@ -264,5 +214,11 @@ public class GameHUD
         }
 
         ColorUtilities.resetColor(batch);
+    }
+
+    @Override
+    protected void onDrawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    {
+
     }
 }
