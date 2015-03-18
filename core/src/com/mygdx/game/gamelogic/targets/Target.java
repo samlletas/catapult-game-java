@@ -18,6 +18,8 @@ import com.engine.collision2d.IPhysicsObject;
 import com.engine.graphics.graphics2D.animation.basic.BasicAnimation;
 import com.engine.graphics.graphics2D.animation.basic.BasicFrame;
 import com.engine.utilities.ColorUtilities;
+import com.engine.utilities.FastArray;
+import com.engine.utilities.ParticleUtilities;
 
 public class Target implements IPhysicsObject
 {
@@ -30,7 +32,7 @@ public class Target implements IPhysicsObject
     protected final GamePolygon polygon;
     protected final TextureAtlas.AtlasRegion glowRegion;
     protected final float initialModelScale;
-    private Array<ParticleEffect> particleEffects;
+    private FastArray<ParticleEffect> particleEffects;
 
     private float scale;
     protected float rotationX;
@@ -54,7 +56,7 @@ public class Target implements IPhysicsObject
         this.polygon = polygon;
         this.glowRegion = glowRegion;
         this.initialModelScale = initialModelScale;
-        this.particleEffects = new Array<ParticleEffect>(2);
+        this.particleEffects = new FastArray<ParticleEffect>(2);
 
         setPosition(0f, 0f);
         setScale(1f);
@@ -79,6 +81,14 @@ public class Target implements IPhysicsObject
                 new BasicFrame(200f, 0f, 1.0f, 0f, 0f, 0f, 0f, Interpolation.sine),
                 new BasicFrame(200f, 0f, 1.2f, 0f, 0f, 0f, 0f, Interpolation.sine),
                 new BasicFrame(0f, 0f, 0.6f, 0f, 0f, 0f, 0f, Interpolation.sine));
+    }
+
+    public void reset()
+    {
+        for (ParticleEffect effect : particleEffects)
+        {
+            ParticleUtilities.initialize(effect);
+        }
     }
 
     public void start()
@@ -184,11 +194,9 @@ public class Target implements IPhysicsObject
 
     private void updateParticles(GameTime gameTime)
     {
-        Array<ParticleEffect> localParticles = particleEffects;
-
-        for (int i = 0, n = localParticles.size; i < n; i++)
+        for (ParticleEffect effect : particleEffects)
         {
-            localParticles.get(i).update(gameTime.delta);
+            effect.update(gameTime.delta);
         }
     }
 
@@ -233,13 +241,8 @@ public class Target implements IPhysicsObject
 
     public void drawEffects(Batch batch)
     {
-        Array<ParticleEffect> localParticles = particleEffects;
-        ParticleEffect effect;
-
-        for (int i = 0, n = localParticles.size; i < n; i++)
+        for (ParticleEffect effect : particleEffects)
         {
-            effect = localParticles.get(i);
-
             if (!effect.isComplete())
             {
                 effect.draw(batch);

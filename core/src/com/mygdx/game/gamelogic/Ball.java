@@ -62,6 +62,7 @@ public final class Ball implements IPhysicsObject
     public void reset()
     {
         stopMovement();
+        ParticleUtilities.initialize(ballExplosion);
     }
 
     public void setPosition(float x, float y)
