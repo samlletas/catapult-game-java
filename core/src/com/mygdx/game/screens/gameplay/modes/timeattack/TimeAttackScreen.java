@@ -3,6 +3,8 @@ package com.mygdx.game.screens.gameplay.modes.timeattack;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameTime;
+import com.engine.events.EventsArgs;
+import com.engine.events.IEventHandler;
 import com.engine.graphics.GraphicsSettings;
 import com.mygdx.game.Common;
 import com.mygdx.game.Global;
@@ -55,12 +57,27 @@ public final class TimeAttackScreen extends BaseGameplayScreen
                 hud.bloomScore();
             }
         };
+
+        data.timer.timerReachedZero.subscribe(new IEventHandler<EventsArgs>()
+        {
+            @Override
+            public void onAction(EventsArgs args)
+            {
+
+            }
+        });
     }
 
     @Override
     protected void onReset()
     {
 
+    }
+
+    @Override
+    protected void onStart()
+    {
+        data.timer.resume();
     }
 
     @Override
