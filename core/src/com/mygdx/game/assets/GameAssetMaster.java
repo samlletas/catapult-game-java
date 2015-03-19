@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.engine.assets.BaseAssetMaster;
 import com.engine.assets.IAsset;
 import com.engine.assets.loaders.BitmapFontAtlasLoader;
+import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 
 public class GameAssetMaster extends BaseAssetMaster
 {
@@ -83,9 +84,10 @@ public class GameAssetMaster extends BaseAssetMaster
     @Override
     protected void onSyncLoadCompleted(AssetManager manager)
     {
-        // Se utilizan posiciones flotantes para permitir un movimiento más
-        // fluido del texto
-        assets.distanceFieldFonts.furore.getInstance().setUseIntegerPositions(false);
+        // Preparación de texto
+        DistanceFieldFont furore = assets.distanceFieldFonts.furore.getInstance();
+        furore.setUseIntegerPositions(false);
+        furore.setFixedWidthGlyphs("1234567890");
     }
 
     /*************************************************************************
