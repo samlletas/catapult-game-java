@@ -119,7 +119,7 @@ public class SettingsScreen extends OverlayedScreen
             protected void onBackDown()
             {
                 StageUtilities.disableTouch(stage);
-                screenManager.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
+                screenManager.transitionTo(backScreen);
             }
         });
         inputMultiplexer.addProcessor(stage);
