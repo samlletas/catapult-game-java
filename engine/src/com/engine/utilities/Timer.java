@@ -11,6 +11,7 @@ public final class Timer
     private float duration;
     private float counter;
     private boolean isRunning;
+    private boolean isPaused;
 
     public Event<EventsArgs> timerStopped = new Event<EventsArgs>();
     public Event<EventsArgs> timerReachedZero = new Event<EventsArgs>();
@@ -19,11 +20,34 @@ public final class Timer
 
     /**
      *
+     * @param duration Duración en milisegundos
+     */
+    public Timer(float duration)
+    {
+        this.enabled = true;
+
+        this.duration = duration;
+        this.counter = 0f;
+        this.isRunning = false;
+        this.isPaused = false;
+    }
+
+    /**
+     *
      * @return Valor booleano que indica si se encuentra activo el contador
      */
     public boolean isRunning()
     {
         return isRunning;
+    }
+
+    /**
+     *
+     * @return Valor booleano que indica si se encuentra en pausa el contador
+     */
+    public boolean isPaused()
+    {
+        return isPaused;
     }
 
     /**
@@ -62,15 +86,36 @@ public final class Timer
 
     /**
      *
-     * @param duration Duración en milisegundos
+     * @return El tiempo restante en milisegundos
      */
-    public Timer(float duration)
+    public float remainingTime()
     {
-        this.enabled = true;
+        if (!isRunning())
+        {
+            return 0f;
+        }
+        else
+        {
+            return duration - counter;
+        }
+    }
 
-        this.duration = duration;
-        this.counter = 0f;
-        this.isRunning = false;
+    /**
+     *
+     * @return El tiempo restante en segundos
+     */
+    public int remainingSeconds()
+    {
+        return (int)(remainingTime() / 1000f);
+    }
+
+    /**
+     *
+     * @return El tiempo restante en centisegundos
+     */
+    public int remainingCentiseconds()
+    {
+        return (int)(remainingTime() / 10f);
     }
 
     /**
@@ -87,12 +132,9 @@ public final class Timer
      */
     public void start(float duration)
     {
-        if (!isRunning && enabled)
+        if (!isRunning)
         {
-            this.duration = duration;
-
-            counter = 0f;
-            isRunning = true;
+            restart(duration);
         }
     }
 
@@ -112,8 +154,11 @@ public final class Timer
     {
         if (enabled)
         {
+            this.duration = duration;
+
             counter = 0f;
             isRunning = true;
+            isPaused = false;
         }
     }
 
@@ -126,15 +171,32 @@ public final class Timer
         {
             counter = 0f;
             isRunning = false;
+            isPaused = false;
 
             timerStoppedArgs.sender = this;
             timerStopped.invoke(timerStoppedArgs);
         }
     }
 
-    public void update(GameTime gameTime)
+    public void pause()
     {
         if (isRunning && enabled)
+        {
+            isPaused = true;
+        }
+    }
+
+    public void resume()
+    {
+        if (isRunning && isPaused && enabled)
+        {
+            isPaused = false;
+        }
+    }
+
+    public void update(GameTime gameTime)
+    {
+        if (isRunning && !isPaused && enabled)
         {
             counter += 1000f * gameTime.delta;
 
