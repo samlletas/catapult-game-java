@@ -1,5 +1,7 @@
 package com.engine.text;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 public abstract class MutableSequence implements CharSequence
 {
     protected final int maxCapacity;
@@ -49,6 +51,64 @@ public abstract class MutableSequence implements CharSequence
         }
 
         throw new StringIndexOutOfBoundsException();
+    }
+
+    /**
+     * Recorre los caracteres de la secuencia e inserta al principio el
+     * caracter especificado
+     *
+     * @param count veces que se insertará el caracter
+     * @param character caracter
+     */
+    public void offset(int count, char character)
+    {
+        offset(0, count, character);
+    }
+
+    /**
+     * Recorre los caracteres de la secuencia e inserta el caracter especificado
+     *
+     * @param start posición inicial a partir de donde se comenzará a insertar
+     *              el caracter
+     * @param count veces que se insertará el caracter
+     * @param character caracter
+     */
+    public void offset(int start, int count, char character)
+    {
+        if (count > 0)
+        {
+            int end = start + count - 1;
+
+            if (0 <= start && start < length && end < maxCapacity)
+            {
+                // Se recorren primero todos los caracteres n espacios donde
+                // n es igual a count
+                for (int i = length - 1; i >= start; i--)
+                {
+                    if (i + count < maxCapacity)
+                    {
+                        chars[i + count] = chars[i];
+                    }
+                }
+
+                // Se inserta el caracter especificado n veces donde n es
+                // igual a count
+                for (int i = start; i <= end; i++)
+                {
+                    chars[i] = character;
+                }
+
+                length = Math.min(length + count, maxCapacity);
+            }
+            else
+            {
+                throw new StringIndexOutOfBoundsException();
+            }
+        }
+        else
+        {
+            throw new GdxRuntimeException("count must be a positive non zero value");
+        }
     }
 
     protected void setCharAt(char character, int index)
