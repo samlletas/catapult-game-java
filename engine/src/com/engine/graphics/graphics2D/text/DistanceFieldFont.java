@@ -94,4 +94,9 @@ public final class DistanceFieldFont
     {
         font.setUseIntegerPositions(integer);
     }
+
+    public void setFixedWidthGlyphs(CharSequence glyphs)
+    {
+        font.setFixedWidthGlyphs(glyphs);
+    }
 }
