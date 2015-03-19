@@ -233,6 +233,7 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
     {
         enableInput();
         gameInstances.crystalManager.start();
+        onStart();
     }
 
     private void pauseGame()
@@ -441,6 +442,7 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
     protected abstract BaseGameHUD createHUD();
     protected abstract void onInitialize();
     protected abstract void onReset();
+    protected abstract void onStart();
     protected abstract void onTargetCollision(TargetCollisionArgs args);
     protected abstract void onUpdate(GameTime gameTime);
     protected abstract void onDispose();
