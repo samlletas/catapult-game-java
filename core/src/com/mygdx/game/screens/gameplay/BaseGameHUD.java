@@ -2,8 +2,10 @@ package com.mygdx.game.screens.gameplay;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.engine.GameTime;
+import com.engine.actors.Actions;
 import com.engine.actors.ActorOrigin;
 import com.engine.actors.DistanceFieldFontActor;
 import com.engine.actors.TextureRegionActor;
@@ -29,10 +31,18 @@ public abstract class BaseGameHUD
     private IntegerSequence scoreSequence;
     private DistanceFieldFontActor scoreActor;
 
+    private SequenceAction sequence;
+    private ScaleToAction scaleToGrow;
+    private ScaleToAction scaleToShrink;
+
     public BaseGameHUD(Common common, BaseGameplayData gameplayData)
     {
         this.common = common;
         this.gameplayData = gameplayData;
+
+        this.sequence = new SequenceAction();
+        this.scaleToGrow = new ScaleToAction();
+        this.scaleToShrink = new ScaleToAction();
 
         initializeScoreActors();
     }
@@ -66,9 +76,9 @@ public abstract class BaseGameHUD
         if (scoreActor.getActions().size == 0)
         {
             scoreActor.clearActions();
-            scoreActor.addAction(Actions.sequence(
-                    Actions.scaleTo(1.4f, 1.4f, 0.045f, Interpolation.sine),
-                    Actions.scaleTo(1.0f, 1.0f, 0.055f, Interpolation.sine)));
+            scoreActor.addAction(Actions.sequence(sequence,
+                    Actions.scaleTo(scaleToGrow, 1.4f, 1.4f, 0.045f, Interpolation.sine),
+                    Actions.scaleTo(scaleToShrink, 1.0f, 1.0f, 0.055f, Interpolation.sine)));
         }
     }
 
