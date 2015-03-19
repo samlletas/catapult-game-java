@@ -114,6 +114,12 @@ public class CrystalFrenzyScreen extends BaseGameplayScreen
     }
 
     @Override
+    protected void onStart()
+    {
+
+    }
+
+    @Override
     protected void onTargetCollision(TargetCollisionArgs args)
     {
         if (args.target instanceof Crystal)
