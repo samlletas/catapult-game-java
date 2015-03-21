@@ -9,13 +9,13 @@ import com.mygdx.game.screens.gameplay.BaseGameplayData;
 
 public class TimeAttackData extends BaseGameplayData
 {
-    public final static float START_TIME_SECONDS = 59.99f;
+    public final static float START_TIME_SECONDS = 14.99f;
 
     public Timer timer;
 
     public TimeAttackData()
     {
-        timer = new Timer((START_TIME_SECONDS * 1000f));
+        timer = new Timer(START_TIME_SECONDS * 1000f);
     }
 
     @Override
