@@ -82,6 +82,7 @@ public final class GameAssets
         public AtlasRegionAsset hudChanceInactive;
         public AtlasRegionAsset uiHeaderBackground;
         public AtlasRegionAsset uiHeaderLine;
+        public AtlasRegionAsset uiMessageLine;
 
         private AtlasRegions()
         {
@@ -110,6 +111,7 @@ public final class GameAssets
             hudChanceInactive = new AtlasRegionAsset("hud-chance-inactive", atlas);
             uiHeaderBackground = new AtlasRegionAsset("ui-header-background", atlas);
             uiHeaderLine = new AtlasRegionAsset("ui-header-line", atlas);
+            uiMessageLine = new AtlasRegionAsset("ui-message-line", atlas);
         }
     }
 

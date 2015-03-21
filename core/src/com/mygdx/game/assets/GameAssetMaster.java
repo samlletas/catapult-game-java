@@ -57,6 +57,7 @@ public class GameAssetMaster extends BaseAssetMaster
         queue.add(assets.atlasRegions.hudChanceInactive);
         queue.add(assets.atlasRegions.uiHeaderBackground);
         queue.add(assets.atlasRegions.uiHeaderLine);
+        queue.add(assets.atlasRegions.uiMessageLine);
 
         queue.add(assets.skins.ui);
 
