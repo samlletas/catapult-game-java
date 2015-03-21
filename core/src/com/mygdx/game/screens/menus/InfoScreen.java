@@ -73,7 +73,7 @@ public class InfoScreen extends OverlayedScreen
         specialThanksTextBlock.setOriginalPosition(450f, 165f);
         backButton.setOriginalPosition(770f, 400f);
 
-        header.setShowDelay(0.100f);
+        header.setShowDelay(0.200f);
         gameByTextBlock.setShowDelay(0.100f);
         musicByTextBlock.setShowDelay(0.200f);
         specialThanksTextBlock.setShowDelay(0.150f);

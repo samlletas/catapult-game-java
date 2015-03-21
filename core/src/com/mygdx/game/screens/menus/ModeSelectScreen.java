@@ -67,7 +67,7 @@ public final class ModeSelectScreen extends OverlayedScreen
         crystalFrenzyButton.setOriginalPosition(630f, 235f);
         backButton.setOriginalPosition(770f, 400f);
 
-        header.setShowDelay(0.100f);
+        header.setShowDelay(0.200f);
         timeAttackButton.setShowDelay(0.200f);
         crystalFrenzyButton.setShowDelay(0.275f);
         backButton.setShowDelay(0.300f);

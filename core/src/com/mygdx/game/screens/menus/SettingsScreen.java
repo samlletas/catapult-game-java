@@ -71,7 +71,7 @@ public class SettingsScreen extends OverlayedScreen
         soundSlider.setOriginalPosition(x, 270f);
         backButton.setOriginalPosition(770f, 400f);
 
-        header.setShowDelay(0.100f);
+        header.setShowDelay(0.200f);
         musicSlider.setShowDelay(0.150f);
         soundSlider.setShowDelay(0.250f);
         backButton.setShowDelay(0.300f);
