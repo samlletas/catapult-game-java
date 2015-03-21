@@ -26,6 +26,7 @@ public final class GameInstances
 
     public StartCounter startCounter;
     public GameLabelContainer gameLabelContainer;
+    public GameMessage gameOverMessage;
     public PauseOverlay pauseOverlay;
 
     // Ui para el botón de pausa
@@ -43,6 +44,7 @@ public final class GameInstances
 
         startCounter = new StartCounter(graphicsSettings);
         gameLabelContainer = new GameLabelContainer(20);
+        gameOverMessage = new GameMessage(common, graphicsSettings);
         pauseOverlay = new PauseOverlay(common, graphicsSettings, viewport2D, common.spriteBatch);
 
         pauseButton = new GameButton(common, Global.ButtonStyles.PAUSE);
