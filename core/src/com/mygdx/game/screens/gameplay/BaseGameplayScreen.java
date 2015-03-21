@@ -55,6 +55,9 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
 
     // Estado de la pantalla
     protected GameStates gameState;
+    private boolean gameOverFlag;
+
+    protected Runnable gotoScoreScreenRunnable;
 
     //endregion
 
@@ -171,6 +174,16 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
                 }
             }
         });
+
+        gotoScoreScreenRunnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                gameInstances.gameOverMessage.hide();
+                screenManager.transitionTo(Global.ScreenNames.MODE_SELECT_SCREEN);
+            }
+        };
     }
 
     //endregion
@@ -221,10 +234,12 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
         gameInstances.crystalManager.reset();
         gameInstances.catapult.reset();
         gameInstances.ball.reset();
+        gameInstances.ballPath.reset();
         gameInstances.pauseOverlay.reset();
 
         accumulator = 0f;
         gameState = GameStates.Starting;
+        gameOverFlag = false;
 
         onReset();
     }
@@ -243,10 +258,24 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
         gameInstances.pauseOverlay.show();
     }
 
-    public void resumeGame()
+    public final void resumeGame()
     {
         enableInput();
         gameState = GameStates.Playing;
+    }
+
+    protected final void setGameOverFlag()
+    {
+        gameOverFlag = true;
+    }
+
+    protected final void endGame()
+    {
+        disableInput();
+        gameInstances.pauseStage.unfocusAll();
+        gameInstances.gameOverMessage.show(gotoScoreScreenRunnable);
+        gameState = GameStates.GameOver;
+        gameOverFlag = false;
     }
 
     //endregion
@@ -258,6 +287,11 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
     {
         for (int i = 0; i < updates; i++)
         {
+            if (gameOverFlag)
+            {
+                endGame();
+            }
+
             gameInstances.pauseStage.act(gameTime.delta);
 
             if (gameState == GameStates.Paused)
@@ -272,39 +306,47 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
                 }
 
                 gameInstances.cameraShaker.update(gameTime);
-                common.background.update(gameTime);
-                common.grass.update(gameTime);
-                gameInstances.catapult.update(gameTime);
-                gameplayData.update(gameTime);
-                gameInstances.crystalManager.update(gameTime);
 
-                accumulator += gameTime.delta;
-
-                while (accumulator >= gameTime.delta)
+                if (gameState != GameStates.GameOver)
                 {
-                    gameInstances.ball.step(gameTime.elapsed, Global.TIME_STEP);
-                    gameInstances.ballPath.step(gameTime.elapsed, Global.TIME_STEP);
-                    gameInstances.crystalManager.step(gameTime.elapsed, Global.TIME_STEP);
+                    common.background.update(gameTime);
+                    common.grass.update(gameTime);
+                    gameInstances.catapult.update(gameTime);
+                    gameplayData.update(gameTime);
+                    gameInstances.crystalManager.update(gameTime);
 
-                    gameInstances.crystalManager.checkCollisions(gameInstances.ball);
-                    gameInstances.ball.checkCollisions(common.grass);
+                    accumulator += gameTime.delta;
 
-                    accumulator -= Global.TIME_STEP;
-                }
+                    while (accumulator >= gameTime.delta)
+                    {
+                        gameInstances.ball.step(gameTime.elapsed, Global.TIME_STEP);
+                        gameInstances.ballPath.step(gameTime.elapsed, Global.TIME_STEP);
+                        gameInstances.crystalManager.step(gameTime.elapsed, Global.TIME_STEP);
 
-                gameInstances.ball.update(gameTime);
-                gameInstances.ballPath.update(gameTime);
-                gameInstances.gameLabelContainer.update(gameTime);
-                gameHUD.update(gameTime);
+                        gameInstances.crystalManager.checkCollisions(gameInstances.ball);
+                        gameInstances.ball.checkCollisions(common.grass);
 
-                if (gameInstances.catapult.isPulling())
-                {
-                    StageUtilities.disableTouch(gameInstances.pauseStage);
+                        accumulator -= Global.TIME_STEP;
+                    }
+
+                    gameInstances.ball.update(gameTime);
+                    gameInstances.ballPath.update(gameTime);
+
+                    if (gameInstances.catapult.isPulling())
+                    {
+                        StageUtilities.disableTouch(gameInstances.pauseStage);
+                    }
+                    else
+                    {
+                        StageUtilities.enableTouch(gameInstances.pauseStage);
+                    }
                 }
                 else
                 {
-                    StageUtilities.enableTouch(gameInstances.pauseStage);
+                    gameInstances.gameOverMessage.update(gameTime);
                 }
+                gameInstances.gameLabelContainer.update(gameTime);
+                gameHUD.update(gameTime);
             }
 
             onUpdate(gameTime);
@@ -377,6 +419,12 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
         gameInstances.crystalManager.drawEffects(common.spriteBatch);
         common.spriteBatch.endParticleDraw();
         gameInstances.ballPath.draw(common.spriteBatch);
+
+        if (gameState == GameStates.GameOver)
+        {
+            gameInstances.gameOverMessage.drawTextures(common.spriteBatch);
+        }
+
         common.spriteBatch.end();
     }
 
@@ -386,10 +434,16 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
         distanceFieldRenderer.begin(distanceFieldFont);
         gameInstances.gameLabelContainer.drawText(distanceFieldRenderer, distanceFieldFont);
         gameHUD.drawText(distanceFieldRenderer, distanceFieldFont);
+
         if (gameState == GameStates.Starting)
         {
             gameInstances.startCounter.drawText(distanceFieldRenderer, distanceFieldFont);
         }
+        else if (gameState == GameStates.GameOver)
+        {
+            gameInstances.gameOverMessage.drawText(distanceFieldRenderer, distanceFieldFont);
+        }
+
         distanceFieldRenderer.end();
     }
 
