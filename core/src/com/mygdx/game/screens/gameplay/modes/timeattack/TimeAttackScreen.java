@@ -17,6 +17,7 @@ public final class TimeAttackScreen extends BaseGameplayScreen
 {
     private static final String LABEL_CRYSTAL_NORMAL = "+1";
     private static final String LABEL_SPIKE = "MISS!";
+    private static final String GAME_OVER_MESSAGE = "TIME'S UP";
 
     private TimeAttackData data;
     private TimeAttackHUD hud;
@@ -63,7 +64,7 @@ public final class TimeAttackScreen extends BaseGameplayScreen
             @Override
             public void onAction(EventsArgs args)
             {
-
+                setGameOverFlag();
             }
         });
     }
@@ -71,7 +72,7 @@ public final class TimeAttackScreen extends BaseGameplayScreen
     @Override
     protected void onReset()
     {
-
+        gameInstances.gameOverMessage.setText(GAME_OVER_MESSAGE);
     }
 
     @Override
