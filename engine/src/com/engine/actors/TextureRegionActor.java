@@ -73,7 +73,9 @@ public class TextureRegionActor extends CustomActor
     public void draw(Batch batch, float parentAlpha)
     {
         Color originalColor = batch.getColor();
-        float alpha = originalColor.a * parentAlpha * getColor().a;
+        Color actorColor = getColor();
+
+        float alpha = originalColor.a * parentAlpha * actorColor.a;
         float drawX = getX();
         float drawY = getY();
         float width = getWidth();
@@ -122,7 +124,7 @@ public class TextureRegionActor extends CustomActor
         drawX -= originX;
         drawY -= originY;
 
-        ColorUtilities.setAlpha(batch, alpha);
+        ColorUtilities.setColor(batch, actorColor.r, actorColor.g, actorColor.b, alpha);
         batch.draw(region, drawX, drawY, originX, originY, width, height,
                 getScaleX(), getScaleY(), getRotation());
         ColorUtilities.setColor(batch, originalColor);
