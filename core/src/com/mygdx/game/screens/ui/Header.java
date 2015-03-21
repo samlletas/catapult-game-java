@@ -20,12 +20,12 @@ import com.mygdx.game.Common;
 public final class Header implements ICustomWidget
 {
     public static final float FONT_SCALE = 1f;
-    private static final float SHOW_HIDE_DURATION = 0.500f;
+    private static final float SHOW_HIDE_DURATION = 0.400f;
     private static final float GRADIENT_SCALE = 2f;
 
     private static final float LINE_OFFSET_X = 80f;
     private static final float LINE_OFFSET_Y = 23f;
-    private static final float LINE_HIDDEN_OFFSET_X = 1000f;
+    private static final float LINE_HIDDEN_OFFSET_X = 700f;
     private static final float LINE_HIDDEN_OFFSET_Y = 0f;
 
     private static final float TEXT_OFFSET_X = 0f;
@@ -241,7 +241,7 @@ public final class Header implements ICustomWidget
         {
             return Actions.sequence(sequence,
                     Actions.delay(this.delay, delay),
-                    Actions.fadeOut(fade, duration, Interpolation.sineIn));
+                    Actions.fadeOut(fade, duration, Interpolation.pow2Out));
         }
     }
 
@@ -277,7 +277,7 @@ public final class Header implements ICustomWidget
                     Actions.delay(this.delay, delay),
                     Actions.parallel(parallel,
                             Actions.fadeOut(fade, duration, Interpolation.sineIn),
-                            Actions.scaleTo(scaleTo, 0.1f, 0.1f, duration, Interpolation.swingIn)));
+                            Actions.scaleTo(scaleTo, 0.05f, 0.05f, duration, Interpolation.swingIn)));
         }
     }
 
