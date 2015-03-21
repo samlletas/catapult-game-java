@@ -123,6 +123,7 @@ public final class Catapult
     {
         player.play(ANIMATION_DEFAULT);
         pullAnimationInterpolator.factor = 0f;
+        pulling = false;
     }
 
     private void launch()
