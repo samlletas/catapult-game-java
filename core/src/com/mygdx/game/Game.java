@@ -18,6 +18,7 @@ import com.engine.GameTime;
 import com.mygdx.game.assets.GameAssetMaster;
 import com.mygdx.game.assets.GameAssets;
 import com.mygdx.game.screens.gameplay.GameInstances;
+import com.mygdx.game.screens.gameplay.GameOverScreen;
 import com.mygdx.game.screens.gameplay.modes.crystalfrenzy.CrystalFrenzyScreen;
 import com.mygdx.game.screens.gameplay.modes.timeattack.TimeAttackScreen;
 import com.mygdx.game.screens.menus.InfoScreen;
@@ -115,6 +116,8 @@ public final class Game extends GameAdapter
                 viewport3D, spriteBatch, common, gameInstances));
         screenManager.addScreen(new CrystalFrenzyScreen(graphicsSettings, viewport2D,
                 viewport3D, spriteBatch, common, gameInstances));
+        screenManager.addScreen(new GameOverScreen(graphicsSettings, viewport2D,
+                viewport3D, spriteBatch, common));
 
         screenManager.initialize();
 
