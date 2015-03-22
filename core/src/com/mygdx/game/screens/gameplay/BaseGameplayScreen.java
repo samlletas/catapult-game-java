@@ -181,7 +181,8 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
             public void run()
             {
                 gameInstances.gameOverMessage.hide();
-                screenManager.transitionTo(Global.ScreenNames.MODE_SELECT_SCREEN);
+                Screen gameOverScreen = screenManager.getScreen(Global.ScreenNames.GAME_OVER);
+                screenManager.transitionTo(gameOverScreen);
             }
         };
     }
