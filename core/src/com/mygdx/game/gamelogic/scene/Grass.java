@@ -9,14 +9,12 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.engine.GameTime;
 import com.engine.collision2d.GamePolygon;
-import com.engine.events.EventsArgs;
-import com.engine.events.IEventHandler;
 import com.engine.graphics.GraphicsSettings;
 import com.engine.graphics.graphics2D.animation.skeletal.AnimationPlayer;
 import com.engine.utilities.ColorUtilities;
-import com.engine.utilities.Timer;
 import com.mygdx.game.assets.GameAssets;
 
 public final class Grass
@@ -62,6 +60,8 @@ public final class Grass
         initializeFlowers(assets);
         initializeGrassFlowers(assets);
         initializeFireflies(assets);
+
+        reset();
     }
 
     private void initializeGround()
@@ -276,10 +276,20 @@ public final class Grass
 
     private void initializeFireflies(GameAssets assets)
     {
-        fireflies.add(new Firefly(assets, 556f, 412f, 50f, 70f, 500f));
-        fireflies.add(new Firefly(assets, 492f, 404f, 120f, 50f, 2500f));
-        fireflies.add(new Firefly(assets, 521f, 415f, 80f, 60f, 4000f));
-        fireflies.add(new Firefly(assets, 447f, 398f, 128f, 40f, 5000f));
+        fireflies.add(new Firefly(assets, 556f, 412f, 50f, 70f, 500f, 1000f));
+        fireflies.add(new Firefly(assets, 492f, 404f, 120f, 50f, 2500f, 1000f));
+        fireflies.add(new Firefly(assets, 521f, 415f, 80f, 60f, 4000f, 1000f));
+        fireflies.add(new Firefly(assets, 447f, 398f, 128f, 40f, 5000f, 1000f));
+    }
+
+    public void reset()
+    {
+        long startTime = TimeUtils.millis();
+
+        for (Firefly firefly : fireflies)
+        {
+            firefly.reset(startTime);
+        }
     }
 
     public boolean onCollision(GamePolygon polygon)
@@ -342,10 +352,11 @@ public final class Grass
     private void updateFireflies(GameTime gameTime)
     {
         Array<Firefly> localFireflies = fireflies;
+        long currentTime = TimeUtils.millis();
 
         for (int i = 0, n = localFireflies.size; i < n; i++)
         {
-            localFireflies.get(i).update(gameTime);
+            localFireflies.get(i).update(gameTime, currentTime);
         }
     }
 
@@ -488,13 +499,13 @@ public final class Grass
         private static final float  MIN_SCALE         = 0.5f;
         private static final float  SCALE_TIME_OFFSET = 1000f;
         private static final float  MOVEMENT_DURATION = 5000f;
-        private static final float  RESPAWN_DURATION  = 1000f;
 
         private float x;
         private float y;
         private float scale;
         private float alpha;
         private float delay;
+        private float respawn;
 
         private final float startX;
         private final float startY;
@@ -502,102 +513,94 @@ public final class Grass
         private final float distance;
         private final AnimationPlayer player;
 
-
-        private final Timer movementTimer;
-        private final Timer respawnTimer;
+        private long startTime;
+        private boolean moving;
 
         public Firefly(GameAssets assets, float startX, float startY, float direction,
-                       float distance, float delay)
+                       float distance, float delay, float respawn)
         {
             this.startX = startX;
             this.startY = startY;
             this.direction = direction;
             this.distance = distance;
             this.delay = delay;
+            this.respawn = respawn;
 
             this.player = assets.animations.fireFly.getInstance().copy();
             this.player.play(ANIMATION_PLAY);
-
-            movementTimer = new Timer(MOVEMENT_DURATION);
-            movementTimer.timerReachedZero.subscribe(new IEventHandler<EventsArgs>()
-            {
-                @Override
-                public void onAction(EventsArgs args)
-                {
-                    respawnTimer.restart();
-                }
-            });
-
-            respawnTimer = new Timer(RESPAWN_DURATION);
-            respawnTimer.timerReachedZero.subscribe(new IEventHandler<EventsArgs>()
-            {
-                @Override
-                public void onAction(EventsArgs args)
-                {
-                    movementTimer.restart();
-                }
-            });
-
-            movementTimer.start();
         }
 
-        void update(GameTime gameTime)
+        public void reset(long startTime)
         {
-            if (delay > 0f)
+            this.startTime = startTime;
+            this.moving = false;
+        }
+
+        void update(GameTime gameTime, long currentTime)
+        {
+            float elapsed = currentTime - startTime;
+            float totalTime;
+            float movementTime;
+
+            if (elapsed > (delay + respawn + MOVEMENT_DURATION))
             {
-                delay = MathUtils.clamp(delay - gameTime.delta * 1000f, 0f, delay);
+                elapsed -= delay;
+
+                totalTime = elapsed % (respawn + MOVEMENT_DURATION);
+                movementTime = Math.max(0f, totalTime - respawn);
+            }
+            else
+            {
+                totalTime = elapsed % (delay + respawn + MOVEMENT_DURATION);
+                movementTime = Math.max(0f, totalTime - (delay + respawn));
             }
 
-            if (delay == 0f)
+            moving = movementTime > 0f;
+
+            if (moving)
             {
                 player.update(gameTime);
-                movementTimer.update(gameTime);
-                respawnTimer.update(gameTime);
 
-                if (movementTimer.isRunning())
-                {
-                    float currentDistance = Interpolation.sine.apply(0, distance,
-                            movementTimer.elapsedTimePercentage());
+                float movementTimePercentage = movementTime / MOVEMENT_DURATION;
+                float currentDistance = Interpolation.sine.apply(0, distance, movementTimePercentage);
 
-                    x = startX + currentDistance * MathUtils.cosDeg(direction);
-                    y = startY - currentDistance * MathUtils.sinDeg(direction);
+                x = startX + currentDistance * MathUtils.cosDeg(direction);
+                y = startY - currentDistance * MathUtils.sinDeg(direction);
 
-                    y += 1.5f * MathUtils.sin(movementTimer.elapsedTimePercentage() * 90f);
+                y += 1.5f * MathUtils.sin(movementTimePercentage * 90f);
 
-                    applyScale();
-                    applyAlpha();
-                }
+                applyScale(movementTime);
+                applyAlpha(movementTime);
             }
         }
 
-        void applyScale()
+        void applyScale(float movementTime)
         {
             // Inferior
-            if (movementTimer.elapsedTime() - SCALE_TIME_OFFSET < 0f)
+            if (movementTime - SCALE_TIME_OFFSET < 0f)
             {
-                float factor = movementTimer.elapsedTime() / SCALE_TIME_OFFSET;
+                float factor = movementTime / SCALE_TIME_OFFSET;
                 scale = Interpolation.sine.apply(factor);
             }
             else
             {
-                float factor = (movementTimer.elapsedTime() - SCALE_TIME_OFFSET) /
-                        (MOVEMENT_DURATION - SCALE_TIME_OFFSET);
+                float factor = (movementTime - SCALE_TIME_OFFSET) / (MOVEMENT_DURATION - SCALE_TIME_OFFSET);
                 scale = Interpolation.pow2In.apply(1f, MIN_SCALE, factor);
             }
         }
 
-        void applyAlpha()
+        void applyAlpha(float movementTime)
         {
             // Inferior
-            if (movementTimer.elapsedTime() - SCALE_TIME_OFFSET < 0f)
+            if (movementTime - SCALE_TIME_OFFSET < 0f)
             {
-                float factor = movementTimer.elapsedTime() / SCALE_TIME_OFFSET;
+                float factor = movementTime / SCALE_TIME_OFFSET;
                 alpha = Interpolation.sine.apply(factor);
             }
             // Superior
-            else if (movementTimer.elapsedTime() + SCALE_TIME_OFFSET > MOVEMENT_DURATION)
+            else if (movementTime + SCALE_TIME_OFFSET > MOVEMENT_DURATION)
             {
-                float factor = (MOVEMENT_DURATION - movementTimer.elapsedTime()) / SCALE_TIME_OFFSET;
+                float factor = (MOVEMENT_DURATION - movementTime) / SCALE_TIME_OFFSET;
                 alpha = Interpolation.sine.apply(factor);
             }
             else
@@ -608,7 +611,7 @@ public final class Grass
 
         void draw(Batch batch)
         {
-            if (movementTimer.isRunning() && alpha > 0f)
+            if (moving && alpha > 0f)
             {
                 player.position.x = x;
                 player.position.y = y;
