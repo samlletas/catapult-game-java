@@ -121,11 +121,11 @@ public final class Game extends GameAdapter
 
         screenManager.initialize();
 
-//        screenManager.transitionTo(Global.ScreenNames.POWERED_BY_SCREEN,
+//        screenManager.transitionTo(Global.ScreenNames.POWERED_BY,
 //                new OptimizedFadeInTransition(graphicsSettings, 0.5f,
 //                        ColorUtilities.createColor(Global.Colors.OVERLAY)));
 
-        screenManager.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN,
+        screenManager.transitionTo(Global.ScreenNames.MAIN_MENU,
                 new OptimizedFadeInTransition(graphicsSettings, 0.5f,
                         ColorUtilities.createColor(Global.Colors.OVERLAY)));
     }

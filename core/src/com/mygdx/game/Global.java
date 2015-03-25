@@ -32,13 +32,13 @@ public final class Global
 
     public static final class ScreenNames
     {
-        public static final String POWERED_BY_SCREEN     = "Powered By";
-        public static final String MAIN_MENU_SCREEN      = "Main Menu";
-        public static final String MODE_SELECT_SCREEN    = "Mode Select";
-        public static final String TIME_ATTACK_SCREEN    = "Time Attack";
-        public static final String CRYSTAL_FRENZY_SCREEN = "Crystal Frenzy";
-        public static final String SETTINGS_SCREEN       = "Settings";
-        public static final String INFO_SCREEN           = "Info";
+        public static final String POWERED_BY            = "Powered By";
+        public static final String MAIN_MENU             = "Main Menu";
+        public static final String MODE_SELECT           = "Mode Select";
+        public static final String TIME_ATTACK           = "Time Attack";
+        public static final String CRYSTAL_FRENZY        = "Crystal Frenzy";
+        public static final String SETTINGS              = "Settings";
+        public static final String INFO                  = "Info";
         public static final String HOW_TO_TIME_ATTACK    = "How to Time Attack";
         public static final String HOW_TO_CYRSTAL_FRENZY = "How to Crystal Frenzy";
         public static final String GAME_OVER             = "Game Over";
