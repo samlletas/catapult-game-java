@@ -95,7 +95,7 @@ public class PauseOverlay
                 disableInput();
                 hideUiActors();
 
-                gameplayScreen.getScreenManager().transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
+                gameplayScreen.getScreenManager().transitionTo(Global.ScreenNames.MAIN_MENU);
             }
         });
 
@@ -129,7 +129,7 @@ public class PauseOverlay
                 hideUiActors();
 
                 ScreenManager screenManager = gameplayScreen.getScreenManager();
-                SettingsScreen screen = (SettingsScreen)screenManager.getScreen(Global.ScreenNames.SETTINGS_SCREEN);
+                SettingsScreen screen = (SettingsScreen)screenManager.getScreen(Global.ScreenNames.SETTINGS);
                 screen.setBackScreen(gameplayScreen);
                 screenManager.transitionTo(screen);
             }

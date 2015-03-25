@@ -56,7 +56,7 @@ public class PoweredBySplashScreen extends OverlayedScreen
                                  Viewport viewport2D, Viewport viewport3D,
                                  Batch batch, Common common)
     {
-        super(Global.ScreenNames.POWERED_BY_SCREEN, graphicsSettings,
+        super(Global.ScreenNames.POWERED_BY, graphicsSettings,
                 viewport2D, viewport3D, batch);
 
         this.common = common;
@@ -134,7 +134,7 @@ public class PoweredBySplashScreen extends OverlayedScreen
 
         if (finishedAnimation)
         {
-            screenManager.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
+            screenManager.transitionTo(Global.ScreenNames.MAIN_MENU);
             finishedAnimation = false;
         }
     }

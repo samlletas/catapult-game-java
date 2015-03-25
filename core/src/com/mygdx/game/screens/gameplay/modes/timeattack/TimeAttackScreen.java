@@ -28,7 +28,7 @@ public final class TimeAttackScreen extends BaseGameplayScreen
                             Viewport viewport3D, Batch batch, Common common,
                             GameInstances gameInstances)
     {
-        super(Global.ScreenNames.TIME_ATTACK_SCREEN, settings, viewport2D,
+        super(Global.ScreenNames.TIME_ATTACK, settings, viewport2D,
                 viewport3D, batch, common, gameInstances);
     }
 

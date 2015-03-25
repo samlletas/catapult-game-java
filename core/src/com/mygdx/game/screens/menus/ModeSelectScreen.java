@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameTime;
 import com.engine.graphics.GraphicsSettings;
@@ -44,7 +43,7 @@ public final class ModeSelectScreen extends OverlayedScreen
     public ModeSelectScreen(GraphicsSettings graphicsSettings, Viewport viewport2D,
                             Viewport viewport3D, Batch batch, Common common)
     {
-        super(Global.ScreenNames.MODE_SELECT_SCREEN, graphicsSettings, viewport2D,
+        super(Global.ScreenNames.MODE_SELECT, graphicsSettings, viewport2D,
                 viewport3D, batch);
 
         this.common = common;
@@ -82,7 +81,7 @@ public final class ModeSelectScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.TIME_ATTACK_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.TIME_ATTACK);
             }
         });
 
@@ -91,7 +90,7 @@ public final class ModeSelectScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.CRYSTAL_FRENZY_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.CRYSTAL_FRENZY);
             }
         });
 
@@ -100,7 +99,7 @@ public final class ModeSelectScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.MAIN_MENU);
             }
         });
 
@@ -115,7 +114,7 @@ public final class ModeSelectScreen extends OverlayedScreen
             protected void onBackDown()
             {
                 StageUtilities.disableTouch(stage);
-                screenManager.transitionTo(Global.ScreenNames.MAIN_MENU_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.MAIN_MENU);
             }
         });
         inputMultiplexer.addProcessor(stage);

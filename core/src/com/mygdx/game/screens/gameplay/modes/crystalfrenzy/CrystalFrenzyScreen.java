@@ -15,8 +15,6 @@ import com.mygdx.game.gamelogic.targets.Crystal;
 import com.mygdx.game.gamelogic.targets.Spike;
 import com.mygdx.game.gamelogic.targets.patterns.TargetCollisionArgs;
 import com.mygdx.game.screens.gameplay.*;
-import com.mygdx.game.screens.gameplay.modes.timeattack.TimeAttackData;
-import com.mygdx.game.screens.gameplay.modes.timeattack.TimeAttackHUD;
 
 public class CrystalFrenzyScreen extends BaseGameplayScreen
 {
@@ -35,7 +33,7 @@ public class CrystalFrenzyScreen extends BaseGameplayScreen
                             Viewport viewport3D, Batch batch, Common common,
                             GameInstances gameInstances)
     {
-        super(Global.ScreenNames.CRYSTAL_FRENZY_SCREEN, settings, viewport2D,
+        super(Global.ScreenNames.CRYSTAL_FRENZY, settings, viewport2D,
                 viewport3D, batch, common, gameInstances);
     }
 

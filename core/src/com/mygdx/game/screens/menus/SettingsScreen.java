@@ -3,7 +3,6 @@ package com.mygdx.game.screens.menus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -46,7 +45,7 @@ public class SettingsScreen extends OverlayedScreen
     public SettingsScreen(GraphicsSettings graphicsSettings, Viewport viewport2D,
                           Viewport viewport3D, Batch batch, Common common)
     {
-        super(Global.ScreenNames.SETTINGS_SCREEN, graphicsSettings, viewport2D,
+        super(Global.ScreenNames.SETTINGS, graphicsSettings, viewport2D,
                 viewport3D, batch);
 
         this.common = common;

@@ -10,8 +10,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameTime;
 import com.engine.graphics.GraphicsSettings;
-import com.engine.graphics.graphics2D.text.DistanceFieldFont;
-import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.input.BackInputProcessor;
 import com.engine.screens.Screen;
 import com.engine.utilities.ColorUtilities;
@@ -36,7 +34,7 @@ public final class MainMenuScreen extends OverlayedScreen
     public MainMenuScreen(GraphicsSettings graphicsSettings, Viewport viewport2D,
                           Viewport viewport3D, Batch batch, Common common)
     {
-        super(Global.ScreenNames.MAIN_MENU_SCREEN, graphicsSettings, viewport2D,
+        super(Global.ScreenNames.MAIN_MENU, graphicsSettings, viewport2D,
                 viewport3D, batch);
 
         this.common = common;
@@ -79,7 +77,7 @@ public final class MainMenuScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.INFO_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.INFO);
             }
         });
 
@@ -87,7 +85,7 @@ public final class MainMenuScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.POWERED_BY_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.GAME_OVER);
             }
         });
 
@@ -96,7 +94,7 @@ public final class MainMenuScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                screenManager.transitionTo(Global.ScreenNames.MODE_SELECT_SCREEN);
+                screenManager.transitionTo(Global.ScreenNames.MODE_SELECT);
             }
         });
 
@@ -105,7 +103,7 @@ public final class MainMenuScreen extends OverlayedScreen
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                SettingsScreen screen = (SettingsScreen)screenManager.getScreen(Global.ScreenNames.SETTINGS_SCREEN);
+                SettingsScreen screen = (SettingsScreen)screenManager.getScreen(Global.ScreenNames.SETTINGS);
                 screen.setBackScreen(MainMenuScreen.this);
                 screenManager.transitionTo(screen);
             }
