@@ -3,6 +3,7 @@ package com.mygdx.game.screens.ui;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.engine.GameTime;
+import com.engine.actors.ActorOrigin;
 import com.engine.actors.DistanceFieldFontActor;
 import com.engine.actors.TextureRegionActor;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
@@ -44,6 +45,12 @@ public final class TextBlock implements ICustomWidget
     private float hideDelay;
     private boolean fromRight;
 
+    private float titleOffsetX;
+    private float titleOffsetY;
+
+    private float textOffsetX;
+    private float textOffsetY;
+
     public TextBlock(Common common, String title)
     {
         this(common, title, null);
@@ -73,6 +80,12 @@ public final class TextBlock implements ICustomWidget
         this.textActor.setFontBaseScale(TEXT_FONT_SCALE);
 
         this.fromRight = fromRight;
+
+        this.titleOffsetX = 0f;
+        this.titleOffsetY = 0f;
+
+        this.textOffsetX = TEXT_OFFSET_X;
+        this.textOffsetY = TEXT_OFFSET_Y;
 
         ActorUtilities.growActionsArray(titleActor, 1);
         ActorUtilities.growActionsArray(lineActor, 1);
@@ -109,6 +122,38 @@ public final class TextBlock implements ICustomWidget
         this.fromRight = fromRight;
     }
 
+    public void setTitleOffset(float x, float y)
+    {
+        titleOffsetX = x;
+        titleOffsetY = y;
+    }
+
+    public void setTextOffset(float x, float y)
+    {
+        textOffsetX = x;
+        textOffsetY = y;
+    }
+
+    public void setTitleOrigin(ActorOrigin origin)
+    {
+        titleActor.setActorOrigin(origin);
+    }
+
+    public void setTextOrigin(ActorOrigin origin)
+    {
+        textActor.setActorOrigin(origin);
+    }
+
+    public void setTitleFontScale(float scale)
+    {
+        titleActor.setFontBaseScale(scale);
+    }
+
+    public void setTextFontScale(float scale)
+    {
+        textActor.setFontBaseScale(scale);
+    }
+
     @Override
     public void setOriginalPosition(float x, float y)
     {
@@ -143,12 +188,12 @@ public final class TextBlock implements ICustomWidget
     public void show()
     {
         // Animación del título
-        titleActor.setPosition(hiddenX, hiddenY);
+        titleActor.setPosition(hiddenX + titleOffsetX, hiddenY + titleOffsetY);
         titleActor.getColor().a = 0f;
 
         titleActor.clearActions();
         titleActor.addAction(titleShowHideAction.showMovement(showDelay,
-                SHOW_HIDE_DURATION, originalX, originalY));
+                SHOW_HIDE_DURATION, originalX + titleOffsetX, originalY + titleOffsetY));
 
         // Animación de la línea
         lineActor.setPosition(hiddenX + LINE_OFFSET_X, hiddenY + LINE_OFFSET_Y);
@@ -159,12 +204,12 @@ public final class TextBlock implements ICustomWidget
                 SHOW_HIDE_DURATION, originalX + LINE_OFFSET_X, originalY + LINE_OFFSET_Y));
 
         // Animación del texto
-        textActor.setPosition(hiddenX + TEXT_OFFSET_X, hiddenY + TEXT_OFFSET_Y);
+        textActor.setPosition(hiddenX + textOffsetX, hiddenY + textOffsetY);
         textActor.getColor().a = 0f;
 
         textActor.clearActions();
         textActor.addAction(textShowHideAction.showMovement(showDelay + 0.1f,
-                SHOW_HIDE_DURATION, originalX + TEXT_OFFSET_X, originalY + TEXT_OFFSET_Y));
+                SHOW_HIDE_DURATION, originalX + textOffsetX, originalY + textOffsetY));
     }
 
     @Override
