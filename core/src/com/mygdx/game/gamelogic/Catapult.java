@@ -58,6 +58,7 @@ public final class Catapult
     // Input
     private boolean inputEnabled = false;
     private boolean pulling = false;
+    private boolean onRelease = false;
     private Vector3 originTouchPosition = new Vector3();
     private Vector3 currentTouchPosition = new Vector3();
     private Rectangle forbidenBounds = new Rectangle(754f, 0f, 100f, 100f);
@@ -124,6 +125,7 @@ public final class Catapult
         player.play(ANIMATION_DEFAULT);
         pullAnimationInterpolator.factor = 0f;
         pulling = false;
+        onRelease = false;
     }
 
     private void launch()
@@ -154,47 +156,58 @@ public final class Catapult
 
     private void handleInput()
     {
-        if (inputEnabled && !ball.isFlying())
+        if (inputEnabled)
         {
-            if (Gdx.input.isTouched(0))
+            if (ball.isFlying())
             {
-                if (!pulling)
+                onRelease = false;
+            }
+            else
+            {
+                if (Gdx.input.isTouched(0))
                 {
-                    originTouchPosition.set(Gdx.input.getX(0), Gdx.input.getY(0), 0f);
-                    camera.unproject(originTouchPosition);
-
-                    if (!forbidenBounds.contains(originTouchPosition.x, originTouchPosition.y))
+                    if (!onRelease)
                     {
-                        pulling = true;
+                        if (!pulling)
+                        {
+                            originTouchPosition.set(Gdx.input.getX(0), Gdx.input.getY(0), 0f);
+                            camera.unproject(originTouchPosition);
+
+                            if (!forbidenBounds.contains(originTouchPosition.x, originTouchPosition.y))
+                            {
+                                pulling = true;
+                            }
+                        }
+                        else
+                        {
+                            float x = Gdx.input.getX(0);
+                            float y = Gdx.input.getY(0);
+
+                            currentTouchPosition.set(x, y, 0f);
+                            camera.unproject(currentTouchPosition);
+
+                            float deltaX = currentTouchPosition.x - originTouchPosition.x;
+                            float deltaY = currentTouchPosition.y - originTouchPosition.y;
+                            float length = Vector2.len(deltaX, deltaY);
+
+                            player.play(Catapult.ANIMATION_PULL);
+                            pullAnimationInterpolator.factor = MathUtils.clamp(length / MAX_PULL_DISTANCE, 0f, 1f);
+                            ballPath.show();
+                        }
                     }
                 }
                 else
                 {
-                    float x = Gdx.input.getX(0);
-                    float y = Gdx.input.getY(0);
+                    if (pulling)
+                    {
+                        pullAngle = spoon.getFinalRotation();
+                        player.play(Catapult.ANIMATION_LAUNCH);
+                        pullAnimationInterpolator.factor = 0f;
+                        ballPath.hide();
 
-                    currentTouchPosition.set(x, y, 0f);
-                    camera.unproject(currentTouchPosition);
-
-                    float deltaX = currentTouchPosition.x - originTouchPosition.x;
-                    float deltaY = currentTouchPosition.y - originTouchPosition.y;
-                    float length = Vector2.len(deltaX, deltaY);
-
-                    player.play(Catapult.ANIMATION_PULL);
-                    pullAnimationInterpolator.factor = MathUtils.clamp(length / MAX_PULL_DISTANCE, 0f, 1f);
-                    ballPath.show();
-                }
-            }
-            else
-            {
-                if (pulling)
-                {
-                    pullAngle = spoon.getFinalRotation();
-                    player.play(Catapult.ANIMATION_LAUNCH);
-                    pullAnimationInterpolator.factor = 0f;
-                    ballPath.hide();
-
-                    pulling = false;
+                        pulling = false;
+                        onRelease = true;
+                    }
                 }
             }
         }
