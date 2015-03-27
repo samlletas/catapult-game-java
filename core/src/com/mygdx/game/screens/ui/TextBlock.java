@@ -51,17 +51,17 @@ public final class TextBlock implements ICustomWidget
     private float textOffsetX;
     private float textOffsetY;
 
-    public TextBlock(Common common, String title)
+    public TextBlock(Common common, CharSequence title)
     {
         this(common, title, null);
     }
 
-    public TextBlock(Common common, String title, String text)
+    public TextBlock(Common common, CharSequence title, CharSequence text)
     {
         this(common, title, text, DEFAULT_LINE_LENGHT, false);
     }
 
-    public TextBlock(Common common, String title, String text, float lineLenght,
+    public TextBlock(Common common, CharSequence title, CharSequence text, float lineLenght,
                      boolean fromRight)
     {
         TextureRegion line = common.assets.atlasRegions.uiHeaderLine.getInstance();
