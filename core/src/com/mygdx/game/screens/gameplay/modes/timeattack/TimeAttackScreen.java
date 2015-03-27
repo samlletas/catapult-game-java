@@ -56,6 +56,7 @@ public final class TimeAttackScreen extends BaseGameplayScreen
             {
                 data.increaseScore(1);
                 hud.bloomScore();
+                common.soundPlayer.playPoint();
             }
         };
 

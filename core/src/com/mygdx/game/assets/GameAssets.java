@@ -211,11 +211,13 @@ public final class GameAssets
     {
         public Asset<Sound> crystalBreak;
         public Asset<Sound> shoot;
+        public Asset<Sound> point;
 
         private Sounds()
         {
             crystalBreak = new Asset<Sound>("sounds/break.ogg", Sound.class);
             shoot = new Asset<Sound>("sounds/shoot.ogg", Sound.class);
+            point = new Asset<Sound>("sounds/point.ogg", Sound.class);
         }
     }
 }

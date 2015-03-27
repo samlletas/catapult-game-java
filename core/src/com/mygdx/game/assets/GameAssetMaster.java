@@ -1,12 +1,9 @@
 package com.mygdx.game.assets;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Array;
 import com.engine.assets.BaseAssetMaster;
 import com.engine.assets.IAsset;
-import com.engine.assets.loaders.BitmapFontAtlasLoader;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 
 public class GameAssetMaster extends BaseAssetMaster
@@ -80,6 +77,7 @@ public class GameAssetMaster extends BaseAssetMaster
 
         queue.add(assets.sounds.crystalBreak);
         queue.add(assets.sounds.shoot);
+        queue.add(assets.sounds.point);
     }
 
     @Override

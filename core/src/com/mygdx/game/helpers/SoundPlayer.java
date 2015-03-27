@@ -10,6 +10,7 @@ public class SoundPlayer
 
     private Sound crystalBreak;
     private Sound shoot;
+    private Sound point;
 
     public SoundPlayer(Settings settings, GameAssets assets)
     {
@@ -17,6 +18,7 @@ public class SoundPlayer
 
         crystalBreak = assets.sounds.crystalBreak.getInstance();
         shoot = assets.sounds.shoot.getInstance();
+        point = assets.sounds.point.getInstance();
     }
 
     public float getVolume()
@@ -32,5 +34,10 @@ public class SoundPlayer
     public void playShoot()
     {
         shoot.play(getVolume());
+    }
+
+    public void playPoint()
+    {
+        point.play(getVolume());
     }
 }
