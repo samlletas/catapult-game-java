@@ -93,7 +93,8 @@ public final class CameraShaker2D
                 {
                     timer.start();
                     recovering = true;
-                } else
+                }
+                else
                 {
                     repetitions--;
 
@@ -105,7 +106,8 @@ public final class CameraShaker2D
                         currentZoom = 1f;
 
                         shaking = false;
-                    } else
+                    }
+                    else
                     {
                         timer.start();
                     }

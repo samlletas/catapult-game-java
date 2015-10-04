@@ -1,5 +1,6 @@
 package com.engine.actors;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -11,6 +12,7 @@ public class DistanceFieldFontActor extends CustomActor
     private CharSequence text;
     private float fontBaseScaleX;
     private float fontBaseScaleY;
+    private boolean isVisible = true;
 
     public DistanceFieldFontActor()
     {
@@ -67,6 +69,17 @@ public class DistanceFieldFontActor extends CustomActor
     }
 
     @Override
+    public void setVisible(boolean visible)
+    {
+        this.isVisible = visible;
+    }
+
+    public boolean isVisible()
+    {
+        return isVisible;
+    }
+
+    @Override
     public void draw(Batch batch, float parentAlpha)
     {
         throw new GdxRuntimeException("Please use the draw(DistanceFieldRenderer renderer, DistanceFieldFont font) function.");
@@ -83,18 +96,17 @@ public class DistanceFieldFontActor extends CustomActor
     public BitmapFont.TextBounds draw(DistanceFieldRenderer renderer,
                                       DistanceFieldFont font)
     {
-        if (text != null)
+        if (isVisible && text != null)
         {
+            Color originalFontColor = font.getColor();
             float originalScaleX = font.getScaleX();
             float originalScaleY = font.getScaleY();
-            float originalAlpha = font.getAlpha();
 
             float scaleX = fontBaseScaleX * getScaleX();
             float scaleY = fontBaseScaleY * getScaleY();
-            float alpha = getColor().a;
 
+            font.setColor(getColor());
             font.setScale(scaleX, scaleY);
-            font.setAlpha(alpha);
 
             float drawX = getX();
             float drawY = getY();
@@ -140,8 +152,8 @@ public class DistanceFieldFontActor extends CustomActor
 
             bounds = renderer.draw(text, drawX, drawY);
 
+            font.setColor(originalFontColor);
             font.setScale(originalScaleX, originalScaleY);
-            font.setAlpha(originalAlpha);
 
             return bounds;
         }
@@ -176,18 +188,17 @@ public class DistanceFieldFontActor extends CustomActor
                                                DistanceFieldFont font,
                                                BitmapFont.HAlignment alignment)
     {
-        if (text != null)
+        if (isVisible && text != null)
         {
+            Color originalFontColor = font.getColor();
             float originalScaleX = font.getScaleX();
             float originalScaleY = font.getScaleY();
-            float originalAlpha = font.getAlpha();
 
             float scaleX = fontBaseScaleX * getScaleX();
             float scaleY = fontBaseScaleY * getScaleY();
-            float alpha = getColor().a;
 
+            font.setColor(getColor());
             font.setScale(scaleX, scaleY);
-            font.setAlpha(alpha);
 
             float drawX = getX();
             float drawY = getY();
@@ -233,8 +244,8 @@ public class DistanceFieldFontActor extends CustomActor
 
             bounds = renderer.drawMultiLine(text, drawX, drawY, bounds.width, alignment);
 
+            font.setColor(originalFontColor);
             font.setScale(originalScaleX, originalScaleY);
-            font.setAlpha(originalAlpha);
 
             return bounds;
         }

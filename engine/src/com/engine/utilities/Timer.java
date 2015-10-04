@@ -62,7 +62,7 @@ public final class Timer
         }
         else
         {
-            return counter;
+            return duration - counter;
         }
     }
 
@@ -80,7 +80,7 @@ public final class Timer
         }
         else
         {
-            return counter / duration;
+            return (duration - counter) / duration;
         }
     }
 
@@ -96,7 +96,7 @@ public final class Timer
         }
         else
         {
-            return duration - counter;
+            return counter;
         }
     }
 
@@ -156,7 +156,7 @@ public final class Timer
         {
             this.duration = duration;
 
-            counter = 0f;
+            counter = duration;
             isRunning = true;
             isPaused = false;
         }
@@ -194,13 +194,34 @@ public final class Timer
         }
     }
 
+    public void add(float time)
+    {
+        if (isRunning && enabled)
+        {
+            counter += time;
+
+            if (counter > duration)
+            {
+                duration = counter;
+            }
+        }
+    }
+
+    public void substract(float time)
+    {
+        if (isRunning && enabled)
+        {
+            counter = Math.max(0, counter - time);
+        }
+    }
+
     public void update(GameTime gameTime)
     {
         if (isRunning && !isPaused && enabled)
         {
-            counter += 1000f * gameTime.delta;
+            counter -= 1000f * gameTime.delta;
 
-            if (counter >= duration)
+            if (counter <= 0f)
             {
                 stop();
 

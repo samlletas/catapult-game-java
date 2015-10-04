@@ -25,6 +25,11 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+
+        // Rutas para Google Play Services
+        def androidHome = System.getenv("ANDROID_HOME")
+        maven { url "$androidHome/extras/android/m2repository/" }
+        maven { url "$androidHome/extras/google/m2repository/"}
     }
 }
 
@@ -46,6 +51,7 @@ project(":android") {
     configurations { natives }
 
     dependencies {
+        compile 'com.google.android.gms:play-services:7.0.0'
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
