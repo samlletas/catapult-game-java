@@ -6,7 +6,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.sammacedo.smashingcrystals.Game;
-import com.google.android.gms.games.*;
 
 public class AndroidLauncher extends AndroidApplication
 {
