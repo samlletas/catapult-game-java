@@ -442,17 +442,17 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
     private void drawText()
     {
         common.shaders.textShader.setForegroundColor(getTransitionForeColor(gameInstances.pauseOverlay.getOverlay()));
-        distanceFieldRenderer.begin(distanceFieldFont);
-        gameInstances.gameLabelContainer.drawText(distanceFieldRenderer, distanceFieldFont);
-        gameHUD.drawText(distanceFieldRenderer, distanceFieldFont);
+        distanceFieldRenderer.begin();
+        gameInstances.gameLabelContainer.drawText(distanceFieldRenderer);
+        gameHUD.drawText(distanceFieldRenderer);
 
         if (gameState == GameStates.Starting)
         {
-            gameInstances.startCounter.drawText(distanceFieldRenderer, distanceFieldFont);
+            gameInstances.startCounter.drawText(distanceFieldRenderer);
         }
         else if (gameState == GameStates.GameOver)
         {
-            gameInstances.gameOverMessage.drawText(distanceFieldRenderer, distanceFieldFont);
+            gameInstances.gameOverMessage.drawText(distanceFieldRenderer);
         }
 
         distanceFieldRenderer.end();
@@ -485,8 +485,8 @@ public abstract class BaseGameplayScreen extends OverlayedScreen
             gameInstances.pauseOverlay.drawStage();
 
             common.shaders.textShader.setForegroundColor(getTransitionForeColor());
-            distanceFieldRenderer.begin(distanceFieldFont, Header.FONT_SCALE);
-            gameInstances.pauseOverlay.drawText(distanceFieldRenderer, distanceFieldFont);
+            distanceFieldRenderer.begin(Header.FONT_SCALE);
+            gameInstances.pauseOverlay.drawText(distanceFieldRenderer);
             distanceFieldRenderer.end();
         }
     }

@@ -5,18 +5,19 @@ import com.engine.GameTime;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 import com.engine.utilities.FastArray;
+import com.sammacedo.smashingcrystals.Common;
 
 public class GameLabelContainer
 {
     private FastArray<GameLabel> labels;
 
-    public GameLabelContainer(int max)
+    public GameLabelContainer(Common common, int max)
     {
         labels = new FastArray<GameLabel>(max);
 
         for (int i = 0; i < max; i++)
         {
-            labels.add(new GameLabel());
+            labels.add(new GameLabel(common.assets.distanceFieldFonts.furore.getInstance()));
         }
     }
 
@@ -71,11 +72,11 @@ public class GameLabelContainer
         }
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
         for (GameLabel label : labels)
         {
-            label.drawText(renderer, font);
+            label.drawText(renderer);
         }
     }
 }

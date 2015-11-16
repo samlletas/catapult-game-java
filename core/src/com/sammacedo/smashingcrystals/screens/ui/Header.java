@@ -59,7 +59,7 @@ public final class Header implements ICustomWidget
         this.topLineActor = new TextureRegionActor(line);
         this.bottomLineActor = new TextureRegionActor(line);
         this.gradientActor = new TextureRegionActor(gradient);
-        this.textActor = new DistanceFieldFontActor(text);
+        this.textActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), text);
 
         this.topLineActor.setActorOrigin(ActorOrigin.Center);
         this.bottomLineActor.setActorOrigin(ActorOrigin.Center);
@@ -173,9 +173,9 @@ public final class Header implements ICustomWidget
         gradientActor.draw(batch, 1f);
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
-        textActor.draw(renderer, font);
+        textActor.draw(renderer);
     }
 
     //region Auxiliares para Animaciones

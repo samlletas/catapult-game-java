@@ -104,7 +104,7 @@ public class GameOverScreen extends OverlayedScreen
         replayButton = new GameButton(common, Global.ButtonStyles.REPLAY);
         scoresButton = new GameButton(common, Global.ButtonStyles.SCORES_SMALL);
 
-        newBestActor = new DistanceFieldFontActor("NEW");
+        newBestActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), "NEW");
         newBestActionContainer = new NewBestActionContainer();
 
         scoreBlock.setOriginalPosition(200f, 185f);
@@ -383,11 +383,11 @@ public class GameOverScreen extends OverlayedScreen
         batch.end();
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
-        distanceFieldRenderer.begin(distanceFieldFont, GameSlider.FONT_SCALE);
-        header.drawText(distanceFieldRenderer, distanceFieldFont);
-        scoreBlock.drawText(distanceFieldRenderer, distanceFieldFont);
-        bestBlock.drawText(distanceFieldRenderer, distanceFieldFont);
-        newBestActor.draw(distanceFieldRenderer, distanceFieldFont);
+        distanceFieldRenderer.begin(GameSlider.FONT_SCALE);
+        header.drawText(distanceFieldRenderer);
+        scoreBlock.drawText(distanceFieldRenderer);
+        bestBlock.drawText(distanceFieldRenderer);
+        newBestActor.draw(distanceFieldRenderer);
         distanceFieldRenderer.end();
     }
 

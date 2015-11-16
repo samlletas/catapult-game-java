@@ -284,9 +284,9 @@ public class PauseOverlay
         stage.draw();
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
-        header.drawText(renderer, font);
+        header.drawText(renderer);
     }
 
     public void dispose()

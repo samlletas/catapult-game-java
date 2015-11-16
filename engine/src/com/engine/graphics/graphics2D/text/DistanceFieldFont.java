@@ -41,12 +41,12 @@ public final class DistanceFieldFont
 
     public void setScale(float scaleXY)
     {
-        font.setScale(scaleXY);
+        font.getData().setScale(scaleXY);
     }
 
     public void setScale(float scaleX, float scaleY)
     {
-        font.setScale(scaleX, scaleY);
+        font.getData().setScale(scaleX, scaleY);
     }
 
     public float getScaleX()
@@ -83,11 +83,6 @@ public final class DistanceFieldFont
     public float getAlpha()
     {
         return font.getColor().a;
-    }
-
-    public BitmapFont.TextBounds getBounds(CharSequence str)
-    {
-        return font.getBounds(str);
     }
 
     public void setUseIntegerPositions(boolean integer)

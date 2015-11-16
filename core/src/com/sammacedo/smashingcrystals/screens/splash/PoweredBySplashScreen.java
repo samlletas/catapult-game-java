@@ -73,7 +73,7 @@ public class PoweredBySplashScreen extends OverlayedScreen
     @Override
     public void initialize()
     {
-        textActor = new DistanceFieldFontActor("POWERED BY");
+        textActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), "POWERED BY");
         logoActor = new TextureRegionActor(common.assets.atlasRegions.libGdx.getInstance());
 
         textActor.setActorOrigin(ActorOrigin.Center);
@@ -148,8 +148,8 @@ public class PoweredBySplashScreen extends OverlayedScreen
         ColorUtilities.resetColor(batch);
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
-        distanceFieldRenderer.begin(distanceFieldFont, TEXT_SCALE);
-        textActor.draw(distanceFieldRenderer, distanceFieldFont);
+        distanceFieldRenderer.begin(TEXT_SCALE);
+        textActor.draw(distanceFieldRenderer);
         distanceFieldRenderer.end();
 
         common.shaders.defaultShader.setForegroundColor(getTransitionForeColor());

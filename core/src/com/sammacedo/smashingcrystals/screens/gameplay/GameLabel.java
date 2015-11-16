@@ -17,8 +17,10 @@ public class GameLabel extends DistanceFieldFontActor
     private ActionContainer actionContainer;
     private Runnable deactivateRunnable;
 
-    public GameLabel()
+    public GameLabel(DistanceFieldFont font)
     {
+        super(font);
+
         isActive = false;
         actionContainer = new ActionContainer();
 
@@ -85,11 +87,11 @@ public class GameLabel extends DistanceFieldFontActor
         }
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
         if (isActive)
         {
-            draw(renderer, font);
+            draw(renderer);
         }
     }
 

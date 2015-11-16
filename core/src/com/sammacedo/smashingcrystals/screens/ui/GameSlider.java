@@ -2,6 +2,7 @@ package com.sammacedo.smashingcrystals.screens.ui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
@@ -22,6 +23,9 @@ public final class GameSlider extends Slider implements ICustomWidget
     private String label;
     private IntegerSequence valueSequence;
 
+    private DistanceFieldFont font;
+    private GlyphLayout glyphLayout;
+
     private float originalX;
     private float originalY;
     private float hiddenX;
@@ -37,6 +41,10 @@ public final class GameSlider extends Slider implements ICustomWidget
 
         this.label = label;
         this.valueSequence = new IntegerSequence();
+
+        this.font = common.assets.distanceFieldFonts.furore.getInstance();
+        this.glyphLayout = new GlyphLayout(font.getFont(), label);
+
         this.showHideAction = new ConfiguredAction();
 
         TextureRegion sliderBackground = common.assets.textureAtlases.
@@ -97,7 +105,7 @@ public final class GameSlider extends Slider implements ICustomWidget
         super.draw(batch, parentAlpha);
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
         float x;
         float y;
@@ -109,14 +117,13 @@ public final class GameSlider extends Slider implements ICustomWidget
         font.setScale(FONT_SCALE);
         font.setAlpha(getColor().a);
 
-        BitmapFont.TextBounds bounds = font.getBounds(label);
-        x = getX() - bounds.width - TEXT_OFFSET_X;
-        y = getY()  + (getHeight() / 2f) - (bounds.height / 2f) - 3;
-        renderer.draw(label, x, y);
+        x = getX() - glyphLayout.width - TEXT_OFFSET_X;
+        y = getY()  + (getHeight() / 2f) - (glyphLayout.height / 2f) - 3;
+        renderer.draw(font, glyphLayout, x, y);
 
         valueSequence.set((int)getValue());
         x = getX() + getWidth() + TEXT_OFFSET_X;
-        renderer.draw(valueSequence, x, y);
+        renderer.draw(font, valueSequence, x, y);
 
         font.setScale(originalScaleX, originalScaleY);
         font.setAlpha(originalAlpha);

@@ -47,7 +47,7 @@ public abstract class Custom3DShader implements Shader
     public Custom3DShader(Renderable renderable)
     {
         this.renderable = renderable;
-        this.attributesMask = renderable.mesh.getVertexAttributes().getMask();
+        this.attributesMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
 
         if (renderable.bones != null)
         {
@@ -169,7 +169,7 @@ public abstract class Custom3DShader implements Shader
     {
         if (hasSkinning())
         {
-            VertexAttributes attributes = renderable.mesh.getVertexAttributes();
+            VertexAttributes attributes = renderable.meshPart.mesh.getVertexAttributes();
             VertexAttribute attribute;
 
             for(int i = 0, n = attributes.size(); i < n; i++)
@@ -335,7 +335,7 @@ public abstract class Custom3DShader implements Shader
     @Override
     public boolean canRender(Renderable instance)
     {
-        return attributesMask == instance.mesh.getVertexAttributes().getMask() &&
+        return attributesMask == instance.meshPart.mesh.getVertexAttributes().getMask() &&
                 !((numBones > 0 && (instance.bones == null || instance.bones.length != numBones)));
     }
 
@@ -357,12 +357,7 @@ public abstract class Custom3DShader implements Shader
     public void render(Renderable renderable)
     {
         localUniforms.setUniforms(program, renderable);
-
-        renderable.mesh.render(
-                program,
-                renderable.primitiveType,
-                renderable.meshPartOffset,
-                renderable.meshPartSize);
+        renderable.meshPart.render(program);
     }
 
     @Override

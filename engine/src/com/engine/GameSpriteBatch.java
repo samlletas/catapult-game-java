@@ -1003,6 +1003,14 @@ public class GameSpriteBatch implements Batch
     }
 
     @Override
+    public ShaderProgram getShader () {
+        if (customShader == null) {
+            return shader;
+        }
+        return customShader;
+    }
+
+    @Override
     public boolean isBlendingEnabled () {
         return !blendingDisabled;
     }

@@ -66,9 +66,9 @@ public final class TextBlock implements ICustomWidget
     {
         TextureRegion line = common.assets.atlasRegions.uiHeaderLine.getInstance();
 
-        this.titleActor = new DistanceFieldFontActor(title);
+        this.titleActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), title);
         this.lineActor = new TextureRegionActor(line);
-        this.textActor = new DistanceFieldFontActor(text);
+        this.textActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), text);
 
         this.titleShowHideAction = new ConfiguredAction();
         this.lineShowHideAction = new ConfiguredAction();
@@ -243,9 +243,9 @@ public final class TextBlock implements ICustomWidget
         lineActor.draw(batch, 1f);
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
-        titleActor.draw(renderer, font);
-        textActor.drawMultiline(renderer, font);
+        titleActor.draw(renderer);
+        textActor.draw(renderer);
     }
 }

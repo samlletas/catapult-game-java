@@ -2,16 +2,21 @@ package com.engine.graphics.graphics2D.text;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 
 public class DistanceFieldRenderer implements Disposable
 {
     private Batch batch;
     private DistanceFieldShader shader;
-    private DistanceFieldFont distanceFieldFont; // Font usada para dibujar
+
+    private DistanceFieldFont currentFont;
     private float drawScale;
+
     private boolean drawing;
+    private boolean flushed;
 
     public DistanceFieldRenderer(Batch batch)
     {
@@ -25,21 +30,23 @@ public class DistanceFieldRenderer implements Disposable
         this.drawing = false;
     }
 
-    public void begin(DistanceFieldFont font)
+    public void begin()
     {
-        begin(font, 1f);
+        begin(1f);
     }
 
-    public void begin(DistanceFieldFont font, float scale)
+    public void begin(float scale)
     {
         if (!drawing)
         {
             batch.setShader(shader);
             batch.begin();
 
-            distanceFieldFont = font;
+            currentFont = null;
             drawScale = scale;
+
             drawing = true;
+            flushed = false;
         }
         else
         {
@@ -51,14 +58,15 @@ public class DistanceFieldRenderer implements Disposable
     {
         if (drawing)
         {
-            shader.thickness = distanceFieldFont.thickness;
-            shader.smoothing = distanceFieldFont.sharpness / (distanceFieldFont.spread * drawScale);
-            shader.sendCustomUniforms();
+            if (!flushed)
+            {
+                flush();
+            }
 
             batch.end();
             batch.setShader(null);
 
-            distanceFieldFont = null;
+            currentFont = null;
             drawing = false;
         }
         else
@@ -67,42 +75,53 @@ public class DistanceFieldRenderer implements Disposable
         }
     }
 
-    public BitmapFont.TextBounds draw(CharSequence str, float x, float y)
+    private void flush()
     {
-        return distanceFieldFont.font.draw(batch, str, x, y);
+        shader.thickness = currentFont.thickness;
+        shader.smoothing = currentFont.sharpness / (currentFont.spread * drawScale);
+        shader.sendCustomUniforms();
+        batch.flush();
+
+        flushed = true;
     }
 
-    public BitmapFont.TextBounds draw(CharSequence str, float x, float y,
-                                      int start, int end)
+    public GlyphLayout draw(DistanceFieldFont font, CharSequence str, float x, float y)
     {
-        return distanceFieldFont.font.draw(batch, str, x, y, start, end);
+        return draw(font, str, x, y, 0, Align.left, false);
     }
 
-    public BitmapFont.TextBounds drawMultiLine(CharSequence str, float x, float y)
+    public GlyphLayout draw(DistanceFieldFont font, CharSequence str, float x, float y, float targetWidth, int halign,
+                            boolean wrap)
     {
-        return distanceFieldFont.font.drawMultiLine(batch, str, x, y);
+        return draw(font, str, x, y, 0, str.length(), targetWidth, halign, wrap);
     }
 
-    public BitmapFont.TextBounds drawMultiLine(CharSequence str, float x, float y,
-                                               float alignmentWidth,
-                                               BitmapFont.HAlignment alignment)
+    public GlyphLayout draw(DistanceFieldFont font, CharSequence str, float x, float y, int start, int end,
+                            float targetWidth, int halign, boolean wrap)
     {
-        return distanceFieldFont.font.drawMultiLine(batch, str, x, y,
-                alignmentWidth, alignment);
-    }
+        if (currentFont != null && currentFont.getFont() != font.getFont())
+        {
+            flush();
+        }
 
-    public BitmapFont.TextBounds drawWrapped(CharSequence str, float x, float y,
-                                             float wrapWidth)
-    {
-        return distanceFieldFont.font.drawWrapped(batch, str, x, y, wrapWidth);
-    }
+        GlyphLayout layout = font.getFont().draw(batch, str, x, y, start, end, targetWidth, halign, wrap);
 
-    public BitmapFont.TextBounds drawWrapped(CharSequence str,float x, float y,
-                                             float wrapWidth,
-                                             BitmapFont.HAlignment alignment)
+        currentFont = font;
+        flushed = false;
+
+        return layout;
+    }
+    public void draw(DistanceFieldFont font, GlyphLayout layout, float x, float y)
     {
-        return distanceFieldFont.font.drawWrapped(batch, str, x, y,
-                wrapWidth, alignment);
+        if (currentFont != null && currentFont.getFont() != font.getFont())
+        {
+            flush();
+        }
+
+        font.getFont().draw(batch, layout, x, y);
+
+        currentFont = font;
+        flushed = false;
     }
 
     @Override

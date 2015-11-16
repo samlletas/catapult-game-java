@@ -7,9 +7,9 @@ import com.engine.utilities.ColorUtilities;
 public final class Global
 {
     public static final boolean DEBUG_FPS            = true;
-    public static final boolean DEBUG_OPENGL         = false;
-    public static final boolean DEBUG_MEMORY         = false;
-    public static final boolean DEBUG_POLYGONS       = false;
+    public static final boolean DEBUG_OPENGL         = true;
+    public static final boolean DEBUG_MEMORY         = true;
+    public static final boolean DEBUG_POLYGONS       = true;
     public static final boolean DEBUG_CLEAR_SETTINGS = true;
 
     public static final float TIME_STEP = 1f / 60f;

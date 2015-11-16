@@ -205,10 +205,10 @@ public class SettingsScreen extends OverlayedScreen
         batch.end();
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
-        distanceFieldRenderer.begin(distanceFieldFont, GameSlider.FONT_SCALE);
-        header.drawText(distanceFieldRenderer, distanceFieldFont);
-        musicSlider.drawText(distanceFieldRenderer, distanceFieldFont);
-        soundSlider.drawText(distanceFieldRenderer, distanceFieldFont);
+        distanceFieldRenderer.begin(GameSlider.FONT_SCALE);
+        header.drawText(distanceFieldRenderer);
+        musicSlider.drawText(distanceFieldRenderer);
+        soundSlider.drawText(distanceFieldRenderer);
         distanceFieldRenderer.end();
     }
 

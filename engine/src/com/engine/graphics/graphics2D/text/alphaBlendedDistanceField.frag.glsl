@@ -23,6 +23,7 @@ void main()
     float alphaMask = smoothstep(v_thickness - v_smoothing, v_thickness + v_smoothing, distance);
     vec4 color = vec4(v_color.rgb, alphaMask);
 
+    // Shadow
     float shadowDistance = texture2D(u_texture, v_texCoord + v_shadowOffset).a;
     float shadowMask = smoothstep(v_thickness - v_smoothing, v_thickness + v_smoothing, shadowDistance);
     vec4 shadowColor = vec4(v_shadowColor.rgb, v_shadowColor.a * shadowMask);

@@ -47,7 +47,7 @@ public class StartCounter
 
     public Event<EventsArgs> onEnd;
 
-    public StartCounter(GraphicsSettings graphicsSettings)
+    public StartCounter(GraphicsSettings graphicsSettings, DistanceFieldFont font)
     {
         currentSequence = -1;
         isActive =  false;
@@ -55,7 +55,7 @@ public class StartCounter
         drawX = graphicsSettings.virtualWidth / 2f;
         drawY = graphicsSettings.virtualHeight / 2f - 10f;
 
-        textActor = new DistanceFieldFontActor();
+        textActor = new DistanceFieldFontActor(font);
         textActor.setFontBaseScale(1.75f);
         textActor.setActorOrigin(ActorOrigin.Center);
         textActor.setPosition(drawX, drawY);
@@ -121,9 +121,9 @@ public class StartCounter
         textActor.act(gameTime.delta);
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
-        textActor.draw(renderer, font);
+        textActor.draw(renderer);
     }
 
     class TextActionContainer

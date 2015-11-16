@@ -201,11 +201,11 @@ public class InfoScreen extends OverlayedScreen
         batch.end();
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
-        distanceFieldRenderer.begin(distanceFieldFont, TextBlock.TEXT_FONT_SCALE);
-        header.drawText(distanceFieldRenderer, distanceFieldFont);
+        distanceFieldRenderer.begin(TextBlock.TEXT_FONT_SCALE);
+        header.drawText(distanceFieldRenderer);
         for (int i = 0, n = localTextBlocks.size; i < n; i++)
         {
-            localTextBlocks.get(i).drawText(distanceFieldRenderer, distanceFieldFont);
+            localTextBlocks.get(i).drawText(distanceFieldRenderer);
         }
         distanceFieldRenderer.end();
     }

@@ -38,8 +38,8 @@ public final class GameInstances
         catapult = new Catapult(common, ball, ballPath, orthographicCamera);
         crystalManager = new CrystalManager(common);
 
-        startCounter = new StartCounter(graphicsSettings);
-        gameLabelContainer = new GameLabelContainer(20);
+        startCounter = new StartCounter(graphicsSettings, common.assets.distanceFieldFonts.furore.getInstance());
+        gameLabelContainer = new GameLabelContainer(common, 20);
         gameOverMessage = new GameMessage(common, graphicsSettings);
         pauseOverlay = new PauseOverlay(common, graphicsSettings, viewport2D, common.spriteBatch);
 

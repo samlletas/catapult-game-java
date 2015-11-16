@@ -54,7 +54,7 @@ public class GameMessage
         this.topLineActor = new TextureRegionActor(line);
         this.bottomLineActor = new TextureRegionActor(line);
         this.barActor = new TextureRegionActor(pixel);
-        this.textActor = new DistanceFieldFontActor();
+        this.textActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance());
 
         this.topLineActor.setActorOrigin(ActorOrigin.Center);
         this.bottomLineActor.setActorOrigin(ActorOrigin.Center);
@@ -155,9 +155,9 @@ public class GameMessage
         bottomLineActor.draw(batch, 1f);
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
-        textActor.draw(renderer, font);
+        textActor.draw(renderer);
     }
 
     //region Auxiliares para Animaciones

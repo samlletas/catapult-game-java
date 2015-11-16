@@ -56,7 +56,7 @@ public abstract class BaseGameHUD
         scoreSequence = new IntegerSequence();
         scoreSequence.set(0);
 
-        scoreActor = new DistanceFieldFontActor(scoreSequence);
+        scoreActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), scoreSequence);
         scoreActor.setFontBaseScale(SCORE_TEXT_SCALE);
         scoreActor.setActorOrigin(ActorOrigin.CenterLeft);
         scoreActor.setPosition(SCORE_TEXT_X, SCORE_TEXT_Y);
@@ -95,15 +95,15 @@ public abstract class BaseGameHUD
         onDrawTextures(batch);
     }
 
-    public final void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public final void drawText(DistanceFieldRenderer renderer)
     {
         scoreSequence.set(gameplayData.getScore());
-        scoreActor.draw(renderer, font);
-        onDrawText(renderer, font);
+        scoreActor.draw(renderer);
+        onDrawText(renderer);
     }
 
     protected abstract void onReset();
     protected abstract void onUpdate(GameTime gameTime);
     protected abstract void onDrawTextures(Batch batch);
-    protected abstract void onDrawText(DistanceFieldRenderer renderer, DistanceFieldFont font);
+    protected abstract void onDrawText(DistanceFieldRenderer renderer);
 }

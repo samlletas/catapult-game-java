@@ -1,0 +1,244 @@
+{
+	"archiveVersion" = "1";
+	"classes" =
+		{
+		};
+	"objectVersion" = "46";
+	"objects" =
+		{
+			"100000000000000000000002" =
+				{
+					"isa" = "PBXGroup";
+					"children" =
+						("F96781F428E64454A437CE25", "988D737694FB4EF98260F112");
+					"sourceTree" = "<group>";
+				};
+			"100000000000000000000006" =
+				{
+					"isa" = "PBXNativeTarget";
+					"buildPhases" =
+						("100000000000000000000007");
+					"buildRules" =
+						();
+					"dependencies" =
+						();
+					"name" = "test";
+					"productName" = "test";
+					"productType" = "com.apple.product-type.application";
+				};
+			"100000000000000000000001" =
+				{
+					"isa" = "PBXProject";
+					"attributes" =
+						{
+							"LastUpgradeCheck" = "0620";
+						};
+					"buildConfigurationList" = "100000000000000000000003";
+					"compatibilityVersion" = "Xcode 3.2";
+					"developmentRegion" = "English";
+					"hasScannedForEncodings" = "0";
+					"knownRegions" =
+						("en");
+					"mainGroup" = "100000000000000000000002";
+					"projectDirPath" = "";
+					"projectRoot" = "";
+					"targets" =
+						("100000000000000000000006");
+				};
+			"100000000000000000000007" =
+				{
+					"isa" = "PBXSourcesBuildPhase";
+					"buildActionMask" = "2147483647";
+					"files" =
+						();
+					"runOnlyForDeploymentPostprocessing" = "0";
+				};
+			"100000000000000000000004" =
+				{
+					"isa" = "XCBuildConfiguration";
+					"buildSettings" =
+						{
+							"INFOPLIST_FILE" = "/Users/Sam/Development/Repositories/smashing-crystals/ios/Info.plist.xml";
+							"SDKROOT" = "iphoneos";
+							"TARGETED_DEVICE_FAMILY" = "1,2";
+							"GCC_PRECOMPILE_PREFIX_HEADER" = "YES";
+							"GCC_PREFIX_HEADER" = "/Users/Sam/Development/Repositories/smashing-crystals/ios/robovm-build/xcode/.ib/Prefix.pch";
+						};
+					"name" = "Debug";
+				};
+			"100000000000000000000005" =
+				{
+					"isa" = "XCBuildConfiguration";
+					"buildSettings" =
+						{
+							"INFOPLIST_FILE" = "/Users/Sam/Development/Repositories/smashing-crystals/ios/Info.plist.xml";
+							"SDKROOT" = "iphoneos";
+							"TARGETED_DEVICE_FAMILY" = "1,2";
+							"GCC_PRECOMPILE_PREFIX_HEADER" = "YES";
+							"GCC_PREFIX_HEADER" = "/Users/Sam/Development/Repositories/smashing-crystals/ios/robovm-build/xcode/.ib/Prefix.pch";
+						};
+					"name" = "Release";
+				};
+			"100000000000000000000003" =
+				{
+					"isa" = "XCConfigurationList";
+					"buildConfigurations" =
+						("100000000000000000000004", "100000000000000000000005");
+					"defaultConfigurationIsVisible" = "0";
+					"defaultConfigurationName" = "Release";
+				};
+			"F96781F428E64454A437CE25" =
+				{
+					"isa" = "PBXGroup";
+					"children" =
+						("F3B9ED76AA164CB2926FD7C1", "D30DBFA7AE544C94AE675440", "08990BB4A7424305957B672D",
+ "701CCBA7ADE042F7B8735E4A", "ACD73D0EFFF04A208B89D7C9", "00929CFC016F4E36A7F75DBE",
+ "2B885B4ABF844485AC38073D", "D71EA2B3BA104C198B203E66", "2A7622E724EB4D798B15FF31",
+ "5C13AC3DDA1943B4B17A1EC9", "F7B7EC8647C24C35A30799A6", "541AB573AB894FC1A895B8B0",
+ "B53254EB47464D7788D032D5");
+					"name" = "Resources";
+					"sourceTree" = "<absolute>";
+					"path" = "/Users/Sam/Development/Repositories/smashing-crystals/ios/../android/assets";
+				};
+			"8452D9289B8C4A48A9006D89" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "furore.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "furore.png";
+				};
+			"F3B9ED76AA164CB2926FD7C1" =
+				{
+					"isa" = "PBXGroup";
+					"children" =
+						("8452D9289B8C4A48A9006D89");
+					"name" = "fonts";
+					"sourceTree" = "<group>";
+					"path" = "fonts";
+				};
+			"032B98381BBC4A4A95FF5493" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "textures.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "textures.png";
+				};
+			"D30DBFA7AE544C94AE675440" =
+				{
+					"isa" = "PBXGroup";
+					"children" =
+						("032B98381BBC4A4A95FF5493");
+					"name" = "textures";
+					"sourceTree" = "<group>";
+					"path" = "textures";
+				};
+			"847CED72F7214698A0A98AFD" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Info.plist";
+					"explicitFileType" = "text.plist.info";
+					"sourceTree" = "<group>";
+					"path" = "Info.plist.xml";
+				};
+			"988D737694FB4EF98260F112" =
+				{
+					"isa" = "PBXGroup";
+					"children" =
+						("847CED72F7214698A0A98AFD");
+					"name" = "Supporting Files";
+					"sourceTree" = "<absolute>";
+					"path" = "/Users/Sam/Development/Repositories/smashing-crystals/ios";
+				};
+			"08990BB4A7424305957B672D" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Default-375w-667h@2x.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Default-375w-667h@2x.png";
+				};
+			"701CCBA7ADE042F7B8735E4A" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Default-414w-736h@3x.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Default-414w-736h@3x.png";
+				};
+			"ACD73D0EFFF04A208B89D7C9" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Default-568h@2x.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Default-568h@2x.png";
+				};
+			"00929CFC016F4E36A7F75DBE" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Default.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Default.png";
+				};
+			"2B885B4ABF844485AC38073D" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Default@2x.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Default@2x.png";
+				};
+			"D71EA2B3BA104C198B203E66" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Default@2x~ipad.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Default@2x~ipad.png";
+				};
+			"2A7622E724EB4D798B15FF31" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Default~ipad.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Default~ipad.png";
+				};
+			"5C13AC3DDA1943B4B17A1EC9" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Icon-72.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Icon-72.png";
+				};
+			"F7B7EC8647C24C35A30799A6" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Icon-72@2x.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Icon-72@2x.png";
+				};
+			"541AB573AB894FC1A895B8B0" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Icon.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Icon.png";
+				};
+			"B53254EB47464D7788D032D5" =
+				{
+					"isa" = "PBXFileReference";
+					"name" = "Icon@2x.png";
+					"lastKnownFileType" = "image.png";
+					"sourceTree" = "<group>";
+					"path" = "Icon@2x.png";
+				};
+		};
+	"rootObject" = "100000000000000000000001";
+}

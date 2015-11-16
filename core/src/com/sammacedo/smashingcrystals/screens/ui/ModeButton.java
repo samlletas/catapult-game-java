@@ -2,6 +2,7 @@ package com.sammacedo.smashingcrystals.screens.ui;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.utils.Align;
 import com.engine.actors.ActorOrigin;
 import com.engine.actors.DistanceFieldFontActor;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
@@ -49,8 +50,9 @@ public final class ModeButton extends Button implements ICustomWidget
     {
         super(common.assets.skins.ui.getInstance(), Global.ButtonStyles.MODE);
 
-        this.titleActor = new DistanceFieldFontActor(title);
-        this.textActor = new DistanceFieldFontActor(text);
+        this.titleActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), title);
+        this.textActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance());
+        this.textActor.setText(text, 0, text.length(), 0, Align.center, false, null);
 
         this.buttonShowHideAction = new ConfiguredAction();
         this.titleShowHideAction = new ConfiguredAction();
@@ -163,9 +165,9 @@ public final class ModeButton extends Button implements ICustomWidget
         textActor.act(delta);
     }
 
-    public void drawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    public void drawText(DistanceFieldRenderer renderer)
     {
-        titleActor.draw(renderer, font);
-        textActor.drawMultiline(renderer, font, BitmapFont.HAlignment.CENTER);
+        titleActor.draw(renderer);
+        textActor.draw(renderer);
     }
 }

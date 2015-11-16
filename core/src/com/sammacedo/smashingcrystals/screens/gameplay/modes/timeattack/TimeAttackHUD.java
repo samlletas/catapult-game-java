@@ -40,8 +40,8 @@ public class TimeAttackHUD extends BaseGameHUD
         secondsSequence = new IntegerSequence();
         centisecondsSequence = new IntegerSequence();
 
-        secondsActor = new DistanceFieldFontActor(secondsSequence);
-        centisecondsActor = new DistanceFieldFontActor(centisecondsSequence);
+        secondsActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), secondsSequence);
+        centisecondsActor = new DistanceFieldFontActor(common.assets.distanceFieldFonts.furore.getInstance(), centisecondsSequence);
 
         secondsActor.setFontBaseScale(SECONDS_TEXT_SCALE);
         centisecondsActor.setFontBaseScale(CENTISECONDS_TEXT_SCALE);
@@ -86,7 +86,7 @@ public class TimeAttackHUD extends BaseGameHUD
     }
 
     @Override
-    protected void onDrawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    protected void onDrawText(DistanceFieldRenderer renderer)
     {
         int seconds = data.timer.remainingSeconds();
         int centiseconds = data.timer.remainingCentiseconds() % 100;
@@ -104,7 +104,7 @@ public class TimeAttackHUD extends BaseGameHUD
             centisecondsSequence.offset(1, '0');
         }
 
-        secondsActor.draw(renderer, font);
-        centisecondsActor.draw(renderer, font);
+        secondsActor.draw(renderer);
+        centisecondsActor.draw(renderer);
     }
 }

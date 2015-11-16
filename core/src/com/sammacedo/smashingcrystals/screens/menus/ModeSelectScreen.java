@@ -185,10 +185,10 @@ public final class ModeSelectScreen extends OverlayedScreen
         batch.end();
 
         common.shaders.textShader.setForegroundColor(getTransitionForeColor());
-        distanceFieldRenderer.begin(distanceFieldFont, TextBlock.TEXT_FONT_SCALE);
-        header.drawText(distanceFieldRenderer, distanceFieldFont);
-        timeAttackButton.drawText(distanceFieldRenderer, distanceFieldFont);
-        crystalFrenzyButton.drawText(distanceFieldRenderer, distanceFieldFont);
+        distanceFieldRenderer.begin(TextBlock.TEXT_FONT_SCALE);
+        header.drawText(distanceFieldRenderer);
+        timeAttackButton.drawText(distanceFieldRenderer);
+        crystalFrenzyButton.drawText(distanceFieldRenderer);
         distanceFieldRenderer.end();
     }
 

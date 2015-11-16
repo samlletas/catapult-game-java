@@ -217,7 +217,7 @@ public class CrystalFrenzyHUD extends BaseGameHUD
     }
 
     @Override
-    protected void onDrawText(DistanceFieldRenderer renderer, DistanceFieldFont font)
+    protected void onDrawText(DistanceFieldRenderer renderer)
     {
 
     }

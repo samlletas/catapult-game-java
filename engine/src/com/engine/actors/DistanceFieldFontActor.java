@@ -3,25 +3,33 @@ package com.engine.actors;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.engine.graphics.graphics2D.text.DistanceFieldFont;
 import com.engine.graphics.graphics2D.text.DistanceFieldRenderer;
 
 public class DistanceFieldFontActor extends CustomActor
 {
+    private DistanceFieldFont font;
     private CharSequence text;
+    private GlyphLayout glyphLayout;
+
     private float fontBaseScaleX;
     private float fontBaseScaleY;
     private boolean isVisible = true;
 
-    public DistanceFieldFontActor()
+    public DistanceFieldFontActor(DistanceFieldFont font)
     {
-        this(null);
+        this(font, "");
     }
 
-    public DistanceFieldFontActor(CharSequence text)
+    public DistanceFieldFontActor(DistanceFieldFont font, CharSequence text)
     {
+        this.font = font;
         this.text = text;
+        this.glyphLayout = new GlyphLayout(font.getFont(), text);
+
         this.fontBaseScaleX = 1f;
         this.fontBaseScaleY = 1f;
     }
@@ -33,7 +41,25 @@ public class DistanceFieldFontActor extends CustomActor
 
     public void setText(CharSequence text)
     {
+        setText(text, 0, text.length(), 0, Align.left, false, null);
+    }
+
+    public void setText(CharSequence text, int start, int end, float targetWidth, int halign, boolean wrap,
+                        String truncate)
+    {
         this.text = text;
+        this.glyphLayout.setText(font.getFont(), text, start, end, getColor(), targetWidth, halign, wrap, truncate);
+    }
+
+    public DistanceFieldFont getFont()
+    {
+        return font;
+    }
+
+    public void setFont(DistanceFieldFont font)
+    {
+        this.font = font;
+        this.glyphLayout.setText(font.getFont(), text);
     }
 
     public void setFontBaseScale(float scaleX, float scaleY)
@@ -90,11 +116,8 @@ public class DistanceFieldFontActor extends CustomActor
      * Nota: La rotación no se toma en cuenta (para evitar un drawCall extra)
      *
      * @param renderer renderer
-     * @param font font
-     * @return los bounds de la fuente al ser dibujada
      */
-    public BitmapFont.TextBounds draw(DistanceFieldRenderer renderer,
-                                      DistanceFieldFont font)
+    public void draw(DistanceFieldRenderer renderer)
     {
         if (isVisible && text != null)
         {
@@ -111,7 +134,6 @@ public class DistanceFieldFontActor extends CustomActor
             float drawX = getX();
             float drawY = getY();
 
-            BitmapFont.TextBounds bounds = font.getFont().getBounds(text);
             ActorOrigin actorOrigin = getActorOrigin();
 
             switch (actorOrigin)
@@ -121,135 +143,39 @@ public class DistanceFieldFontActor extends CustomActor
                     drawY -= getOriginY() * scaleY;
                     break;
                 case TopCenter:
-                    drawX -= bounds.width / 2f;
+                    drawX -= glyphLayout.width / 2f;
                     break;
                 case TopRight:
-                    drawX -= bounds.width;
+                    drawX -= glyphLayout.width;
                     break;
                 case CenterLeft:
-                    drawY -= bounds.height / 2f;
+                    drawY -= glyphLayout.height / 2f;
                     break;
                 case Center:
-                    drawX -= bounds.width / 2f;
-                    drawY -= bounds.height / 2f;
+                    drawX -= glyphLayout.width / 2f;
+                    drawY -= glyphLayout.height / 2f;
                     break;
                 case CenterRight:
-                    drawX -= bounds.width;
-                    drawY -= bounds.height / 2f;
+                    drawX -= glyphLayout.width;
+                    drawY -= glyphLayout.height / 2f;
                     break;
                 case BottomLeft:
-                    drawY -= bounds.height;
+                    drawY -= glyphLayout.height;
                     break;
                 case BottomCenter:
-                    drawX -= bounds.width / 2f;
-                    drawY -= bounds.height;
+                    drawX -= glyphLayout.width / 2f;
+                    drawY -= glyphLayout.height;
                     break;
                 case BottomRight:
-                    drawX -= bounds.width;
-                    drawY -= bounds.height;
+                    drawX -= glyphLayout.width;
+                    drawY -= glyphLayout.height;
                     break;
             }
 
-            bounds = renderer.draw(text, drawX, drawY);
+            renderer.draw(font, glyphLayout, drawX, drawY);
 
             font.setColor(originalFontColor);
             font.setScale(originalScaleX, originalScaleY);
-
-            return bounds;
         }
-
-        return null;
-    }
-
-    /**
-     * Dibuja una fuente DistanceField con los valores del frame actual
-     * Nota: La rotación no se toma en cuenta (para evitar un drawCall extra)
-     *
-     * @param renderer renderer
-     * @param font font
-     * @return los bounds de la fuente al ser dibujada
-     */
-    public BitmapFont.TextBounds drawMultiline(DistanceFieldRenderer renderer,
-                                      DistanceFieldFont font)
-    {
-        return drawMultiline(renderer, font, BitmapFont.HAlignment.LEFT);
-    }
-
-    /**
-     * Dibuja una fuente DistanceField con los valores del frame actual
-     * Nota: La rotación no se toma en cuenta (para evitar un drawCall extra)
-     *
-     * @param renderer renderer
-     * @param font font
-     * @param alignment alignment
-     * @return los bounds de la fuente al ser dibujada
-     */
-    public BitmapFont.TextBounds drawMultiline(DistanceFieldRenderer renderer,
-                                               DistanceFieldFont font,
-                                               BitmapFont.HAlignment alignment)
-    {
-        if (isVisible && text != null)
-        {
-            Color originalFontColor = font.getColor();
-            float originalScaleX = font.getScaleX();
-            float originalScaleY = font.getScaleY();
-
-            float scaleX = fontBaseScaleX * getScaleX();
-            float scaleY = fontBaseScaleY * getScaleY();
-
-            font.setColor(getColor());
-            font.setScale(scaleX, scaleY);
-
-            float drawX = getX();
-            float drawY = getY();
-
-            BitmapFont.TextBounds bounds = font.getFont().getMultiLineBounds(text);
-            ActorOrigin actorOrigin = getActorOrigin();
-
-            switch (actorOrigin)
-            {
-                case Custom:
-                    drawX -= getOriginX() * scaleX;
-                    drawY -= getOriginY() * scaleY;
-                    break;
-                case TopCenter:
-                    drawX -= bounds.width / 2f;
-                    break;
-                case TopRight:
-                    drawX -= bounds.width;
-                    break;
-                case CenterLeft:
-                    drawY -= bounds.height / 2f;
-                    break;
-                case Center:
-                    drawX -= bounds.width / 2f;
-                    drawY -= bounds.height / 2f;
-                    break;
-                case CenterRight:
-                    drawX -= bounds.width;
-                    drawY -= bounds.height / 2f;
-                    break;
-                case BottomLeft:
-                    drawY -= bounds.height;
-                    break;
-                case BottomCenter:
-                    drawX -= bounds.width / 2f;
-                    drawY -= bounds.height;
-                    break;
-                case BottomRight:
-                    drawX -= bounds.width;
-                    drawY -= bounds.height;
-                    break;
-            }
-
-            bounds = renderer.drawMultiLine(text, drawX, drawY, bounds.width, alignment);
-
-            font.setColor(originalFontColor);
-            font.setScale(originalScaleX, originalScaleY);
-
-            return bounds;
-        }
-
-        return null;
     }
 }
