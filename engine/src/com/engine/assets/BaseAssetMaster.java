@@ -30,9 +30,7 @@ public abstract class BaseAssetMaster
 
     private void addLoaders()
     {
-        manager.setLoader(AnimationPlayer.class,
-                new AnimationLoader(new InternalFileHandleResolver()));
-
+        manager.setLoader(AnimationPlayer.class, new AnimationLoader(new InternalFileHandleResolver()));
         addCustomLoaders(manager);
     }
 

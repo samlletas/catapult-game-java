@@ -140,8 +140,8 @@ public final class Catapult
     {
         float diff = MAX_PULL_ANGLE - MIN_PULL_ANGLE;
         float factor = (angle - MIN_PULL_ANGLE) / diff;
-        return Interpolation.linear.apply(MIN_LAUNCH_POWER,
-                MAX_LAUNCH_POWER, factor);
+
+        return Interpolation.linear.apply(MIN_LAUNCH_POWER, MAX_LAUNCH_POWER, factor);
     }
 
     public void update(GameTime gameTime)

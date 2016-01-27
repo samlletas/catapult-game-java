@@ -356,6 +356,7 @@ public class GamePolygon extends Polygon
 
     /**
      * Crea un polígono convexo (3 puntos = Triángulo, 6 = Hexágono, etc)
+     *
      * @param points Cantidad de puntos de la figura
      * @param radius Distancia de cada punto al centro de la figura
      * @return Nuevo polígono convexo

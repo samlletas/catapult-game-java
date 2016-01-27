@@ -1,7 +1,6 @@
 package com.engine.events;
 
-public abstract class DelayedEventHandler<T extends EventsArgs>
-        implements IEventHandler<T>
+public abstract class DelayedEventHandler<T extends EventsArgs> implements IEventHandler<T>
 {
     private T arguments;
     private boolean hasCallToResolve;

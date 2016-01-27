@@ -77,8 +77,7 @@ public abstract class GameAdapter extends ApplicationAdapter
     protected OrthographicCamera createOrthoGraphicCamera()
     {
         OrthographicCamera camera = new OrthographicCamera();
-        camera.setToOrtho(true, graphicsSettings.virtualWidth,
-                graphicsSettings.virtualHeight);
+        camera.setToOrtho(true, graphicsSettings.virtualWidth, graphicsSettings.virtualHeight);
         camera.far = 300f;
 
         return camera;
@@ -90,8 +89,8 @@ public abstract class GameAdapter extends ApplicationAdapter
      */
     protected PerspectiveCamera createPerspectiveCamera()
     {
-        PerspectiveCamera camera = new PerspectiveCamera(75,
-                graphicsSettings.virtualWidth, graphicsSettings.virtualHeight);
+        PerspectiveCamera camera = new PerspectiveCamera(75, graphicsSettings.virtualWidth,
+                graphicsSettings.virtualHeight);
         camera.near = -1f;
         camera.far = 300f;
         camera.position.set(0f, 0f, 5f);
@@ -106,8 +105,7 @@ public abstract class GameAdapter extends ApplicationAdapter
      */
     protected Viewport create2DViewport()
     {
-        return new StretchViewport(graphicsSettings.virtualWidth,
-                graphicsSettings.virtualHeight, orthographicCamera);
+        return new StretchViewport(graphicsSettings.virtualWidth, graphicsSettings.virtualHeight, orthographicCamera);
     }
 
     /**
@@ -116,8 +114,7 @@ public abstract class GameAdapter extends ApplicationAdapter
      */
     protected Viewport create3DViewport()
     {
-        return new StretchViewport(graphicsSettings.virtualWidth,
-                graphicsSettings.virtualHeight, perspectiveCamera);
+        return new StretchViewport(graphicsSettings.virtualWidth, graphicsSettings.virtualHeight, perspectiveCamera);
     }
 
     @Override
@@ -133,10 +130,8 @@ public abstract class GameAdapter extends ApplicationAdapter
         spriteBatch.setProjectionMatrix(orthographicCamera.combined);
 
         // Limpieza de pantalla
-        Gdx.gl.glClearColor(graphicsSettings.clearColor.r,
-                graphicsSettings.clearColor.g,
-                graphicsSettings.clearColor.b,
-                1f);
+        Gdx.gl.glClearColor(graphicsSettings.clearColor.r, graphicsSettings.clearColor.g,
+                graphicsSettings.clearColor.b, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         draw(gameTime);
